@@ -6,7 +6,10 @@ import (
 )
 
 var (
-	BUDGET_SERVICE_URL = "https://adwords.google.com/api/adwords/cm/v201309/BudgetService"
+	BUDGET_SERVICE_URL = ServiceUrl{
+		baseUrl,
+		"BudgetService",
+	}
 )
 
 type budgetService struct {
@@ -39,9 +42,15 @@ func (s *budgetService) Get(selector Selector) (budgets []Budget, err error) {
 		BUDGET_SERVICE_URL,
 		"get",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 get"`
+			XMLName xml.Name
 			Sel     Selector
-		}{Sel: selector},
+		}{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "get",
+			},
+			Sel: selector,
+		},
 	)
 	if err != nil {
 		return budgets, err
@@ -77,9 +86,15 @@ func (s *budgetService) Mutate(budgetOperations BudgetOperations) (budgets []Bud
 		BUDGET_SERVICE_URL,
 		"mutate",
 		struct {
-			XMLName xml.Name          `xml:"https://adwords.google.com/api/adwords/cm/v201309 mutate"`
+			XMLName xml.Name
 			Ops     []budgetOperation `xml:"operations"`
-		}{Ops: operations},
+		}{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "mutate",
+			},
+			Ops: operations,
+		},
 	)
 	if err != nil {
 		return budgets, err

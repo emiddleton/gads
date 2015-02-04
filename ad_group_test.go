@@ -16,10 +16,20 @@ func testAdGroup(t *testing.T) (AdGroup, func()) {
 		AdGroupOperations{
 			"ADD": {
 				AdGroup{
-					Name:                         "test ad group " + rand_str(10),
-					Status:                       "PAUSED",
-					CampaignId:                   campaign.Id,
-					ContentBidCriterionTypeGroup: "KEYWORD",
+					Name:       "test ad group " + rand_str(10),
+					Status:     "PAUSED",
+					CampaignId: campaign.Id,
+					BiddingStrategyConfiguration: []BiddingStrategyConfiguration{
+						BiddingStrategyConfiguration{
+							StrategyType: "MANUAL_CPC",
+							Bids: []Bid{
+								Bid{
+									Type:   "CpcBid",
+									Amount: 10000,
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -28,7 +38,7 @@ func testAdGroup(t *testing.T) (AdGroup, func()) {
 		t.Fatal(err)
 	}
 	cleanupAdGroup := func() {
-		adGroups[0].Status = "DELETED"
+		adGroups[0].Status = "REMOVED"
 		_, err = ags.Mutate(AdGroupOperations{"SET": adGroups})
 		if err != nil {
 			t.Error(err)
@@ -47,10 +57,9 @@ func TestAdGroup(t *testing.T) {
 		AdGroupOperations{
 			"ADD": {
 				AdGroup{
-					Name:                         "test ad group " + rand_str(10),
-					Status:                       "PAUSED",
-					CampaignId:                   campaign.Id,
-					ContentBidCriterionTypeGroup: "KEYWORD",
+					Name:       "test ad group " + rand_str(10),
+					Status:     "PAUSED",
+					CampaignId: campaign.Id,
 				},
 			},
 		},
@@ -60,7 +69,7 @@ func TestAdGroup(t *testing.T) {
 	}
 
 	defer func() {
-		adGroups[0].Status = "DELETED"
+		adGroups[0].Status = "REMOVED"
 		_, err = ags.Mutate(AdGroupOperations{"SET": adGroups})
 		if err != nil {
 			t.Error(err)

@@ -6,7 +6,10 @@ import (
 )
 
 var (
-	AD_GROUP_SERVICE_URL = "https://adwords.google.com/api/adwords/cm/v201309/AdGroupService"
+	AD_GROUP_SERVICE_URL = ServiceUrl{
+		baseUrl,
+		"AdGroupService",
+	}
 )
 
 type adGroupService struct {
@@ -23,6 +26,9 @@ type TargetSettingDetail struct {
 }
 
 type AdSetting struct {
+	XMLName xml.Name `xml:"settings"`
+	Type    string   `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
+
 	OptIn   *bool                 `xml:"optIn"`
 	Details []TargetSettingDetail `xml:"details"`
 }
@@ -35,7 +41,7 @@ type AdGroup struct {
 	Status                       string                         `xml:"status"`
 	Settings                     []AdSetting                    `xml:"settings,omitempty"`
 	BiddingStrategyConfiguration []BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration"`
-	ContentBidCriterionTypeGroup string                         `xml:"contentBidCriterionTypeGroup"`
+	ContentBidCriterionTypeGroup *string                        `xml:"contentBidCriterionTypeGroup"`
 }
 
 type AdGroupOperations map[string][]AdGroup
@@ -46,9 +52,15 @@ func (s *adGroupService) Get(selector Selector) (adGroups []AdGroup, err error) 
 		AD_GROUP_SERVICE_URL,
 		"get",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 get"`
+			XMLName xml.Name
 			Sel     Selector
-		}{Sel: selector},
+		}{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "get",
+			},
+			Sel: selector,
+		},
 	)
 	if err != nil {
 		return adGroups, err
@@ -82,9 +94,15 @@ func (s *adGroupService) Mutate(adGroupOperations AdGroupOperations) (adGroups [
 		}
 	}
 	mutation := struct {
-		XMLName xml.Name           `xml:"https://adwords.google.com/api/adwords/cm/v201309 mutate"`
+		XMLName xml.Name
 		Ops     []adGroupOperation `xml:"operations"`
-	}{Ops: operations}
+	}{
+		XMLName: xml.Name{
+			Space: baseUrl,
+			Local: "mutate",
+		},
+		Ops: operations,
+	}
 	respBody, err := s.Auth.Request(AD_GROUP_SERVICE_URL, "mutate", mutation)
 	if err != nil {
 		return adGroups, err

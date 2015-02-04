@@ -5,7 +5,10 @@ import (
 )
 
 var (
-	CAMPAIGN_SERVICE_URL = "https://adwords.google.com/api/adwords/cm/v201309/CampaignService"
+	CAMPAIGN_SERVICE_URL = ServiceUrl{
+		Url:  baseUrl,
+		Name: "CampaignService",
+	}
 )
 
 type campaignService struct {
@@ -27,7 +30,7 @@ type FrequencyCap struct {
 	Level       string `xml:"level,omitempty"`
 }
 
-type Setting struct {
+type CampaignSetting struct {
 	XMLName xml.Name `xml:"settings"`
 	Type    string   `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
 
@@ -35,37 +38,42 @@ type Setting struct {
 	PositiveGeoTargetType *string `xml:"positiveGeoTargetType,omitempty"`
 	NegativeGeoTargetType *string `xml:"negativeGeoTargetType,omitempty"`
 
-	// KeywordMatchSetting
+	// RealTimeBiddingSetting
 	OptIn *bool `xml:"optIn,omitempty"`
+
+	// DynamicSearchAdsSetting
+	DomainName   *string `xml:"domainName,omitempty"`
+	LanguageCode *string `xml:"langaugeCode,omitempty"`
 
 	// TrackingSetting
 	TrackingUrl *string `xml:"trackingUrl,omitempty"`
 }
 
-func NewGeoTargetTypeSetting(positiveGeoTargetType, negativeGeoTargetType string) Setting {
-	return Setting{
+func NewDynamicSearchAdsSetting(domainName, languageCode string) CampaignSetting {
+	return CampaignSetting{
+		Type:         "DynamicSearchAdsSetting",
+		DomainName:   &domainName,
+		LanguageCode: &languageCode,
+	}
+}
+
+func NewGeoTargetTypeSetting(positiveGeoTargetType, negativeGeoTargetType string) CampaignSetting {
+	return CampaignSetting{
 		Type: "GeoTargetTypeSetting",
 		PositiveGeoTargetType: &positiveGeoTargetType,
 		NegativeGeoTargetType: &negativeGeoTargetType,
 	}
 }
 
-func NewKeywordMatchSetting(optIn bool) Setting {
-	return Setting{
-		Type:  "KeywordMatchSetting",
-		OptIn: &optIn,
-	}
-}
-
-func NewRealTimeBiddingSetting(optIn bool) Setting {
-	return Setting{
+func NewRealTimeBiddingSetting(optIn bool) CampaignSetting {
+	return CampaignSetting{
 		Type:  "RealTimeBiddingSetting",
 		OptIn: &optIn,
 	}
 }
 
-func NewTrackingSetting(trackingUrl string) Setting {
-	return Setting{
+func NewTrackingSetting(trackingUrl string) CampaignSetting {
+	return CampaignSetting{
 		Type:        "TrackingSetting",
 		TrackingUrl: &trackingUrl,
 	}
@@ -91,12 +99,16 @@ type Bid struct {
 }
 
 type BiddingStrategyConfiguration struct {
+	StrategyId     int64          `xml:"biddingStrategyId,omitempty"`
+	StrategyName   string         `xml:"biddingStrategyName"`
 	StrategyType   string         `xml:"biddingStrategyType"`
 	StrategySource string         `xml:"biddingStrategySource,omitempty"`
 	Scheme         *BiddingScheme `xml:"biddingScheme,omitempty"`
 	Bids           []Bid          `xml:"bids"`
 }
 
+// Status: ENABLED, PAUSED, REMOVED
+// ServingStatus: SERVING, NONE, ENDED, PENDING, SUSPENDED
 type Campaign struct {
 	Id                             int64                           `xml:"id,omitempty"`
 	Name                           string                          `xml:"name"`
@@ -108,10 +120,12 @@ type Campaign struct {
 	ConversionOptimizerEligibility *ConversionOptimizerEligibility `xml:"conversionOptimizerEligibility"`
 	AdServingOptimizationStatus    string                          `xml:"adServingOptimizationStatus"`
 	FrequencyCap                   *FrequencyCap                   `xml:"frequencyCap"`
-	Settings                       []Setting                       `xml:"settings"`
+	Settings                       []CampaignSetting               `xml:"settings"`
+	AdvertisingChannelType         string                          `xml:"advertisingChannelType,omitempty"`
 	NetworkSetting                 *NetworkSetting                 `xml:"networkSetting"`
 	BiddingStrategyConfiguration   *BiddingStrategyConfiguration   `xml:"biddingStrategyConfiguration"`
 	//	ForwardCompatibilityMap        *map[string]string              `xml:"forwardCompatibilityMap,omitempty"`
+	Errors []error `xml:"-"`
 }
 
 type CampaignOperations map[string][]Campaign
@@ -122,9 +136,15 @@ func (s *campaignService) Get(selector Selector) (campaigns []Campaign, err erro
 		CAMPAIGN_SERVICE_URL,
 		"get",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 get"`
+			XMLName xml.Name
 			Sel     Selector
-		}{Sel: selector},
+		}{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "get",
+			},
+			Sel: selector,
+		},
 	)
 	if err != nil {
 		return campaigns, err
@@ -157,9 +177,14 @@ func (s *campaignService) Mutate(campaignOperations CampaignOperations) (campaig
 		}
 	}
 	mutation := struct {
-		XMLName xml.Name            `xml:"https://adwords.google.com/api/adwords/cm/v201309 mutate"`
+		XMLName xml.Name
 		Ops     []campaignOperation `xml:"operations"`
-	}{Ops: operations}
+	}{
+		XMLName: xml.Name{
+			Space: baseUrl,
+			Local: "mutate",
+		},
+		Ops: operations}
 	respBody, err := s.Auth.Request(CAMPAIGN_SERVICE_URL, "mutate", mutation)
 	if err != nil {
 		return campaigns, err

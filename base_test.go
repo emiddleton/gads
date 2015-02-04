@@ -15,6 +15,16 @@ func rand_str(str_size int) string {
 	return string(bytes)
 }
 
+func rand_word(str_size int) string {
+	alphanum := "abcdefghijklmnopqrstuvwxyz"
+	var bytes = make([]byte, str_size)
+	rand.Read(bytes)
+	for i, b := range bytes {
+		bytes[i] = alphanum[b%byte(len(alphanum))]
+	}
+	return string(bytes)
+}
+
 func testAuthSetup(t *testing.T) Auth {
 	config, err := NewCredentials()
 	if err != nil {

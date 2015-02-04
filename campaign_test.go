@@ -21,9 +21,10 @@ func testCampaign(t *testing.T) (Campaign, func()) {
 					StartDate:                   time.Now().Format("20060102"),
 					BudgetId:                    budget.Id,
 					AdServingOptimizationStatus: "ROTATE_INDEFINITELY",
-					Settings: []Setting{
-						NewKeywordMatchSetting(true),
+					Settings: []CampaignSetting{
+						NewRealTimeBiddingSetting(true),
 					},
+					AdvertisingChannelType: "SEARCH",
 					BiddingStrategyConfiguration: &BiddingStrategyConfiguration{
 						StrategyType: "MANUAL_CPC",
 					},
@@ -35,7 +36,7 @@ func testCampaign(t *testing.T) (Campaign, func()) {
 		t.Fatal(err)
 	}
 	cleanupCampaign := func() {
-		campaigns[0].Status = "DELETED"
+		campaigns[0].Status = "REMOVED"
 		_, err = cs.Mutate(CampaignOperations{"SET": campaigns})
 		if err != nil {
 			t.Error(err)
@@ -59,8 +60,15 @@ func TestCampaign(t *testing.T) {
 					StartDate:                   time.Now().Format("20060102"),
 					BudgetId:                    budget.Id,
 					AdServingOptimizationStatus: "ROTATE_INDEFINITELY",
-					Settings: []Setting{
-						NewKeywordMatchSetting(true),
+					Settings: []CampaignSetting{
+						NewRealTimeBiddingSetting(true),
+					},
+					AdvertisingChannelType: "SEARCH",
+					NetworkSetting: &NetworkSetting{
+						TargetGoogleSearch:         true,
+						TargetSearchNetwork:        true,
+						TargetContentNetwork:       false,
+						TargetPartnerSearchNetwork: false,
 					},
 					BiddingStrategyConfiguration: &BiddingStrategyConfiguration{
 						StrategyType: "MANUAL_CPC",
@@ -74,7 +82,7 @@ func TestCampaign(t *testing.T) {
 	}
 
 	defer func(campaigns []Campaign) {
-		campaigns[0].Status = "DELETED"
+		campaigns[0].Status = "REMOVED"
 		_, err = cs.Mutate(CampaignOperations{"SET": campaigns})
 		if err != nil {
 			t.Error(err)

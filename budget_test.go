@@ -80,7 +80,7 @@ func TestBudget(t *testing.T) {
 			},
 			Predicates: []Predicate{
 				{"Amount", "LESS_THAN_EQUALS", []string{"500000000"}},
-				{"BudgetStatus", "EQUALS", []string{"ACTIVE"}},
+				{"BudgetStatus", "EQUALS", []string{"ENABLED"}},
 			},
 			Ordering: []OrderBy{
 				{"BudgetId", "ASCENDING"},

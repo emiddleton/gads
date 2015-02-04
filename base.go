@@ -11,12 +11,24 @@ import (
 	"net/http"
 	"testing"
 	"time"
-	//	"log"
+)
+
+const (
+	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
 )
 
 var (
 	configJson = flag.String("config_json", "./config.json", "API credentials")
 )
+
+type ServiceUrl struct {
+	Url  string
+	Name string
+}
+
+func (s ServiceUrl) String() string {
+	return s.Url + "/" + s.Name
+}
 
 type Auth struct {
 	CustomerId     string
@@ -107,8 +119,12 @@ func selectorError() (err error) {
 	return err
 }
 
-func (a *Auth) Request(serviceUrl, action string, body interface{}) (respBody []byte, err error) {
+func (a *Auth) Request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
+	type devToken struct {
+		XMLName xml.Name
+	}
 	type soapReqHeader struct {
+		XMLName          xml.Name
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
 		ClientCustomerId string `xml:"clientCustomerId"`
@@ -120,13 +136,14 @@ func (a *Auth) Request(serviceUrl, action string, body interface{}) (respBody []
 
 	type soapReqEnvelope struct {
 		XMLName xml.Name      `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
-		Header  soapReqHeader `xml:"https://adwords.google.com/api/adwords/cm/v201309 Header>RequestHeader"`
+		Header  soapReqHeader `xml:"Header>RequestHeader"`
 		Body    soapReqBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
 	}
 
 	reqBody, err := xml.MarshalIndent(
 		soapReqEnvelope{
 			Header: soapReqHeader{
+				XMLName:          xml.Name{serviceUrl.Url, "RequestHeader"},
 				UserAgent:        a.UserAgent,
 				DeveloperToken:   a.DeveloperToken,
 				ClientCustomerId: a.CustomerId,
@@ -138,7 +155,7 @@ func (a *Auth) Request(serviceUrl, action string, body interface{}) (respBody []
 		return []byte{}, err
 	}
 
-	req, err := http.NewRequest("POST", serviceUrl, bytes.NewReader(reqBody))
+	req, err := http.NewRequest("POST", serviceUrl.String(), bytes.NewReader(reqBody))
 	req.Header.Add("Accept", "text/xml")
 	req.Header.Add("Accept", "multipart/*")
 	req.Header.Add("Content-Type", "text/xml;charset=UTF-8")
@@ -172,7 +189,7 @@ func (a *Auth) Request(serviceUrl, action string, body interface{}) (respBody []
 
 	soapResp := struct {
 		XMLName xml.Name       `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
-		Header  soapRespHeader `xml:"https://adwords.google.com/api/adwords/cm/v201309 Header>RequestHeader"`
+		Header  soapRespHeader `xml:"Header>RequestHeader"`
 		Body    soapRespBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
 	}{}
 
@@ -182,6 +199,7 @@ func (a *Auth) Request(serviceUrl, action string, body interface{}) (respBody []
 	}
 	if resp.StatusCode == 400 || resp.StatusCode == 401 || resp.StatusCode == 403 || resp.StatusCode == 405 || resp.StatusCode == 500 {
 		fault := Fault{}
+		fmt.Printf("unknown error ->\n%s\n", string(soapResp.Body.Response))
 		err = xml.Unmarshal(soapResp.Body.Response, &fault)
 		if err != nil {
 			return respBody, err

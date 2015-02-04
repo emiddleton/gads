@@ -69,7 +69,6 @@ func main() {
 				"Name",
 				"Status",
 				"Settings",
-				"BiddingStrategyConfiguration",
 				"ContentBidCriterionTypeGroup",
 			},
 			Predicates: []gads.Predicate{
@@ -91,6 +90,30 @@ func main() {
 	fmt.Printf("\nAdGroups\n")
 	for _, adGroup := range foundAdGroups {
 		fmt.Printf("%#v\n", adGroup)
+	}
+
+  agas := gads.NewAdGroupAdService(config.Auth)
+  foundAds, err := agas.Get(
+    gads.Selector{
+      Fields: []string{
+        "AdGroupId",
+        "Status",
+        "AdGroupCreativeApprovalStatus",
+        "AdGroupAdDisapprovalReasons",
+        "AdGroupAdTrademarkDisapproved",
+      },
+      Ordering: []gads.OrderBy{
+        {"AdGroupId","ASCENDING"},
+        {"Id","ASCENDING"},
+      },
+    },
+  )
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("\nAds\n")
+	for _, ad := range foundAds {
+		fmt.Printf("%#v\n", ad)
 	}
 
 }
