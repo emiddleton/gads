@@ -1,15 +1,52 @@
 package main
 
 import (
+	"crypto/rand"
 	"github.com/emiddleton/gads"
+	"golang.org/x/oauth2"
 	"log"
 )
 
+func rand_str(str_size int) string {
+	alphanum := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	var bytes = make([]byte, str_size)
+	rand.Read(bytes)
+	for i, b := range bytes {
+		bytes[i] = alphanum[b%byte(len(alphanum))]
+	}
+	return string(bytes)
+}
+
 func main() {
-	config, err := gads.NewCredentials()
+	config, err := gads.NewCredentials(oauth2.NoContext)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	ags := gads.NewAdGroupService(config.Auth)
+	foundAdGroups, err := ags.Get(
+		gads.Selector{
+			Fields: []string{
+				"Id",
+				"CampaignId",
+				"CampaignName",
+				"Name",
+				"Status",
+				"Settings",
+				"ContentBidCriterionTypeGroup",
+			},
+		},
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for idx, _ := range foundAdGroups {
+		foundAdGroups[idx].Status = "REMOVED"
+		foundAdGroups[idx].Name = rand_str(20)
+	}
+
+	_, err = ags.Mutate(gads.AdGroupOperations{"SET": foundAdGroups})
 
 	// Remove all Campaigns
 	cs := gads.NewCampaignService(config.Auth)
@@ -26,15 +63,8 @@ func main() {
 				"AdServingOptimizationStatus",
 				"Settings",
 			},
-			Predicates: []gads.Predicate{
-				{"Status", "EQUALS", []string{"PAUSED"}},
-			},
 			Ordering: []gads.OrderBy{
 				{"Id", "ASCENDING"},
-			},
-			Paging: &gads.Paging{
-				Offset: 0,
-				Limit:  100,
 			},
 		},
 	)
@@ -43,7 +73,8 @@ func main() {
 		log.Fatal(err)
 	}
 	for idx, _ := range foundCampaigns {
-		foundCampaigns[idx].Status = "DELETED"
+		foundCampaigns[idx].Status = "REMOVED"
+		foundCampaigns[idx].Name = rand_str(20)
 	}
 	_, err = cs.Mutate(gads.CampaignOperations{"SET": foundCampaigns})
 	if err != nil {

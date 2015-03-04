@@ -2,6 +2,7 @@ package gads
 
 import (
 	"crypto/rand"
+	"golang.org/x/oauth2"
 	"testing"
 )
 
@@ -26,7 +27,7 @@ func rand_word(str_size int) string {
 }
 
 func testAuthSetup(t *testing.T) Auth {
-	config, err := NewCredentials()
+	config, err := NewCredentials(oauth2.NoContext)
 	if err != nil {
 		t.Fatal(err)
 	}

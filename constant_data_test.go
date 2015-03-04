@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func testConstantDataService(t *testing.T) (service *constantDataService) {
-	return &constantDataService{Auth: testAuthSetup(t)}
+func testConstantDataService(t *testing.T) (service *ConstantDataService) {
+	return &ConstantDataService{Auth: testAuthSetup(t)}
 }
 
 func TestConstantData(t *testing.T) {

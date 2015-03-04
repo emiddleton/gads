@@ -1,12 +1,13 @@
 package gads
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
 
-func testCampaignService(t *testing.T) (service *campaignService) {
-	return &campaignService{Auth: testAuthSetup(t)}
+func testCampaignService(t *testing.T) (service *CampaignService) {
+	return &CampaignService{Auth: testAuthSetup(t)}
 }
 
 func testCampaign(t *testing.T) (Campaign, func()) {
@@ -89,7 +90,28 @@ func TestCampaign(t *testing.T) {
 		}
 	}(campaigns)
 
-	foundCampaigns, err := cs.Get(
+	label, labelCleanup := testLabel(t)
+	defer labelCleanup()
+
+	campaignLabels, err := cs.MutateLabel(
+		CampaignLabelOperations{
+			"ADD": {
+				CampaignLabel{CampaignId: campaigns[0].Id, LabelId: label.Id},
+			},
+		},
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() {
+		campaignLabels, err = cs.MutateLabel(CampaignLabelOperations{"REMOVE": campaignLabels})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	foundCampaigns, _, err := cs.Get(
 		Selector{
 			Fields: []string{
 				"Id",
@@ -100,6 +122,7 @@ func TestCampaign(t *testing.T) {
 				"EndDate",
 				"AdServingOptimizationStatus",
 				"Settings",
+				"Labels",
 			},
 			Predicates: []Predicate{
 				{"Status", "EQUALS", []string{"PAUSED"}},
@@ -113,7 +136,6 @@ func TestCampaign(t *testing.T) {
 			},
 		},
 	)
-
 	if err != nil {
 		t.Fatal(err)
 	}

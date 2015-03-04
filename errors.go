@@ -17,14 +17,101 @@ type BudgetError struct {
 	Path    string `xml:"fieldPath"`
 	String  string `xml:"errorString"`
 	Trigger string `xml:"trigger"`
-	Type    string `xml:"ApiError.Type"`
 	Reason  string `xml:"reason"`
+}
+
+type CriterionError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
+type TargetError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
+type AdGroupServiceError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
+type NotEmptyError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
+type AdError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
 }
 
 type ApiExceptionFault struct {
 	Message string        `xml:"message"`
 	Type    string        `xml:"ApplicationException.Type"`
-	Errors  []BudgetError `xml:"errors"`
+	Errors  []interface{} `xml:"errors"`
+}
+
+func (aes *ApiExceptionFault) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) (err error) {
+	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
+		switch start := token.(type) {
+		case xml.StartElement:
+			switch start.Name.Local {
+			case "message":
+				if err := dec.DecodeElement(&aes.Message, &start); err != nil {
+					return err
+				}
+			case "ApplicationException.Type":
+				if err := dec.DecodeElement(&aes.Type, &start); err != nil {
+					return err
+				}
+			case "errors":
+				errorType, _ := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
+				switch errorType {
+				case "CriterionError":
+					e := CriterionError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
+				case "TargetError":
+					e := TargetError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
+				case "BudgetError":
+					e := BudgetError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
+				case "AdGroupServiceError":
+					e := AdGroupServiceError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
+				case "NotEmptyError":
+					e := NotEmptyError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
+				case "AdError":
+					e := AdError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
+				default:
+					return fmt.Errorf("Unknown error type -> %s", start)
+				}
+			case "reason":
+				break
+			default:
+				return fmt.Errorf("Unknown error field -> %s", start)
+			}
+		}
+	}
+	return err
 }
 
 type ErrorsType struct {

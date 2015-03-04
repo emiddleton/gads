@@ -5,8 +5,8 @@ import (
 	//  "encoding/xml"
 )
 
-func testAdGroupService(t *testing.T) (service *adGroupService) {
-	return &adGroupService{Auth: testAuthSetup(t)}
+func testAdGroupService(t *testing.T) (service *AdGroupService) {
+	return &AdGroupService{Auth: testAuthSetup(t)}
 }
 
 func testAdGroup(t *testing.T) (AdGroup, func()) {

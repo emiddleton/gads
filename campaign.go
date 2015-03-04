@@ -4,24 +4,27 @@ import (
 	"encoding/xml"
 )
 
-var (
-	CAMPAIGN_SERVICE_URL = ServiceUrl{
-		Url:  baseUrl,
-		Name: "CampaignService",
-	}
-)
-
-type campaignService struct {
+// A campaignService holds the connection information for the
+// campaign service.
+type CampaignService struct {
 	Auth
 }
 
-func NewCampaignService(auth Auth) *campaignService {
-	return &campaignService{Auth: auth}
+// NewCampaignService creates a new campaignService
+func NewCampaignService(auth *Auth) *CampaignService {
+	return &CampaignService{Auth: *auth}
 }
 
-type ConversionOptimizerEligibility struct {
-	Eligible         bool     `xml:"eligible"`
-	RejectionReasons []string `xml:"rejectionReasons"`
+// ConversionOptimizerEligibility
+//
+// RejectionReasons can be any of
+//   "CAMPAIGN_IS_NOT_ACTIVE", "NOT_CPC_CAMPAIGN","CONVERSION_TRACKING_NOT_ENABLED",
+//   "NOT_ENOUGH_CONVERSIONS", "UNKNOWN"
+//
+type conversionOptimizerEligibility struct {
+	Eligible         bool     `xml:"eligible"`         // is eligible for optimization
+	RejectionReasons []string `xml:"rejectionReasons"` // reason for why campaign is
+	// not eligible for conversion optimization.
 }
 
 type FrequencyCap struct {
@@ -107,33 +110,86 @@ type BiddingStrategyConfiguration struct {
 	Bids           []Bid          `xml:"bids"`
 }
 
-// Status: ENABLED, PAUSED, REMOVED
-// ServingStatus: SERVING, NONE, ENDED, PENDING, SUSPENDED
+type CustomParameter struct {
+	Key      string `xml:"key"`
+	Value    string `xml:"value"`
+	IsRemove bool   `xml:"isRemove"`
+}
+
+type CustomParameters struct {
+	CustomParameters []CustomParameter `xml:"parameters"`
+	DoReplace        bool              `xml:"doReplace"`
+}
+
 type Campaign struct {
 	Id                             int64                           `xml:"id,omitempty"`
 	Name                           string                          `xml:"name"`
-	Status                         string                          `xml:"status"`
-	ServingStatus                  *string                         `xml:"servingStatus,omitempty"`
+	Status                         string                          `xml:"status"`                  // Status: "ENABLED", "PAUSED", "REMOVED"
+	ServingStatus                  *string                         `xml:"servingStatus,omitempty"` // ServingStatus: "SERVING", "NONE", "ENDED", "PENDING", "SUSPENDED"
 	StartDate                      string                          `xml:"startDate"`
 	EndDate                        *string                         `xml:"endDate,omitempty"`
 	BudgetId                       int64                           `xml:"budget>budgetId"`
-	ConversionOptimizerEligibility *ConversionOptimizerEligibility `xml:"conversionOptimizerEligibility"`
+	ConversionOptimizerEligibility *conversionOptimizerEligibility `xml:"conversionOptimizerEligibility"`
 	AdServingOptimizationStatus    string                          `xml:"adServingOptimizationStatus"`
 	FrequencyCap                   *FrequencyCap                   `xml:"frequencyCap"`
 	Settings                       []CampaignSetting               `xml:"settings"`
-	AdvertisingChannelType         string                          `xml:"advertisingChannelType,omitempty"`
+	AdvertisingChannelType         string                          `xml:"advertisingChannelType,omitempty"`    // "UNKNOWN", "SEARCH", "DISPLAY", "SHOPPING"
+	AdvertisingChannelSubType      *string                         `xml:"advertisingChannelSubType,omitempty"` // "UNKNOWN", "SEARCH_MOBILE_APP", "DISPLAY_MOBILE_APP", "SEARCH_EXPRESS", "DISPLAY_EXPRESS"
 	NetworkSetting                 *NetworkSetting                 `xml:"networkSetting"`
+	Labels                         []Label                         `xml:"labels"`
 	BiddingStrategyConfiguration   *BiddingStrategyConfiguration   `xml:"biddingStrategyConfiguration"`
-	//	ForwardCompatibilityMap        *map[string]string              `xml:"forwardCompatibilityMap,omitempty"`
-	Errors []error `xml:"-"`
+	ForwardCompatibilityMap        *map[string]string              `xml:"forwardCompatibilityMap,omitempty"`
+	TrackingUrlTemplate            *string                         `xml:"trackingUrlTemplate"`
+	UrlCustomParameters            *CustomParameters               `xml:"urlCustomParametes"`
+	Errors                         []error                         `xml:"-"`
 }
 
 type CampaignOperations map[string][]Campaign
 
-func (s *campaignService) Get(selector Selector) (campaigns []Campaign, err error) {
+type CampaignLabel struct {
+	CampaignId int64 `xml:"campaignId"`
+	LabelId    int64 `xml:"labelId"`
+}
+
+type CampaignLabelOperations map[string][]CampaignLabel
+
+// Get returns an array of Campaign's and the total number of campaign's matching
+// the selector.
+//
+// Example
+//
+//   campaigns, totalCount, err := campaignService.Get(
+//     gads.Selector{
+//       Fields: []string{
+//         "AdGroupId",
+//         "Status",
+//         "AdGroupCreativeApprovalStatus",
+//         "AdGroupAdDisapprovalReasons",
+//         "AdGroupAdTrademarkDisapproved",
+//       },
+//       Predicates: []gads.Predicate{
+//         {"AdGroupId", "EQUALS", []string{adGroupId}},
+//       },
+//     },
+//   )
+//
+// Selectable fields are
+//   "Id", "Name", "Status", "ServingStatus", "StartDate", "EndDate", "AdServingOptimizationStatus",
+//   "Settings", "AdvertisingChannelType", "AdvertisingChannelSubType", "Labels", "TrackingUrlTemplate",
+//   "UrlCustomParameters"
+//
+// filterable fields are
+//   "Id", "Name", "Status", "ServingStatus", "StartDate", "EndDate", "AdvertisingChannelType",
+//   "AdvertisingChannelSubType", "Labels", "TrackingUrlTemplate"
+//
+// Relevant documentation
+//
+//     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#get
+//
+func (s *CampaignService) Get(selector Selector) (campaigns []Campaign, totalCount int64, err error) {
 	selector.XMLName = xml.Name{"", "serviceSelector"}
-	respBody, err := s.Auth.Request(
-		CAMPAIGN_SERVICE_URL,
+	respBody, err := s.Auth.request(
+		campaignServiceUrl,
 		"get",
 		struct {
 			XMLName xml.Name
@@ -147,7 +203,7 @@ func (s *campaignService) Get(selector Selector) (campaigns []Campaign, err erro
 		},
 	)
 	if err != nil {
-		return campaigns, err
+		return campaigns, totalCount, err
 	}
 	getResp := struct {
 		Size      int64      `xml:"rval>totalNumEntries"`
@@ -155,12 +211,47 @@ func (s *campaignService) Get(selector Selector) (campaigns []Campaign, err erro
 	}{}
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
-		return campaigns, err
+		return campaigns, totalCount, err
 	}
-	return getResp.Campaigns, err
+	return getResp.Campaigns, getResp.Size, err
 }
 
-func (s *campaignService) Mutate(campaignOperations CampaignOperations) (campaigns []Campaign, err error) {
+// Mutate allows you to add and modify campaigns, returning the
+// campaigns.  Note that the "REMOVE" operator is not supported.
+// To remove a campaign set its Status to "REMOVED".
+//
+// Example
+//
+//  campaignNeedingRemoval.Status = "REMOVED"
+//  ads, err := campaignService.Mutate(
+//    gads.CampaignOperations{
+//      "ADD": {
+//        gads.Campaign{
+//          Name: "my campaign name",
+//          Status: "PAUSED",
+//          StartDate: time.Now().Format("20060102"),
+//          BudgetId: 321543214,
+//          AdServingOptimizationStatus: "ROTATE_INDEFINITELY",
+//          Settings: []gads.CampaignSetting{
+//            gads.NewRealTimeBiddingSetting(true),
+//          },
+//          AdvertisingChannelType: "SEARCH",
+//          BiddingStrategyConfiguration: &gads.BiddingStrategyConfiguration{
+//            StrategyType: "MANUAL_CPC",
+//          },
+//        },
+//        campaignNeedingRemoval,
+//      },
+//      "SET": {
+//        modifiedCampaign,
+//      },
+//    }
+//
+// Relevant documentation
+//
+//     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#mutate
+//
+func (s *CampaignService) Mutate(campaignOperations CampaignOperations) (campaigns []Campaign, err error) {
 	type campaignOperation struct {
 		Action   string   `xml:"operator"`
 		Campaign Campaign `xml:"operand"`
@@ -185,7 +276,7 @@ func (s *campaignService) Mutate(campaignOperations CampaignOperations) (campaig
 			Local: "mutate",
 		},
 		Ops: operations}
-	respBody, err := s.Auth.Request(CAMPAIGN_SERVICE_URL, "mutate", mutation)
+	respBody, err := s.Auth.request(campaignServiceUrl, "mutate", mutation)
 	if err != nil {
 		return campaigns, err
 	}
@@ -198,4 +289,73 @@ func (s *campaignService) Mutate(campaignOperations CampaignOperations) (campaig
 	}
 
 	return mutateResp.Campaigns, err
+}
+
+// Mutate allows you to add and removes labels from campaigns.
+//
+// Example
+//
+//  cls, err := campaignService.MutateLabel(
+//    gads.CampaignOperations{
+//      "ADD": {
+//        gads.CampaignLabel{CampaignId: 3200, LabelId: 5353},
+//        gads.CampaignLabel{CampaignId: 4320, LabelId: 5643},
+//      },
+//      "REMOVE": {
+//        gads.CampaignLabel{CampaignId: 3653, LabelId: 5653},
+//      },
+//    }
+//
+// Relevant documentation
+//
+//     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#mutateLabel
+//
+func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOperations) (campaignLabels []CampaignLabel, err error) {
+	type campaignLabelOperation struct {
+		Action        string        `xml:"operator"`
+		CampaignLabel CampaignLabel `xml:"operand"`
+	}
+	operations := []campaignLabelOperation{}
+	for action, campaignLabels := range campaignLabelOperations {
+		for _, campaignLabel := range campaignLabels {
+			operations = append(operations,
+				campaignLabelOperation{
+					Action:        action,
+					CampaignLabel: campaignLabel,
+				},
+			)
+		}
+	}
+	mutation := struct {
+		XMLName xml.Name
+		Ops     []campaignLabelOperation `xml:"operations"`
+	}{
+		XMLName: xml.Name{
+			Space: baseUrl,
+			Local: "mutateLabel",
+		},
+		Ops: operations}
+	respBody, err := s.Auth.request(campaignServiceUrl, "mutateLabel", mutation)
+	if err != nil {
+		return campaignLabels, err
+	}
+	mutateResp := struct {
+		CampaignLabels []CampaignLabel `xml:"rval>value"`
+	}{}
+	err = xml.Unmarshal([]byte(respBody), &mutateResp)
+	if err != nil {
+		return campaignLabels, err
+	}
+
+	return mutateResp.CampaignLabels, err
+}
+
+// Query is not yet implemented
+//
+// Relevant documentation
+//
+//     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#query
+//
+func (s *CampaignService) Query(query string) (campaigns []Campaign, totalCount int64, err error) {
+	return campaigns, totalCount, ERROR_NOT_YET_IMPLEMENTED
 }

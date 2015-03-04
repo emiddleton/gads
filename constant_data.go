@@ -4,21 +4,17 @@ import (
 	"encoding/xml"
 )
 
-var (
-	CONSTANT_DATA_SERVICE_URL = ServiceUrl{"https://adwords.google.com/api/adwords/cm/v201309", "ConstantDataService"}
-)
-
-type constantDataService struct {
+type ConstantDataService struct {
 	Auth
 }
 
-func NewConstantDataService(auth Auth) *constantDataService {
-	return &constantDataService{Auth: auth}
+func NewConstantDataService(auth *Auth) *ConstantDataService {
+	return &ConstantDataService{Auth: *auth}
 }
 
-func (s *constantDataService) GetAgeRangeCriterion() (ageRanges []AgeRangeCriterion, err error) {
-	respBody, err := s.Auth.Request(
-		CONSTANT_DATA_SERVICE_URL,
+func (s *ConstantDataService) GetAgeRangeCriterion() (ageRanges []AgeRangeCriterion, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
 		"getAgeRangeCriterion",
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getAgeRangeCriterion"`
@@ -37,9 +33,9 @@ func (s *constantDataService) GetAgeRangeCriterion() (ageRanges []AgeRangeCriter
 	return getResp.AgeRangeCriterions, err
 }
 
-func (s *constantDataService) GetCarrierCriterion() (carriers []CarrierCriterion, err error) {
-	respBody, err := s.Auth.Request(
-		CONSTANT_DATA_SERVICE_URL,
+func (s *ConstantDataService) GetCarrierCriterion() (carriers []CarrierCriterion, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
 		"getCarrierCriterion",
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getCarrierCriterion"`
@@ -58,9 +54,9 @@ func (s *constantDataService) GetCarrierCriterion() (carriers []CarrierCriterion
 	return getResp.CarrierCriterions, err
 }
 
-func (s *constantDataService) GetGenderCriterion() (genders []GenderCriterion, err error) {
-	respBody, err := s.Auth.Request(
-		CONSTANT_DATA_SERVICE_URL,
+func (s *ConstantDataService) GetGenderCriterion() (genders []GenderCriterion, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
 		"getGenderCriterion",
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getGenderCriterion"`
@@ -79,9 +75,9 @@ func (s *constantDataService) GetGenderCriterion() (genders []GenderCriterion, e
 	return getResp.GenderCriterions, err
 }
 
-func (s *constantDataService) GetLanguageCriterion() (languages []LanguageCriterion, err error) {
-	respBody, err := s.Auth.Request(
-		CONSTANT_DATA_SERVICE_URL,
+func (s *ConstantDataService) GetLanguageCriterion() (languages []LanguageCriterion, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
 		"getLanguageCriterion",
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getLanguageCriterion"`
@@ -100,9 +96,9 @@ func (s *constantDataService) GetLanguageCriterion() (languages []LanguageCriter
 	return getResp.LanguageCriterions, err
 }
 
-func (s *constantDataService) GetMobileDeviceCriterion() (mobileDevices []MobileDeviceCriterion, err error) {
-	respBody, err := s.Auth.Request(
-		CONSTANT_DATA_SERVICE_URL,
+func (s *ConstantDataService) GetMobileDeviceCriterion() (mobileDevices []MobileDeviceCriterion, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
 		"getMobileDeviceCriterion",
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getMobileDeviceCriterion"`
@@ -121,9 +117,9 @@ func (s *constantDataService) GetMobileDeviceCriterion() (mobileDevices []Mobile
 	return getResp.MobileDeviceCriterions, err
 }
 
-func (s *constantDataService) GetOperatingSystemVersionCriterion() (operatingSystemVersions []OperatingSystemVersionCriterion, err error) {
-	respBody, err := s.Auth.Request(
-		CONSTANT_DATA_SERVICE_URL,
+func (s *ConstantDataService) GetOperatingSystemVersionCriterion() (operatingSystemVersions []OperatingSystemVersionCriterion, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
 		"getOperatingSystemVersionCriterion",
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getOperatingSystemVersionCriterion"`
@@ -142,9 +138,9 @@ func (s *constantDataService) GetOperatingSystemVersionCriterion() (operatingSys
 	return getResp.OperatingSystemVersionCriterions, err
 }
 
-func (s *constantDataService) GetUserInterestCriterion() (userInterests []UserInterestCriterion, err error) {
-	respBody, err := s.Auth.Request(
-		CONSTANT_DATA_SERVICE_URL,
+func (s *ConstantDataService) GetUserInterestCriterion() (userInterests []UserInterestCriterion, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
 		"getUserInterestCriterion",
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getUserInterestCriterion"`
@@ -163,9 +159,9 @@ func (s *constantDataService) GetUserInterestCriterion() (userInterests []UserIn
 	return getResp.UserInterestCriterions, err
 }
 
-func (s *constantDataService) GetVerticalCriterion() (verticals []VerticalCriterion, err error) {
-	respBody, err := s.Auth.Request(
-		CONSTANT_DATA_SERVICE_URL,
+func (s *ConstantDataService) GetVerticalCriterion() (verticals []VerticalCriterion, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
 		"getVerticalCriterion",
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getVerticalCriterion"`

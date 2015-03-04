@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func testBudgetService(t *testing.T) (service *budgetService) {
-	return &budgetService{Auth: testAuthSetup(t)}
+func testBudgetService(t *testing.T) (service *BudgetService) {
+	return &BudgetService{Auth: testAuthSetup(t)}
 }
 
 func testBudget(t *testing.T) (Budget, func()) {
@@ -66,7 +66,7 @@ func TestBudget(t *testing.T) {
 		}
 	}(budgets)
 
-	foundBudgets, err := s.Get(
+	foundBudgets, _, err := s.Get(
 		Selector{
 			Fields: []string{
 				"BudgetId",

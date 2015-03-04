@@ -6,8 +6,8 @@ import (
 	//  "encoding/xml"
 )
 
-func testLocationCriterionService(t *testing.T) (service *locationCriterionService) {
-	return &locationCriterionService{Auth: testAuthSetup(t)}
+func testLocationCriterionService(t *testing.T) (service *LocationCriterionService) {
+	return &LocationCriterionService{Auth: testAuthSetup(t)}
 }
 
 func TestLocationCriterion(t *testing.T) {

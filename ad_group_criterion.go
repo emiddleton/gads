@@ -5,70 +5,14 @@ import (
 	"fmt"
 )
 
-var (
-	AD_GROUP_CRITERION_SERVICE_URL = ServiceUrl{
-		baseUrl,
-		"AdGroupCriterionService",
-	}
-)
-
-type adGroupCriterionService struct {
+type AdGroupCriterionService struct {
 	Auth
 }
 
-func NewAdGroupCriterionService(auth Auth) *adGroupCriterionService {
-	return &adGroupCriterionService{Auth: auth}
+func NewAdGroupCriterionService(auth *Auth) *AdGroupCriterionService {
+	return &AdGroupCriterionService{Auth: *auth}
 }
 
-/*
-type Criterion struct {
-	Id   int64  `xml:"id,omitempty"`
-	Type string `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
-
-	// AgeRange
-	AgeRangeType *string `xml:"ageRangeType,omitempty"`
-
-	// CriterionUserInterest
-	UserInterestId   *int64  `xml:"userInterestId,omitempty"`
-	UserInterestName *string `xml:"userInterestName,omitempty"`
-
-	// CriterionUserList
-	UserListId               *int64  `xml:"userListId,omitempty"`
-	UserListName             *string `xml:"userListName,omitempty"`
-	UserListMembershipStatus *string `xml:"userListMembershipStatus,omitempty"`
-
-	// Gender
-	GenderType *string `xml:"genderType,omitempty"`
-
-	// Product
-	Conditions []ProductCondition `xml:"conditions,omitempty"`
-
-	Text *string `xml:"text,omitempty"`
-
-	// Keyword
-	MatchType *string `xml:"matchType,omitempty"`
-
-	// MobileApplication
-	AppId *string `xml:"appId,omitempty"`
-
-	// MobileAppCategory
-	MobileAppCategoryId *int64  `xml:"mobileAppCategoryId,omitempty"`
-	DisplayName         *string `xml:"displayName,omitempty"`
-
-	// Placement
-	Url *string `xml:"url,omitempty"`
-
-	// Vertical
-	VerticalId       *int64    `xml:"verticalId,omitempty"`
-	VerticalParentId *int64    `xml:"verticalParentId,omitempty"`
-	Path             *[]string `xml:"path,omitempty"`
-
-	// Webpage
-	Parameter        *WebpageParameter `xml:"parameter,omitempty"`
-	CriteriaCoverage *float64          `xml:"criteriaCoverage,omitempty"`
-	CriteriaSamples  []string          `xml:"criteriaSamples,omitempty"`
-}
-*/
 type QualityInfo struct {
 	IsKeywordAdRelevanceAcceptable bool  `xml:"isKeywordAdRelevanceAcceptable,omitempty"`
 	IsLandingPageQualityAcceptable bool  `xml:"isLandingPageQualityAcceptable,omitempty"`
@@ -80,171 +24,18 @@ type Cpc struct {
 	Amount int64 `xml:"amount"`
 }
 
-type NegativeAdGroupCriterion struct {
-	AdGroupId int64     `xml:"adGroupId"`
-	Criterion Criterion `xml:"criterion"`
-}
-
-func (nagc NegativeAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(
-		start.Attr,
-		xml.Attr{
-			xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"},
-			"NegativeAdGroupCriterion",
-		},
-	)
-	e.EncodeToken(start)
-	e.EncodeElement(&nagc.AdGroupId, xml.StartElement{Name: xml.Name{"", "adGroupId"}})
-	criterionMarshalXML(nagc.Criterion, e)
-	e.EncodeToken(start.End())
-	return nil
-}
-
-func (nagc *NegativeAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
-	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
-		if err != nil {
-			return err
-		}
-		switch start := token.(type) {
-		case xml.StartElement:
-			tag := start.Name.Local
-			switch tag {
-			case "adGroupId":
-				if err := dec.DecodeElement(&nagc.AdGroupId, &start); err != nil {
-					return err
-				}
-			case "criterion":
-				criterion, err := criterionUnmarshalXML(dec, start)
-				if err != nil {
-					return err
-				}
-				nagc.Criterion = criterion
-			case "AdGroupCriterion.Type":
-				break
-			default:
-				return fmt.Errorf("unknown NegativeAdGroupCriterion field %s", tag)
-			}
-		}
-	}
-	return nil
-}
-
-type BiddableAdGroupCriterion struct {
-	AdGroupId int64     `xml:"adGroupId"`
-	Criterion Criterion `xml:"criterion"`
-
-	// BiddableAdGroupCriterion
-	UserStatus          string   `xml:"userStatus,omitempty"`
-	SystemServingStatus string   `xml:"systemServingStatus,omitempty"`
-	ApprovalStatus      string   `xml:"approvalStatus,omitempty"`
-	DisapprovalReasons  []string `xml:"disapprovalReasons,omitempty"`
-	DestinationUrl      string   `xml:"destinationUrl,omitempty"`
-
-	FirstPageCpc *Cpc `xml:"firstPageCpc>amount,omitempty"`
-	TopOfPageCpc *Cpc `xml:"topOfPageCpc>amount,omitempty"`
-
-	QualityInfo *QualityInfo `xml:"qualityInfo,omitempty"`
-
-	BiddingStrategyConfiguration *BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration,omitempty"`
-	BidModifier                  int64                         `xml:"bidModifier,omitempty"`
-}
-
 type AdGroupCriterions []interface{}
 
-func (bagc BiddableAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(
-		start.Attr,
-		xml.Attr{
-			xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"},
-			"BiddableAdGroupCriterion",
-		},
-	)
-	e.EncodeToken(start)
-	e.EncodeElement(&bagc.AdGroupId, xml.StartElement{Name: xml.Name{"", "adGroupId"}})
-	criterionMarshalXML(bagc.Criterion, e)
-	e.EncodeElement(&bagc.UserStatus, xml.StartElement{Name: xml.Name{"", "userStatus"}})
-	if bagc.DestinationUrl != "" {
-		e.EncodeElement(&bagc.DestinationUrl, xml.StartElement{Name: xml.Name{"", "destinationUrl"}})
-	}
-	e.EncodeElement(&bagc.BiddingStrategyConfiguration, xml.StartElement{Name: xml.Name{"", "biddingStrategyConfiguration"}})
-	if bagc.BidModifier != 0 {
-		e.EncodeElement(&bagc.BidModifier, xml.StartElement{Name: xml.Name{"", "bidModifier"}})
-	}
-	e.EncodeToken(start.End())
-	return nil
+type AdGroupCriterionLabel struct {
+	AdGroupCriterionId int64 `xml:"adGroupCriterionId"`
+	LabelId            int64 `xml:"labelId"`
 }
 
-func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
-	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
-		if err != nil {
-			return err
-		}
-		switch start := token.(type) {
-		case xml.StartElement:
-			tag := start.Name.Local
-			switch tag {
-			case "adGroupId":
-				if err := dec.DecodeElement(&bagc.AdGroupId, &start); err != nil {
-					return err
-				}
-			case "criterion":
-				criterion, err := criterionUnmarshalXML(dec, start)
-				if err != nil {
-					return err
-				}
-				bagc.Criterion = criterion
-			case "userStatus":
-				if err := dec.DecodeElement(&bagc.UserStatus, &start); err != nil {
-					return err
-				}
-			case "systemServingStatus":
-				if err := dec.DecodeElement(&bagc.SystemServingStatus, &start); err != nil {
-					return err
-				}
-			case "approvalStatus":
-				if err := dec.DecodeElement(&bagc.ApprovalStatus, &start); err != nil {
-					return err
-				}
-			case "disapprovalReasons":
-				if err := dec.DecodeElement(&bagc.DisapprovalReasons, &start); err != nil {
-					return err
-				}
-			case "destinationUrl":
-				if err := dec.DecodeElement(&bagc.DestinationUrl, &start); err != nil {
-					return err
-				}
-			case "firstPageCpc":
-				if err := dec.DecodeElement(&bagc.FirstPageCpc, &start); err != nil {
-					return err
-				}
-			case "topOfPageCpc":
-				if err := dec.DecodeElement(&bagc.TopOfPageCpc, &start); err != nil {
-					return err
-				}
-			case "qualityInfo":
-				if err := dec.DecodeElement(&bagc.QualityInfo, &start); err != nil {
-					return err
-				}
-			case "biddingStrategyConfiguration":
-				if err := dec.DecodeElement(&bagc.BiddingStrategyConfiguration, &start); err != nil {
-					return err
-				}
-			case "bidModifier":
-				if err := dec.DecodeElement(&bagc.BidModifier, &start); err != nil {
-					return err
-				}
-			case "AdGroupCriterion.Type":
-				break
-			default:
-				return fmt.Errorf("unknown BiddableAdGroupCriterion field %s", tag)
-			}
-		}
-	}
-	return nil
-}
+type AdGroupCriterionLabelOperations map[string][]AdGroupCriterionLabel
 
 func (agcs *AdGroupCriterions) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
-	adGroupCriterionType, err := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
+	adGroupCriterionType, err := findAttr(start.Attr, xml.Name{
+		Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
 	if err != nil {
 		return err
 	}
@@ -271,10 +62,86 @@ func (agcs *AdGroupCriterions) UnmarshalXML(dec *xml.Decoder, start xml.StartEle
 
 type AdGroupCriterionOperations map[string]AdGroupCriterions
 
-func (s adGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGroupCriterions, err error) {
+// Get returns an array of AdGroupCriterion's and the total number of AdGroupCriterion's matching
+// the selector.
+//
+// Example
+//
+//   adGroupCriterions, totalCount, err := adGroupCriterionService.Get(
+//     Selector{
+//       Fields: []string{"Id","KeywordText","KeywordMatchType"},
+//       Predicates: []Predicate{
+//         {"AdGroupId", "EQUALS", []string{"432434"}},
+//       },
+//     },
+//   )
+//
+// Selectable fields are
+//   "AdGroupId", "CriterionUse", "Id", "CriteriaType", "Labels"
+//
+//   AgeRange
+//     "AgeRangeType",
+//
+//   AppPaymentModel
+//     "AppPaymentModelType",
+//
+//   CriterionUserInterest
+//     "UserInterestId", "UserInterestName",
+//
+//   CriterionUserList
+//     "UserListId", "UserListName", "UserListMembershipStatus"
+//
+//   Gender
+//     "GenderType"
+//
+//   Keyword
+//     "KeywordText", "KeywordMatchType"
+//
+//   MobileAppCategory
+//     "MobileAppCategoryId"
+//
+//   MobileApplication
+//     "DisplayName"
+//
+//   Placement
+//     "PlacementUrl"
+//
+//   Product
+//     "Text"
+//
+//   ProductPartition
+//     "PartitionType", "ParentCriterionId", "CaseValue"
+//
+//   Vertical
+//     "VerticalId", "VerticalParentId", "Path"
+//
+//   Webpage
+//     "Parameter", "CriteriaCoverage", "CriteriaSamples"
+//
+// filterable fields are
+//
+//   "AdGroupId", "CriterionUse", "Id", "CriteriaType", "Labels"
+//
+//   CriterionUserList
+//     "UserListMembershipStatus"
+//
+//   Keyword
+//     "KeywordText", "KeywordMatchType"
+//
+//   MobileApplication
+//     "DisplayName"
+//
+//   Placement
+//     "PlacementUrl"
+//
+// Relevant documentation
+//
+//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#get
+//
+func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGroupCriterions, totalCount int64, err error) {
 	selector.XMLName = xml.Name{"", "serviceSelector"}
-	respBody, err := s.Auth.Request(
-		AD_GROUP_CRITERION_SERVICE_URL,
+	respBody, err := s.Auth.request(
+		adGroupCriterionServiceUrl,
 		"get",
 		struct {
 			XMLName xml.Name
@@ -288,7 +155,7 @@ func (s adGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGro
 		},
 	)
 	if err != nil {
-		return adGroupCriterions, err
+		return adGroupCriterions, totalCount, err
 	}
 	getResp := struct {
 		Size              int64             `xml:"rval>totalNumEntries"`
@@ -297,12 +164,43 @@ func (s adGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGro
 	fmt.Printf("%s\n", respBody)
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
-		return adGroupCriterions, err
+		return adGroupCriterions, totalCount, err
 	}
-	return getResp.AdGroupCriterions, err
+	return getResp.AdGroupCriterions, getResp.Size, err
 }
 
-func (s *adGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCriterionOperations) (adGroupCriterions AdGroupCriterions, err error) {
+// Mutate allows you to add, modify and remove ad group criterion, returning the
+// modified ad group criterion.
+//
+// Example
+//
+//  ads, err := adGroupService.Mutate(
+//    gads.AdGroupCriterionOperations{
+//      "ADD": {
+//        BiddableAdGroupCriterion{
+//          AdGroupId:  adGroupId,
+//          Criterion:  gads.KeywordCriterion{Text: "test1", MatchType: "EXACT"},
+//          UserStatus: "PAUSED",
+//        },
+//        NegativeAdGroupCriterion{
+//          AdGroupId: adGroupId,
+//          Criterion: gads.KeywordCriterion{Text: "test4", MatchType: "BROAD"},
+//        },
+//      },
+//      "SET": {
+//        modifiedAdGroupCriterion,
+//      },
+//      "REMOVE": {
+//        adGroupCriterionNeedingRemoval,
+//      },
+//    },
+//  )
+//
+// Relevant documentation
+//
+//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#mutate
+//
+func (s *AdGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCriterionOperations) (adGroupCriterions AdGroupCriterions, err error) {
 	type adGroupCriterionOperation struct {
 		Action           string      `xml:"operator"`
 		AdGroupCriterion interface{} `xml:"operand"`
@@ -328,7 +226,7 @@ func (s *adGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCrite
 		},
 		Ops: operations,
 	}
-	respBody, err := s.Auth.Request(AD_GROUP_CRITERION_SERVICE_URL, "mutate", mutation)
+	respBody, err := s.Auth.request(adGroupCriterionServiceUrl, "mutate", mutation)
 	if err != nil {
 		return adGroupCriterions, err
 	}
@@ -341,4 +239,74 @@ func (s *adGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCrite
 	}
 
 	return mutateResp.AdGroupCriterions, err
+}
+
+// MutateLabel allows you to add and removes labels from ad groups.
+//
+// Example
+//
+//  adGroupCriterions, err := adGroupCriterionService.MutateLabel(
+//    gads.AdGroupCriterionLabelOperations{
+//      "ADD": {
+//        gads.AdGroupCriterionLabel{AdGroupCriterionId: 3200, LabelId: 5353},
+//        gads.AdGroupCriterionLabel{AdGroupCriterionId: 4320, LabelId: 5643},
+//      },
+//      "REMOVE": {
+//        gads.AdGroupCriterionLabel{AdGroupCriterionId: 3653, LabelId: 5653},
+//      },
+//    },
+//  )
+//
+// Relevant documentation
+//
+//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#mutateLabel
+//
+func (s *AdGroupCriterionService) MutateLabel(adGroupCriterionLabelOperations AdGroupCriterionLabelOperations) (adGroupCriterionLabels []AdGroupCriterionLabel, err error) {
+	type adGroupCriterionLabelOperation struct {
+		Action                string                `xml:"operator"`
+		AdGroupCriterionLabel AdGroupCriterionLabel `xml:"operand"`
+	}
+	operations := []adGroupCriterionLabelOperation{}
+	for action, adGroupCriterionLabels := range adGroupCriterionLabelOperations {
+		for _, adGroupCriterionLabel := range adGroupCriterionLabels {
+			operations = append(operations,
+				adGroupCriterionLabelOperation{
+					Action:                action,
+					AdGroupCriterionLabel: adGroupCriterionLabel,
+				},
+			)
+		}
+	}
+	mutation := struct {
+		XMLName xml.Name
+		Ops     []adGroupCriterionLabelOperation `xml:"operations"`
+	}{
+		XMLName: xml.Name{
+			Space: baseUrl,
+			Local: "mutateLabel",
+		},
+		Ops: operations}
+	respBody, err := s.Auth.request(adGroupCriterionServiceUrl, "mutateLabel", mutation)
+	if err != nil {
+		return adGroupCriterionLabels, err
+	}
+	mutateResp := struct {
+		AdGroupCriterionLabels []AdGroupCriterionLabel `xml:"rval>value"`
+	}{}
+	err = xml.Unmarshal([]byte(respBody), &mutateResp)
+	if err != nil {
+		return adGroupCriterionLabels, err
+	}
+
+	return mutateResp.AdGroupCriterionLabels, err
+}
+
+// Query is not yet implemented
+//
+// Relevant documentation
+//
+//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#query
+//
+func (s *AdGroupCriterionService) Query(query string) (adGroupCriterions AdGroupCriterions, err error) {
+	return adGroupCriterions, ERROR_NOT_YET_IMPLEMENTED
 }

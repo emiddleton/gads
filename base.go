@@ -2,29 +2,70 @@ package gads
 
 import (
 	"bytes"
-	"code.google.com/p/goauth2/oauth"
-	"encoding/json"
 	"encoding/xml"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"testing"
-	"time"
 )
 
 const (
 	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
 )
 
-var (
-	configJson = flag.String("config_json", "./config.json", "API credentials")
-)
-
 type ServiceUrl struct {
 	Url  string
 	Name string
 }
+
+// exceptions
+var (
+	ERROR_NOT_YET_IMPLEMENTED = fmt.Errorf("Not yet implemented")
+)
+
+var (
+	configJson = flag.String("config_json", "./config.json", "API credentials")
+
+	// service urls
+	adGroupAdServiceUrl             = ServiceUrl{baseUrl, "AdGroupAdService"}
+	adGroupBidModifierServiceUrl    = ServiceUrl{baseUrl, "AdGroupBidModifierService"}
+	adGroupCriterionServiceUrl      = ServiceUrl{baseUrl, "AdGroupCriterionService"}
+	adGroupFeedServiceUrl           = ServiceUrl{baseUrl, "AdGroupFeedService"}
+	adGroupServiceUrl               = ServiceUrl{baseUrl, "AdGroupService"}
+	adParamServiceUrl               = ServiceUrl{baseUrl, "AdParamService"}
+	adwordsUserListServiceUrl       = ServiceUrl{baseUrl, "AdwordsUserListService"}
+	biddingStrategyServiceUrl       = ServiceUrl{baseUrl, "BiddingStrategyService"}
+	budgetOrderServiceUrl           = ServiceUrl{baseUrl, "BudgetOrderService"}
+	budgetServiceUrl                = ServiceUrl{baseUrl, "BudgetService"}
+	campaignAdExtensionServiceUrl   = ServiceUrl{baseUrl, "CampaignAdExtensionService"}
+	campaignCriterionServiceUrl     = ServiceUrl{baseUrl, "CampaignCriterionService"}
+	campaignFeedServiceUrl          = ServiceUrl{baseUrl, "CampaignFeedService"}
+	campaignServiceUrl              = ServiceUrl{baseUrl, "CampaignService"}
+	campaignSharedSetServiceUrl     = ServiceUrl{baseUrl, "CampaignSharedSetService"}
+	constantDataServiceUrl          = ServiceUrl{baseUrl, "ConstantDataService"}
+	conversionTrackerServiceUrl     = ServiceUrl{baseUrl, "ConversionTrackerService"}
+	customerFeedServiceUrl          = ServiceUrl{baseUrl, "CustomerFeedService"}
+	customerServiceUrl              = ServiceUrl{baseUrl, "CustomerService"}
+	customerSyncServiceUrl          = ServiceUrl{baseUrl, "CustomerSyncService"}
+	dataServiceUrl                  = ServiceUrl{baseUrl, "DataService"}
+	experimentServiceUrl            = ServiceUrl{baseUrl, "ExperimentService"}
+	feedItemServiceUrl              = ServiceUrl{baseUrl, "FeedItemService"}
+	feedMappingServiceUrl           = ServiceUrl{baseUrl, "FeedMappingService"}
+	feedServiceUrl                  = ServiceUrl{baseUrl, "FeedService"}
+	geoLocationServiceUrl           = ServiceUrl{baseUrl, "GeoLocationService"}
+	labelServiceUrl                 = ServiceUrl{baseUrl, "LabelService"}
+	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
+	managedCustomerServiceUrl       = ServiceUrl{baseUrl, "ManagedCustomerService"}
+	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
+	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
+	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
+	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
+	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
+	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
+	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
+	trafficEstimatorServiceUrl      = ServiceUrl{baseUrl, "TrafficEstimatorService"}
+)
 
 func (s ServiceUrl) String() string {
 	return s.Url + "/" + s.Name
@@ -34,51 +75,8 @@ type Auth struct {
 	CustomerId     string
 	DeveloperToken string
 	UserAgent      string
-	Testing        *testing.T
-	Client         *http.Client
-}
-
-type AuthConfig struct {
-	OAuthConfig *oauthConfig `json:"oauth.Config"`
-	OAuthToken  *oauth.Token `json:"oauth.Token"`
-	Auth        Auth         `json:"gads.Auth"`
-}
-
-// hack to properly unmarshal TokenCache
-type oauthConfig struct {
-	*oauth.Config
-}
-
-func (m *oauthConfig) UnmarshalJSON(data []byte) error {
-	oc := oauth.Config{}
-	_ = json.Unmarshal(data, &oc)
-	m.Config = &oc
-	config := struct {
-		CacheFile string `json:"TokenCache"`
-	}{}
-	if err := json.Unmarshal(data, &config); err != nil {
-		return err
-	}
-	m.TokenCache = oauth.CacheFile(config.CacheFile)
-	return nil
-}
-
-func NewCredentials() (authConfig AuthConfig, err error) {
-	data, err := ioutil.ReadFile(*configJson)
-	if err != nil {
-		return authConfig, err
-	}
-
-	if err := json.Unmarshal(data, &authConfig); err != nil {
-		return authConfig, err
-	}
-
-	transport := &oauth.Transport{Config: authConfig.OAuthConfig.Config}
-	authConfig.OAuthToken.Expiry = time.Now()
-	transport.Token = authConfig.OAuthToken
-	authConfig.Auth.Client = transport.Client()
-
-	return authConfig, err
+	Testing        *testing.T   `json:"-"`
+	Client         *http.Client `json:"-"`
 }
 
 //
@@ -119,7 +117,7 @@ func selectorError() (err error) {
 	return err
 }
 
-func (a *Auth) Request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
+func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
 	type devToken struct {
 		XMLName xml.Name
 	}
@@ -135,13 +133,14 @@ func (a *Auth) Request(serviceUrl ServiceUrl, action string, body interface{}) (
 	}
 
 	type soapReqEnvelope struct {
-		XMLName xml.Name      `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
+		XMLName xml.Name
 		Header  soapReqHeader `xml:"Header>RequestHeader"`
 		Body    soapReqBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
 	}
 
 	reqBody, err := xml.MarshalIndent(
 		soapReqEnvelope{
+			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
 			Header: soapReqHeader{
 				XMLName:          xml.Name{serviceUrl.Url, "RequestHeader"},
 				UserAgent:        a.UserAgent,

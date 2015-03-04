@@ -31,24 +31,20 @@ type CarrierCriterion struct {
 	CountryCode string `xml:"countryCode,emitempty"`
 }
 
-// ContentLabelType: ADULTISH, AFE, BELOW_THE_FOLD, CONFLICT, DP, EMBEDDED_VIDEO, GAMES, JACKASS, PROFANITY, UGC_FORUMS, UGC_IMAGES, UGC_SOCIAL, UGC_VIDEOS, SIRENS, TRAGEDY, VIDEO, UNKNOWN
 type ContentLabelCriterion struct {
 	Id               int64  `xml:"id,omitempty"`
-	ContentLabelType string `xml:"contentLabelType"`
+	ContentLabelType string `xml:"contentLabelType"` // ContentLabelType: "ADULTISH", "AFE", "BELOW_THE_FOLD", "CONFLICT", "DP", "EMBEDDED_VIDEO", "GAMES", "JACKASS", "PROFANITY", "UGC_FORUMS", "UGC_IMAGES", "UGC_SOCIAL", "UGC_VIDEOS", "SIRENS", "TRAGEDY", "VIDEO", "UNKNOWN"
 }
 
-// GenderType:  GENDER_MALE, GENDER_FEMALE, GENDER_UNDETERMINED
 type GenderCriterion struct {
 	Id         int64  `xml:"id,omitempty"`
-	GenderType string `xml:"genderType"`
+	GenderType string `xml:"genderType"` // GenderType:  "GENDER_MALE", "GENDER_FEMALE", "GENDER_UNDETERMINED"
 }
 
-// Text: up to 80 characters and ten words
-// MatchType:  EXACT, PHRASE, BROAD
 type KeywordCriterion struct {
 	Id        int64  `xml:"id,omitempty"`
-	Text      string `xml:"text"`
-	MatchType string `xml:"matchType"`
+	Text      string `xml:"text"`      // Text: up to 80 characters and ten words
+	MatchType string `xml:"matchType"` // MatchType:  "EXACT", "PHRASE", "BROAD"
 }
 
 type LanguageCriterion struct {

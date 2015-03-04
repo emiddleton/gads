@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func testAdGroupAdService(t *testing.T) (service *adGroupAdService) {
-	return &adGroupAdService{Auth: testAuthSetup(t)}
+func testAdGroupAdService(t *testing.T) (service *AdGroupAdService) {
+	return &AdGroupAdService{Auth: testAuthSetup(t)}
 }
 
 func TestAdGroupAd(t *testing.T) {
@@ -35,10 +35,11 @@ func TestAdGroupAd(t *testing.T) {
 	}()
 
 	adGroupIdStr := fmt.Sprintf("%d", adGroup.Id)
-	_, err = agas.Get(
+	_, _, err = agas.Get(
 		Selector{
 			Fields: []string{
 				"AdGroupId",
+				"Id",
 				"Status",
 				"AdGroupCreativeApprovalStatus",
 				"AdGroupAdDisapprovalReasons",

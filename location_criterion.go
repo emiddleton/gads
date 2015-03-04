@@ -4,19 +4,12 @@ import (
 	"encoding/xml"
 )
 
-var (
-	LOCATION_CRITERION_SERVICE_URL = ServiceUrl{
-		baseUrl,
-		"LocationCriterionService",
-	}
-)
-
-type locationCriterionService struct {
+type LocationCriterionService struct {
 	Auth
 }
 
-func NewLocationCriterionService(auth Auth) *locationCriterionService {
-	return &locationCriterionService{Auth: auth}
+func NewLocationCriterionService(auth *Auth) *LocationCriterionService {
+	return &LocationCriterionService{Auth: *auth}
 }
 
 type LocationCriterion struct {
@@ -29,10 +22,10 @@ type LocationCriterion struct {
 
 type LocationCriterions []LocationCriterion
 
-func (s *locationCriterionService) Get(selector Selector) (locationCriterions LocationCriterions, err error) {
+func (s *LocationCriterionService) Get(selector Selector) (locationCriterions LocationCriterions, err error) {
 	selector.XMLName = xml.Name{"", "selector"}
-	respBody, err := s.Auth.Request(
-		LOCATION_CRITERION_SERVICE_URL,
+	respBody, err := s.Auth.request(
+		locationCriterionServiceUrl,
 		"get",
 		struct {
 			XMLName xml.Name

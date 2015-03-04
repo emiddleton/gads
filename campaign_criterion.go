@@ -7,19 +7,12 @@ import (
 	"fmt"
 )
 
-var (
-	CAMPAIGN_CRITERION_SERVICE_URL = ServiceUrl{
-		baseUrl,
-		"CampaignCriterionService",
-	}
-)
-
-type campaignCriterionService struct {
+type CampaignCriterionService struct {
 	Auth
 }
 
-func NewCampaignCriterionService(auth Auth) *campaignCriterionService {
-	return &campaignCriterionService{Auth: auth}
+func NewCampaignCriterionService(auth *Auth) *CampaignCriterionService {
+	return &CampaignCriterionService{Auth: *auth}
 }
 
 type CampaignCriterion struct {
@@ -138,10 +131,11 @@ func NewNegativeCampaignCriterion(campaignId int64, bidModifier float64, criteri
   }
 }
 */
-func (s *campaignCriterionService) Get(selector Selector) (campaignCriterions CampaignCriterions, err error) {
+
+func (s *CampaignCriterionService) Get(selector Selector) (campaignCriterions CampaignCriterions, totalCount int64, err error) {
 	selector.XMLName = xml.Name{"", "serviceSelector"}
-	respBody, err := s.Auth.Request(
-		CAMPAIGN_CRITERION_SERVICE_URL,
+	respBody, err := s.Auth.request(
+		campaignCriterionServiceUrl,
 		"get",
 		struct {
 			XMLName xml.Name
@@ -155,7 +149,7 @@ func (s *campaignCriterionService) Get(selector Selector) (campaignCriterions Ca
 		},
 	)
 	if err != nil {
-		return campaignCriterions, err
+		return campaignCriterions, totalCount, err
 	}
 	getResp := struct {
 		Size               int64              `xml:"rval>totalNumEntries"`
@@ -164,12 +158,12 @@ func (s *campaignCriterionService) Get(selector Selector) (campaignCriterions Ca
 	fmt.Printf("%s\n", respBody)
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
-		return campaignCriterions, err
+		return campaignCriterions, totalCount, err
 	}
-	return getResp.CampaignCriterions, err
+	return getResp.CampaignCriterions, getResp.Size, err
 }
 
-func (s *campaignCriterionService) Mutate(campaignCriterionOperations CampaignCriterionOperations) (campaignCriterions CampaignCriterions, err error) {
+func (s *CampaignCriterionService) Mutate(campaignCriterionOperations CampaignCriterionOperations) (campaignCriterions CampaignCriterions, err error) {
 	type campaignCriterionOperation struct {
 		Action            string      `xml:"operator"`
 		CampaignCriterion interface{} `xml:"operand"`
@@ -195,7 +189,7 @@ func (s *campaignCriterionService) Mutate(campaignCriterionOperations CampaignCr
 		},
 		Ops: operations,
 	}
-	respBody, err := s.Auth.Request(CAMPAIGN_CRITERION_SERVICE_URL, "mutate", mutation)
+	respBody, err := s.Auth.request(campaignCriterionServiceUrl, "mutate", mutation)
 	if err != nil {
 		/*
 			    switch t := err.(type) {
@@ -238,6 +232,6 @@ func (s *campaignCriterionService) Mutate(campaignCriterionOperations CampaignCr
 	return mutateResp.CampaignCriterions, err
 }
 
-func (s *campaignCriterionService) Query(query string) (campaignCriterions CampaignCriterions, err error) {
+func (s *CampaignCriterionService) Query(query string) (campaignCriterions CampaignCriterions, err error) {
 	return campaignCriterions, err
 }

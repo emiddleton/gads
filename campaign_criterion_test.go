@@ -5,8 +5,8 @@ import (
 	//  "encoding/xml"
 )
 
-func testCampaignCriterionService(t *testing.T) (service *campaignCriterionService) {
-	return &campaignCriterionService{Auth: testAuthSetup(t)}
+func testCampaignCriterionService(t *testing.T) (service *CampaignCriterionService) {
+	return &CampaignCriterionService{Auth: testAuthSetup(t)}
 }
 
 func TestCampaignCriterion(t *testing.T) {
