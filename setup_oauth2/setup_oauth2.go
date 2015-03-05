@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/emiddleton/gads"
+	"github.com/toqueteos/webbrowser"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"io/ioutil"
@@ -31,7 +32,7 @@ func main() {
 	// for the scopes specified above.
 	url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline)
 	fmt.Printf("Enter the code returned after authorising access: ")
-	webbrowserOpen(url)
+	webbrowser.Open(url)
 
 	// Use the authorization code that is pushed to the redirect URL.
 	// NewTransportWithCode will do the handshake to retrieve
