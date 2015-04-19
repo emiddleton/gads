@@ -2,7 +2,7 @@ package gads
 
 import (
 	"fmt"
-	"golang.org/x/oauth2"
+	"golang.org/x/net/context"
 	"io/ioutil"
 	"net/http"
 )
@@ -18,7 +18,7 @@ func ExampleMediaService_Upload() {
 	body, err := ioutil.ReadAll(resp.Body)
 
 	// load credentials from
-	authConf, _ := NewCredentials(oauth2.NoContext)
+	authConf, _ := NewCredentials(context.TODO())
 	ms := NewMediaService(&authConf.Auth)
 
 	images, err := ms.Upload([]Media{NewImage("image1", "IMAGE", "IMAGE_JPEG", body)})

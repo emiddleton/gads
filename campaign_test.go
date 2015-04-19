@@ -145,6 +145,7 @@ func TestCampaign(t *testing.T) {
 		func(campaign Campaign) {
 			for _, foundCampaign := range foundCampaigns {
 				if foundCampaign.Id == campaign.Id {
+					fmt.Printf("%#v", foundCampaign)
 					return
 				}
 			}

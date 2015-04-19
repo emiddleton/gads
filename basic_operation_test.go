@@ -2,13 +2,13 @@ package gads
 
 import (
 	"fmt"
-	"golang.org/x/oauth2"
+	"golang.org/x/net/context"
 	"time"
 )
 
 func ExampleCampaignService_Get() {
 	// load credentials from
-	authConf, _ := NewCredentials(oauth2.NoContext)
+	authConf, _ := NewCredentials(context.TODO())
 	cs := NewCampaignService(&authConf.Auth)
 
 	// This example illustrates how to retrieve all the campaigns for an account.
@@ -51,7 +51,7 @@ func ExampleCampaignService_Get() {
 
 func ExampleCampaignService_Mutate() {
 	// load credentials from
-	authConf, err := NewCredentials(oauth2.NoContext)
+	authConf, err := NewCredentials(context.TODO())
 	cs := NewCampaignService(&authConf.Auth)
 
 	var budgetId int64 = 1
@@ -146,7 +146,7 @@ func ExampleCampaignService_Mutate() {
 }
 
 func ExampleAdGroupService_Get() {
-	authConf, _ := NewCredentials(oauth2.NoContext)
+	authConf, _ := NewCredentials(context.TODO())
 	ags := NewAdGroupService(&authConf.Auth)
 
 	// This example illustrates how to retrieve all the ad groups for a campaign.
@@ -191,7 +191,7 @@ func ExampleAdGroupService_Get() {
 }
 
 func ExampleAdGroupService_Mutate() {
-	authConf, err := NewCredentials(oauth2.NoContext)
+	authConf, err := NewCredentials(context.TODO())
 	ags := NewAdGroupService(&authConf.Auth)
 
 	var campaignId int64 = 1
@@ -291,7 +291,7 @@ func ExampleAdGroupService_Mutate() {
 }
 
 func ExampleAdGroupCriterionService_Get() {
-	authConf, _ := NewCredentials(oauth2.NoContext)
+	authConf, _ := NewCredentials(context.TODO())
 	agcs := NewAdGroupCriterionService(&authConf.Auth)
 
 	// This example illustrates how to retrieve all keywords for an ad group.
@@ -338,7 +338,7 @@ func ExampleAdGroupCriterionService_Get() {
 }
 
 func ExampleAdGroupCriterionService_Mutate() {
-	authConf, err := NewCredentials(oauth2.NoContext)
+	authConf, err := NewCredentials(context.TODO())
 	agcs := NewAdGroupCriterionService(&authConf.Auth)
 
 	var adGroupId int64 = 1
@@ -429,7 +429,7 @@ func ExampleAdGroupCriterionService_Mutate() {
 }
 
 func ExampleAdGroupAdService_Get() {
-	authConf, _ := NewCredentials(oauth2.NoContext)
+	authConf, _ := NewCredentials(context.TODO())
 	agas := NewAdGroupAdService(&authConf.Auth)
 
 	// This example illustrates how to retrieve all text ads for an ad group.
@@ -478,7 +478,7 @@ func ExampleAdGroupAdService_Get() {
 }
 
 func ExampleAdGroupAdService_Mutate() {
-	authConf, err := NewCredentials(oauth2.NoContext)
+	authConf, err := NewCredentials(context.TODO())
 	agas := NewAdGroupAdService(&authConf.Auth)
 
 	// This example illustrates how to add text ads to a given ad group.

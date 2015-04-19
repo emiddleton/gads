@@ -2,6 +2,7 @@ package gads
 
 import (
 	"encoding/json"
+	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"io/ioutil"
 )
@@ -14,7 +15,7 @@ type AuthConfig struct {
 	Auth         Auth               `json:"gads.Auth"`
 }
 
-func NewCredentials(ctx oauth2.Context) (ac AuthConfig, err error) {
+func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
 	data, err := ioutil.ReadFile(*configJson)
 	if err != nil {
 		return ac, err

@@ -27,7 +27,7 @@ gads.Auth and parse it to the service initializer, then can call
 the service methods on the service object.
 
 ~~~ go
-     authConf, err := NewCredentials(oauth2.NoContext)
+     authConf, err := NewCredentials(context.TODO())
      campaignService := gads.NewCampaignService(&authConf.Auth)
 
      campaigns, totalCount, err := cs.Get(
