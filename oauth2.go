@@ -2,9 +2,10 @@ package gads
 
 import (
 	"encoding/json"
+	"io/ioutil"
+
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
-	"io/ioutil"
 )
 
 type AuthConfig struct {
@@ -15,18 +16,22 @@ type AuthConfig struct {
 	Auth         Auth               `json:"gads.Auth"`
 }
 
-func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
-	data, err := ioutil.ReadFile(*configJson)
+func NewCredentialsFromFile(pathToFile string, ctx context.Context) (ac AuthConfig, err error) {
+	data, err := ioutil.ReadFile(pathToFile)
 	if err != nil {
 		return ac, err
 	}
 	if err := json.Unmarshal(data, &ac); err != nil {
 		return ac, err
 	}
-	ac.file = *configJson
+	ac.file = pathToFile
 	ac.tokenSource = ac.OAuth2Config.TokenSource(ctx, ac.OAuth2Token)
 	ac.Auth.Client = ac.OAuth2Config.Client(ctx, ac.OAuth2Token)
 	return ac, err
+}
+
+func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
+	return NewCredentialsFromFile(*configJson, ctx)
 }
 
 // Save writes the contents of AuthConfig back to the JSON file it was

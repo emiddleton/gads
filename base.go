@@ -151,8 +151,11 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		},
 		"  ", "  ")
 	if err != nil {
+
 		return []byte{}, err
 	}
+
+	fmt.Println(string(reqBody))
 
 	req, err := http.NewRequest("POST", serviceUrl.String(), bytes.NewReader(reqBody))
 	req.Header.Add("Accept", "text/xml")
@@ -173,6 +176,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	if a.Testing != nil {
 		a.Testing.Logf("respBody ->\n%s\n%s\n", string(respBody), resp.Status)
 	}
+	fmt.Println(string(respBody))
 
 	type soapRespHeader struct {
 		RequestId    string `xml:"requestId"`
