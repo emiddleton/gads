@@ -151,7 +151,6 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		},
 		"  ", "  ")
 	if err != nil {
-
 		return []byte{}, err
 	}
 
