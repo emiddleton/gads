@@ -103,8 +103,8 @@ type Bid struct {
 
 type BiddingStrategyConfiguration struct {
 	StrategyId     int64          `xml:"biddingStrategyId,omitempty"`
-	StrategyName   string         `xml:"biddingStrategyName"`
-	StrategyType   string         `xml:"biddingStrategyType"`
+	StrategyName   string         `xml:"biddingStrategyName,omitempty"`
+	StrategyType   string         `xml:"biddingStrategyType,omitempty"`
 	StrategySource string         `xml:"biddingStrategySource,omitempty"`
 	Scheme         *BiddingScheme `xml:"biddingScheme,omitempty"`
 	Bids           []Bid          `xml:"bids"`

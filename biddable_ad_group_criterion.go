@@ -36,7 +36,9 @@ func (bagc BiddableAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartE
 	e.EncodeToken(start)
 	e.EncodeElement(&bagc.AdGroupId, xml.StartElement{Name: xml.Name{"", "adGroupId"}})
 	criterionMarshalXML(bagc.Criterion, e)
-	e.EncodeElement(&bagc.UserStatus, xml.StartElement{Name: xml.Name{"", "userStatus"}})
+	if bagc.UserStatus != "" {
+		e.EncodeElement(&bagc.UserStatus, xml.StartElement{Name: xml.Name{"", "userStatus"}})
+	}
 	if bagc.DestinationUrl != "" {
 		e.EncodeElement(&bagc.DestinationUrl, xml.StartElement{Name: xml.Name{"", "destinationUrl"}})
 	}

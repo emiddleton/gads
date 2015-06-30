@@ -43,8 +43,8 @@ type GenderCriterion struct {
 
 type KeywordCriterion struct {
 	Id        int64  `xml:"id,omitempty"`
-	Text      string `xml:"text"`      // Text: up to 80 characters and ten words
-	MatchType string `xml:"matchType"` // MatchType:  "EXACT", "PHRASE", "BROAD"
+	Text      string `xml:"text,omitempty"`      // Text: up to 80 characters and ten words
+	MatchType string `xml:"matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
 }
 
 type LanguageCriterion struct {
