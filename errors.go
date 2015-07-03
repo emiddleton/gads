@@ -131,7 +131,7 @@ type ErrorsType struct {
 	ApiExceptionFaults []ApiExceptionFault `xml:"ApiExceptionFault"`
 }
 
-func (f *ErrorsType) Error() string {
+func (f ErrorsType) Error() string {
 	errors := []string{}
 	for _, e := range f.ApiExceptionFaults {
 		errors = append(errors, fmt.Sprintf("%s", e.Message))
