@@ -55,6 +55,15 @@ type AdError struct {
 	Reason      string `xml:"reason"`
 }
 
+// if you exceed the quota given by google
+type RateExceededError struct {
+	RateName          string `xml:"rateName"`  // For example OperationsByMinute
+	RateScope         string `xml:"rateScope"` // ACCOUNT or DEVELOPER
+	ErrorString       string `xml:"errorString"`
+	Reason            string `xml:"reason"`
+	RetryAfterSeconds uint   `xml:"retryAfterSeconds"` // Try again in...
+}
+
 type ApiExceptionFault struct {
 	Message string        `xml:"message"`
 	Type    string        `xml:"ApplicationException.Type"`
@@ -101,6 +110,10 @@ func (aes *ApiExceptionFault) UnmarshalXML(dec *xml.Decoder, start xml.StartElem
 					e := AdError{}
 					dec.DecodeElement(&e, &start)
 					aes.Errors = append(aes.Errors, e)
+				case "RateExceededError":
+					e := RateExceededError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
 				default:
 					return fmt.Errorf("Unknown error type -> %s", start)
 				}
@@ -118,6 +131,14 @@ type ErrorsType struct {
 	ApiExceptionFaults []ApiExceptionFault `xml:"ApiExceptionFault"`
 }
 
+func (f *ErrorsType) Error() string {
+	errors := []string{}
+	for _, e := range f.ApiExceptionFaults {
+		errors = append(errors, fmt.Sprintf("%s", e.Message))
+	}
+	return strings.Join(errors, "\n")
+}
+
 type Fault struct {
 	XMLName     xml.Name   `xml:"Fault"`
 	FaultCode   string     `xml:"faultcode"`
@@ -125,10 +146,6 @@ type Fault struct {
 	Errors      ErrorsType `xml:"detail"`
 }
 
-func (f *ErrorsType) Error() string {
-	errors := []string{}
-	for _, e := range f.ApiExceptionFaults {
-		errors = append(errors, fmt.Sprintf("%s", e.Message))
-	}
-	return strings.Join(errors, "\n")
+func (f Fault) Error() string {
+	return f.FaultString + " - " + f.Errors.Error()
 }
