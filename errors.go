@@ -64,6 +64,13 @@ type RateExceededError struct {
 	RetryAfterSeconds uint   `xml:"retryAfterSeconds"` // Try again in...
 }
 
+type UnknownError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
 type ApiExceptionFault struct {
 	Message string        `xml:"message"`
 	Type    string        `xml:"ApplicationException.Type"`
@@ -115,7 +122,9 @@ func (aes *ApiExceptionFault) UnmarshalXML(dec *xml.Decoder, start xml.StartElem
 					dec.DecodeElement(&e, &start)
 					aes.Errors = append(aes.Errors, e)
 				default:
-					return fmt.Errorf("Unknown error type -> %s", start)
+					e := UnknownError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
 				}
 			case "reason":
 				break
