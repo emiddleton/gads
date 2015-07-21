@@ -23,6 +23,7 @@ type BiddableAdGroupCriterion struct {
 
 	BiddingStrategyConfiguration *BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration,omitempty"`
 	BidModifier                  int64                         `xml:"bidModifier,omitempty"`
+	FinalUrls                    FinalUrls                     `xml:"finalUrls,omitempty"`
 }
 
 func (bagc BiddableAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -107,6 +108,10 @@ func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 				}
 			case "bidModifier":
 				if err := dec.DecodeElement(&bagc.BidModifier, &start); err != nil {
+					return err
+				}
+			case "finalUrls":
+				if err := dec.DecodeElement(&bagc.FinalUrls, &start); err != nil {
 					return err
 				}
 			case "AdGroupCriterion.Type":
