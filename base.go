@@ -12,6 +12,8 @@ import (
 
 const (
 	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
+	// used for developpement, if true all unknown field will raise an error
+	StrictMode = false
 )
 
 type ServiceUrl struct {
@@ -198,7 +200,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	}
 	if resp.StatusCode == 400 || resp.StatusCode == 401 || resp.StatusCode == 403 || resp.StatusCode == 405 || resp.StatusCode == 500 {
 		fault := Fault{}
-		fmt.Printf("unknown error ->\n%s\n", string(soapResp.Body.Response))
+		// fmt.Printf("unknown error ->\n%s\n", string(soapResp.Body.Response))
 		err = xml.Unmarshal(soapResp.Body.Response, &fault)
 		if err != nil {
 			return respBody, err

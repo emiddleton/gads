@@ -47,7 +47,9 @@ func (nagc *NegativeAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 			case "AdGroupCriterion.Type":
 				break
 			default:
-				return fmt.Errorf("unknown NegativeAdGroupCriterion field %s", tag)
+				if StrictMode {
+					return fmt.Errorf("unknown NegativeAdGroupCriterion field %s", tag)
+				}
 			}
 		}
 	}

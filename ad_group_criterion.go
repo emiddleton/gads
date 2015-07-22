@@ -55,7 +55,9 @@ func (agcs *AdGroupCriterions) UnmarshalXML(dec *xml.Decoder, start xml.StartEle
 		}
 		*agcs = append(*agcs, nagc)
 	default:
-		return fmt.Errorf("unknown AdGroupCriterion -> %#v", adGroupCriterionType)
+		if StrictMode {
+			return fmt.Errorf("unknown AdGroupCriterion -> %#v", adGroupCriterionType)
+		}
 	}
 	return nil
 }

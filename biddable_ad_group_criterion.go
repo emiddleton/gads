@@ -115,9 +115,15 @@ func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 					return err
 				}
 			case "AdGroupCriterion.Type":
-				break
+				continue
+			case "labels":
+				continue
 			default:
-				return fmt.Errorf("unknown BiddableAdGroupCriterion field %s", tag)
+				if StrictMode {
+					return fmt.Errorf("unknown BiddableAdGroupCriterion field %s", tag)
+				} else {
+					continue
+				}
 			}
 		}
 	}

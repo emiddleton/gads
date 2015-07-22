@@ -283,7 +283,11 @@ func criterionUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (Criterion,
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	default:
-		return nil, fmt.Errorf("unknown criterion type %#v", criterionType)
+		if StrictMode {
+			return nil, fmt.Errorf("unknown criterion type %#v", criterionType)
+		} else {
+			return nil, nil
+		}
 	}
 }
 

@@ -27,7 +27,9 @@ func (a1 AdGroupAds) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	case TemplateAd:
 		return ERROR_NOT_YET_IMPLEMENTED
 	default:
-		return fmt.Errorf("unknown Ad type -> %#v", start)
+		if StrictMode {
+			return fmt.Errorf("unknown Ad type -> %#v", start)
+		}
 	}
 	e.EncodeToken(start.End())
 	return nil
@@ -82,7 +84,9 @@ func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) er
 					}
 					ad = a
 				default:
-					return fmt.Errorf("unknown AdGroupCriterion -> %#v", start)
+					if StrictMode {
+						return fmt.Errorf("unknown AdGroupCriterion -> %#v", start)
+					}
 				}
 			case "status":
 				err := dec.DecodeElement(&status, &start)
