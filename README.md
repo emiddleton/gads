@@ -30,7 +30,7 @@ the service methods on the service object.
      authConf, err := NewCredentials(context.TODO())
      campaignService := gads.NewCampaignService(&authConf.Auth)
 
-     campaigns, totalCount, err := cs.Get(
+     campaigns, totalCount, err := campaignService.Get(
        gads.Selector{
          Fields: []string{
            "Id",
