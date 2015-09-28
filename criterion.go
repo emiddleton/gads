@@ -20,11 +20,19 @@ type AdScheduleCriterion struct {
 	EndMinute   string `xml:"endMinute"`
 }
 
+func (c AdScheduleCriterion) GetID() int64 {
+	return c.Id
+}
+
 // AgeRangeType: AGE_RANGE_18_24, AGE_RANGE_25_34, AGE_RANGE_35_44, AGE_RANGE_45_54, AGE_RANGE_55_64, AGE_RANGE_65_UP, AGE_RANGE_UNDETERMINED, UNKNOWN
 type AgeRangeCriterion struct {
 	Type         string `xml:"xsi:type,attr,omitempty"`
 	Id           int64  `xml:"id,omitempty"`
 	AgeRangeType string `xml:"ageRangeType"`
+}
+
+func (c AgeRangeCriterion) GetID() int64 {
+	return c.Id
 }
 
 type CarrierCriterion struct {
@@ -34,16 +42,28 @@ type CarrierCriterion struct {
 	CountryCode string `xml:"countryCode,emitempty"`
 }
 
+func (c CarrierCriterion) GetID() int64 {
+	return c.Id
+}
+
 type ContentLabelCriterion struct {
 	Type             string `xml:"xsi:type,attr,omitempty"`
 	Id               int64  `xml:"id,omitempty"`
 	ContentLabelType string `xml:"contentLabelType"` // ContentLabelType: "ADULTISH", "AFE", "BELOW_THE_FOLD", "CONFLICT", "DP", "EMBEDDED_VIDEO", "GAMES", "JACKASS", "PROFANITY", "UGC_FORUMS", "UGC_IMAGES", "UGC_SOCIAL", "UGC_VIDEOS", "SIRENS", "TRAGEDY", "VIDEO", "UNKNOWN"
 }
 
+func (c ContentLabelCriterion) GetID() int64 {
+	return c.Id
+}
+
 type GenderCriterion struct {
 	Type       string `xml:"xsi:type,attr,omitempty"`
 	Id         int64  `xml:"id,omitempty"`
 	GenderType string `xml:"genderType"` // GenderType:  "GENDER_MALE", "GENDER_FEMALE", "GENDER_UNDETERMINED"
+}
+
+func (c GenderCriterion) GetID() int64 {
+	return c.Id
 }
 
 type KeywordCriterion struct {
@@ -53,11 +73,19 @@ type KeywordCriterion struct {
 	MatchType string `xml:"matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
 }
 
+func (c KeywordCriterion) GetID() int64 {
+	return c.Id
+}
+
 type LanguageCriterion struct {
 	Type string `xml:"xsi:type,attr,omitempty"`
 	Id   int64  `xml:"id,omitempty"`
 	Code string `xml:"code,omitempty"`
 	Name string `xml:"name,omitempty"`
+}
+
+func (c LanguageCriterion) GetID() int64 {
+	return c.Id
 }
 
 // LocationName:
@@ -72,6 +100,10 @@ type Location struct {
 	ParentLocations []Location `xml:"parentLocations,omitempty"`
 }
 
+func (c Location) GetID() int64 {
+	return c.Id
+}
+
 // MobileAppCategoryId:
 //   https://developers.google.com/adwords/api/docs/appendix/mobileappcategories
 // DisplayName:
@@ -82,6 +114,10 @@ type MobileAppCategoryCriterion struct {
 	DisplayName         string `xml:"displayName,omitempty"`
 }
 
+func (c MobileAppCategoryCriterion) GetID() int64 {
+	return c.Id
+}
+
 // AppId: "{platform}-{platform_native_id}"
 // DisplayName:
 type MobileApplicationCriterion struct {
@@ -89,6 +125,10 @@ type MobileApplicationCriterion struct {
 	Id          int64  `xml:"id,omitempty"`
 	AppId       string `xml:"appId"`
 	DisplayName string `xml:"displayName,omitempty"`
+}
+
+func (c MobileApplicationCriterion) GetID() int64 {
+	return c.Id
 }
 
 // DeviceName:
@@ -104,6 +144,10 @@ type MobileDeviceCriterion struct {
 	OperatingSystemName string `xml:"operatingSystemName,omitempty"`
 }
 
+func (c MobileDeviceCriterion) GetID() int64 {
+	return c.Id
+}
+
 // Name:
 // OsMajorVersion:
 // OsMinorVersion:
@@ -117,11 +161,19 @@ type OperatingSystemVersionCriterion struct {
 	OperatorType   string `xml:"operatorType,omitempty"`
 }
 
+func (c OperatingSystemVersionCriterion) GetID() int64 {
+	return c.Id
+}
+
 // Url:
 type PlacementCriterion struct {
 	Type string `xml:"xsi:type,attr,omitempty"`
 	Id   int64  `xml:"id,omitempty"`
 	Url  string `xml:"url"`
+}
+
+func (c PlacementCriterion) GetID() int64 {
+	return c.Id
 }
 
 // PlatformId:
@@ -134,11 +186,19 @@ type PlatformCriterion struct {
 	PlatformName string `xml:"platformName,omitempty"`
 }
 
+func (c PlatformCriterion) GetID() int64 {
+	return c.Id
+}
+
 // Argument:
 // Operand: id, product_type, brand, adwords_grouping, condition, adwords_labels
 type ProductCondition struct {
 	Argument string `xml:"argument"`
 	Operand  string `xml:"operand"`
+}
+
+func (c ProductCriterion) GetID() int64 {
+	return c.Id
 }
 
 type ProductCriterion struct {
@@ -174,10 +234,18 @@ type ProximityCriterion struct {
 	Address             Address  `xml:"address"`
 }
 
+func (c ProximityCriterion) GetID() int64 {
+	return c.Id
+}
+
 type UserInterestCriterion struct {
 	Type string `xml:"xsi:type,attr,omitempty"`
 	Id   int64  `xml:"userInterestId,omitempty"`
 	Name string `xml:"userInterestName"`
+}
+
+func (c UserInterestCriterion) GetID() int64 {
+	return c.Id
 }
 
 type UserListCriterion struct {
@@ -188,11 +256,19 @@ type UserListCriterion struct {
 	UserListMembershipStatus string `xml:"userListMembershipStatus"`
 }
 
+func (c UserListCriterion) GetID() int64 {
+	return c.Id
+}
+
 type VerticalCriterion struct {
 	Type     string   `xml:"xsi:type,attr,omitempty"`
 	Id       int64    `xml:"verticalId,omitempty"`
 	ParentId int64    `xml:"verticalParentId"`
 	Path     []string `xml:"path"`
+}
+
+func (c VerticalCriterion) GetID() int64 {
+	return c.Id
 }
 
 type WebpageCondition struct {
@@ -213,7 +289,13 @@ type WebpageCriterion struct {
 	CriteriaSamples  []string         `xml:"criteriaSamples"`
 }
 
-type Criterion interface{}
+func (c WebpageCriterion) GetID() int64 {
+	return c.Id
+}
+
+type Criterion interface {
+	GetID() int64
+}
 
 func criterionUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (Criterion, error) {
 	criterionType, err := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
