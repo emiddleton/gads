@@ -26,14 +26,17 @@ type Ad interface {
 	CloneForTemplate([]string, *string) Ad
 }
 
+// GetID returns the Ad's id
 func (c CommonAd) GetID() int64 {
 	return c.ID
 }
 
+// GetURL returns the Ad's url (a.k.a destination url)
 func (c CommonAd) GetURL() string {
 	return c.URL
 }
 
+// GetTrackingURLTemplate returns the  tracking url template
 func (c CommonAd) GetTrackingURLTemplate() *string {
 	return c.TrackingURLTemplate
 }
@@ -42,6 +45,7 @@ func (c CommonAd) GetFinalURLs() []string {
 	return c.FinalURLs
 }
 
+// CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template (as Ad are immutable)
 func (c CommonAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
 	c.ID = 0 // value used by go for omitempty
 	c.FinalURLs = finalURLs
@@ -49,6 +53,7 @@ func (c CommonAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *stri
 	return c
 }
 
+// CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c TextAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
 	c.ID = 0 // value used by go for omitempty
 	c.FinalURLs = finalURLs
@@ -57,6 +62,7 @@ func (c TextAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string
 	return c
 }
 
+// CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c ImageAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
 	c.ID = 0 // value used by go for omitempty
 	c.FinalURLs = finalURLs
@@ -64,6 +70,7 @@ func (c ImageAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *strin
 	return c
 }
 
+// CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c TemplateAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
 	c.ID = 0 // value used by go for omitempty
 	c.FinalURLs = finalURLs
@@ -71,6 +78,7 @@ func (c TemplateAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *st
 	return c
 }
 
+// CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c MobileAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
 	c.ID = 0 // value used by go for omitempty
 	c.FinalURLs = finalURLs
@@ -78,6 +86,7 @@ func (c MobileAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *stri
 	return c
 }
 
+// CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c DynamicSearchAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
 	c.ID = 0 // value used by go for omitempty
 	c.FinalURLs = finalURLs
