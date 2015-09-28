@@ -30,9 +30,6 @@ func (c CommonAd) GetID() int64 {
 	return c.ID
 }
 
-func (c CommonAd) UnsetID() {
-}
-
 func (c CommonAd) GetURL() string {
 	return c.URL
 }
