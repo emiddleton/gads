@@ -1,9 +1,6 @@
 package gads
 
-import (
-	"encoding/xml"
-	"fmt"
-)
+import "encoding/xml"
 
 type AdGroupService struct {
 	Auth
@@ -33,6 +30,7 @@ type AdGroup struct {
 	Name                         string                         `xml:"name"`
 	Status                       string                         `xml:"status"`
 	Settings                     []AdSetting                    `xml:"settings,omitempty"`
+	TrackingUrlTemplate          *string                        `xml:"trackingUrlTemplate"`
 	BiddingStrategyConfiguration []BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration"`
 	ContentBidCriterionTypeGroup *string                        `xml:"contentBidCriterionTypeGroup"`
 }
@@ -106,7 +104,6 @@ func (s *AdGroupService) Get(selector Selector) (adGroups []AdGroup, totalCount 
 		Size     int64     `xml:"rval>totalNumEntries"`
 		AdGroups []AdGroup `xml:"rval>entries"`
 	}{}
-	fmt.Printf("%s\n", respBody)
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
 		return adGroups, totalCount, err

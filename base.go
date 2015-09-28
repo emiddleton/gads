@@ -30,43 +30,44 @@ var (
 	configJson = flag.String("config_json", "./config.json", "API credentials")
 
 	// service urls
-	adGroupAdServiceUrl             = ServiceUrl{baseUrl, "AdGroupAdService"}
-	adGroupBidModifierServiceUrl    = ServiceUrl{baseUrl, "AdGroupBidModifierService"}
-	adGroupCriterionServiceUrl      = ServiceUrl{baseUrl, "AdGroupCriterionService"}
-	adGroupFeedServiceUrl           = ServiceUrl{baseUrl, "AdGroupFeedService"}
-	adGroupServiceUrl               = ServiceUrl{baseUrl, "AdGroupService"}
-	adParamServiceUrl               = ServiceUrl{baseUrl, "AdParamService"}
-	adwordsUserListServiceUrl       = ServiceUrl{baseUrl, "AdwordsUserListService"}
-	biddingStrategyServiceUrl       = ServiceUrl{baseUrl, "BiddingStrategyService"}
-	budgetOrderServiceUrl           = ServiceUrl{baseUrl, "BudgetOrderService"}
-	budgetServiceUrl                = ServiceUrl{baseUrl, "BudgetService"}
-	campaignAdExtensionServiceUrl   = ServiceUrl{baseUrl, "CampaignAdExtensionService"}
-	campaignCriterionServiceUrl     = ServiceUrl{baseUrl, "CampaignCriterionService"}
-	campaignFeedServiceUrl          = ServiceUrl{baseUrl, "CampaignFeedService"}
-	campaignServiceUrl              = ServiceUrl{baseUrl, "CampaignService"}
-	campaignSharedSetServiceUrl     = ServiceUrl{baseUrl, "CampaignSharedSetService"}
-	constantDataServiceUrl          = ServiceUrl{baseUrl, "ConstantDataService"}
-	conversionTrackerServiceUrl     = ServiceUrl{baseUrl, "ConversionTrackerService"}
-	customerFeedServiceUrl          = ServiceUrl{baseUrl, "CustomerFeedService"}
-	customerServiceUrl              = ServiceUrl{baseUrl, "CustomerService"}
-	customerSyncServiceUrl          = ServiceUrl{baseUrl, "CustomerSyncService"}
-	dataServiceUrl                  = ServiceUrl{baseUrl, "DataService"}
-	experimentServiceUrl            = ServiceUrl{baseUrl, "ExperimentService"}
-	feedItemServiceUrl              = ServiceUrl{baseUrl, "FeedItemService"}
-	feedMappingServiceUrl           = ServiceUrl{baseUrl, "FeedMappingService"}
-	feedServiceUrl                  = ServiceUrl{baseUrl, "FeedService"}
-	geoLocationServiceUrl           = ServiceUrl{baseUrl, "GeoLocationService"}
-	labelServiceUrl                 = ServiceUrl{baseUrl, "LabelService"}
-	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
-	managedCustomerServiceUrl       = ServiceUrl{baseUrl, "ManagedCustomerService"}
-	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
-	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
-	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
-	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
-	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
-	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
-	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
-	trafficEstimatorServiceUrl      = ServiceUrl{baseUrl, "TrafficEstimatorService"}
+	adGroupAdServiceUrl                = ServiceUrl{baseUrl, "AdGroupAdService"}
+	adGroupBidModifierServiceUrl       = ServiceUrl{baseUrl, "AdGroupBidModifierService"}
+	adGroupCriterionServiceUrl         = ServiceUrl{baseUrl, "AdGroupCriterionService"}
+	adGroupFeedServiceUrl              = ServiceUrl{baseUrl, "AdGroupFeedService"}
+	adGroupServiceUrl                  = ServiceUrl{baseUrl, "AdGroupService"}
+	adParamServiceUrl                  = ServiceUrl{baseUrl, "AdParamService"}
+	adwordsUserListServiceUrl          = ServiceUrl{baseUrl, "AdwordsUserListService"}
+	biddingStrategyServiceUrl          = ServiceUrl{baseUrl, "BiddingStrategyService"}
+	budgetOrderServiceUrl              = ServiceUrl{baseUrl, "BudgetOrderService"}
+	budgetServiceUrl                   = ServiceUrl{baseUrl, "BudgetService"}
+	campaignAdExtensionServiceUrl      = ServiceUrl{baseUrl, "CampaignAdExtensionService"}
+	campaignCriterionServiceUrl        = ServiceUrl{baseUrl, "CampaignCriterionService"}
+	campaignFeedServiceUrl             = ServiceUrl{baseUrl, "CampaignFeedService"}
+	campaignServiceUrl                 = ServiceUrl{baseUrl, "CampaignService"}
+	campaignExtensionSettingServiceUrl = ServiceUrl{baseUrl, "CampaignExtensionSettingService"}
+	campaignSharedSetServiceUrl        = ServiceUrl{baseUrl, "CampaignSharedSetService"}
+	constantDataServiceUrl             = ServiceUrl{baseUrl, "ConstantDataService"}
+	conversionTrackerServiceUrl        = ServiceUrl{baseUrl, "ConversionTrackerService"}
+	customerFeedServiceUrl             = ServiceUrl{baseUrl, "CustomerFeedService"}
+	customerServiceUrl                 = ServiceUrl{baseUrl, "CustomerService"}
+	customerSyncServiceUrl             = ServiceUrl{baseUrl, "CustomerSyncService"}
+	dataServiceUrl                     = ServiceUrl{baseUrl, "DataService"}
+	experimentServiceUrl               = ServiceUrl{baseUrl, "ExperimentService"}
+	feedItemServiceUrl                 = ServiceUrl{baseUrl, "FeedItemService"}
+	feedMappingServiceUrl              = ServiceUrl{baseUrl, "FeedMappingService"}
+	feedServiceUrl                     = ServiceUrl{baseUrl, "FeedService"}
+	geoLocationServiceUrl              = ServiceUrl{baseUrl, "GeoLocationService"}
+	labelServiceUrl                    = ServiceUrl{baseUrl, "LabelService"}
+	locationCriterionServiceUrl        = ServiceUrl{baseUrl, "LocationCriterionService"}
+	managedCustomerServiceUrl          = ServiceUrl{baseUrl, "ManagedCustomerService"}
+	mediaServiceUrl                    = ServiceUrl{baseUrl, "MediaService"}
+	mutateJobServiceUrl                = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
+	offlineConversionFeedServiceUrl    = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
+	reportDefinitionServiceUrl         = ServiceUrl{baseUrl, "ReportDefinitionService"}
+	sharedCriterionServiceUrl          = ServiceUrl{baseUrl, "SharedCriterionService"}
+	sharedSetServiceUrl                = ServiceUrl{baseUrl, "SharedSetService"}
+	targetingIdeaServiceUrl            = ServiceUrl{baseUrl, "TargetingIdeaService"}
+	trafficEstimatorServiceUrl         = ServiceUrl{baseUrl, "TrafficEstimatorService"}
 )
 
 func (s ServiceUrl) String() string {
@@ -119,7 +120,11 @@ func selectorError() (err error) {
 	return err
 }
 
-func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
+func (a *Auth) request(
+	serviceUrl ServiceUrl,
+	action string,
+	body interface{},
+) (respBody []byte, err error) {
 	type devToken struct {
 		XMLName xml.Name
 	}
@@ -135,9 +140,10 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	}
 
 	type soapReqEnvelope struct {
-		XMLName xml.Name
-		Header  soapReqHeader `xml:"Header>RequestHeader"`
-		Body    soapReqBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
+		XMLName      xml.Name
+		Header       soapReqHeader `xml:"Header>RequestHeader"`
+		XSINamespace string        `xml:"xmlns:xsi,attr"`
+		Body         soapReqBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
 	}
 
 	reqBody, err := xml.MarshalIndent(
@@ -149,9 +155,12 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 				DeveloperToken:   a.DeveloperToken,
 				ClientCustomerId: a.CustomerId,
 			},
-			Body: soapReqBody{body},
+			XSINamespace: "http://www.w3.org/2001/XMLSchema-instance",
+			Body:         soapReqBody{body},
 		},
-		"  ", "  ")
+		"  ",
+		"  ",
+	)
 	if err != nil {
 		return []byte{}, err
 	}
