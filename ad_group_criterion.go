@@ -163,7 +163,6 @@ func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGro
 		Size              int64             `xml:"rval>totalNumEntries"`
 		AdGroupCriterions AdGroupCriterions `xml:"rval>entries"`
 	}{}
-	fmt.Printf("%s\n", respBody)
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
 		return adGroupCriterions, totalCount, err
