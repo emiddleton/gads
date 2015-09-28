@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201502"
+	baseUrl = "https://adwords.google.com/api/adwords/cm/v201506"
 	// used for developpement, if true all unknown field will raise an error
 	StrictMode = false
 )
