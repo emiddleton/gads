@@ -6,6 +6,7 @@ import (
 )
 
 type BiddableAdGroupCriterion struct {
+	Type      string    `xml:"xsi:type,attr,omitempty"`
 	AdGroupId int64     `xml:"adGroupId"`
 	Criterion Criterion `xml:"criterion"`
 
@@ -14,7 +15,7 @@ type BiddableAdGroupCriterion struct {
 	SystemServingStatus string   `xml:"systemServingStatus,omitempty"`
 	ApprovalStatus      string   `xml:"approvalStatus,omitempty"`
 	DisapprovalReasons  []string `xml:"disapprovalReasons,omitempty"`
-	DestinationUrl      string   `xml:"destinationUrl,omitempty"`
+	DestinationUrl      string   `xml:"destinationUrl"`
 
 	FirstPageCpc *Cpc `xml:"firstPageCpc>amount,omitempty"`
 	TopOfPageCpc *Cpc `xml:"topOfPageCpc>amount,omitempty"`
@@ -23,32 +24,11 @@ type BiddableAdGroupCriterion struct {
 
 	BiddingStrategyConfiguration *BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration,omitempty"`
 	BidModifier                  int64                         `xml:"bidModifier,omitempty"`
-	FinalUrls                    FinalUrls                     `xml:"finalUrls,omitempty"`
-}
-
-func (bagc BiddableAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(
-		start.Attr,
-		xml.Attr{
-			xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"},
-			"BiddableAdGroupCriterion",
-		},
-	)
-	e.EncodeToken(start)
-	e.EncodeElement(&bagc.AdGroupId, xml.StartElement{Name: xml.Name{"", "adGroupId"}})
-	criterionMarshalXML(bagc.Criterion, e)
-	if bagc.UserStatus != "" {
-		e.EncodeElement(&bagc.UserStatus, xml.StartElement{Name: xml.Name{"", "userStatus"}})
-	}
-	if bagc.DestinationUrl != "" {
-		e.EncodeElement(&bagc.DestinationUrl, xml.StartElement{Name: xml.Name{"", "destinationUrl"}})
-	}
-	e.EncodeElement(&bagc.BiddingStrategyConfiguration, xml.StartElement{Name: xml.Name{"", "biddingStrategyConfiguration"}})
-	if bagc.BidModifier != 0 {
-		e.EncodeElement(&bagc.BidModifier, xml.StartElement{Name: xml.Name{"", "bidModifier"}})
-	}
-	e.EncodeToken(start.End())
-	return nil
+	FinalUrls                    FinalURLs                     `xml:"finalUrls,omitempty"`
+	FinalMobileUrls              []string                      `xml:"finalMobileUrls,omitempty"`
+	FinalAppUrls                 []string                      `xml:"finalAppUrls,omitempty"`
+	TrackingUrlTemplate          string                        `xml:"trackingUrlTemplate,omitempty"`
+	UrlCustomParameters          CustomParameters              `xml:"urlCustomParameters,omitempty"`
 }
 
 func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
@@ -114,8 +94,24 @@ func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 				if err := dec.DecodeElement(&bagc.FinalUrls, &start); err != nil {
 					return err
 				}
+			case "finalMobileUrls":
+				if err := dec.DecodeElement(&bagc.FinalMobileUrls, &start); err != nil {
+					return err
+				}
+			case "finalAppUrls":
+				if err := dec.DecodeElement(&bagc.FinalAppUrls, &start); err != nil {
+					return err
+				}
+			case "trackingUrlTemplate":
+				if err := dec.DecodeElement(&bagc.TrackingUrlTemplate, &start); err != nil {
+					return err
+				}
+			case "urlCustomParameters":
+				if err := dec.DecodeElement(&bagc.UrlCustomParameters, &start); err != nil {
+					return err
+				}
 			case "AdGroupCriterion.Type":
-				continue
+				bagc.Type = "BiddableAdGroupCriterion"
 			case "labels":
 				continue
 			default:

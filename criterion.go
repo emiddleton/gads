@@ -11,6 +11,7 @@ import (
 // EndHour: 0~24 inclusive
 // EndMinute: ZERO, FIFTEEN, THIRTY, FORTY_FIVE
 type AdScheduleCriterion struct {
+	Type        string `xml:"xsi:type,attr,omitempty"`
 	Id          int64  `xml:"id,omitempty"`
 	DayOfWeek   string `xml:"dayOfWeek"`
 	StartHour   string `xml:"startHour"`
@@ -21,33 +22,39 @@ type AdScheduleCriterion struct {
 
 // AgeRangeType: AGE_RANGE_18_24, AGE_RANGE_25_34, AGE_RANGE_35_44, AGE_RANGE_45_54, AGE_RANGE_55_64, AGE_RANGE_65_UP, AGE_RANGE_UNDETERMINED, UNKNOWN
 type AgeRangeCriterion struct {
+	Type         string `xml:"xsi:type,attr,omitempty"`
 	Id           int64  `xml:"id,omitempty"`
 	AgeRangeType string `xml:"ageRangeType"`
 }
 
 type CarrierCriterion struct {
+	Type        string `xml:"xsi:type,attr,omitempty"`
 	Id          int64  `xml:"id,omitempty"`
 	Name        string `xml:"name,emitempty"`
 	CountryCode string `xml:"countryCode,emitempty"`
 }
 
 type ContentLabelCriterion struct {
+	Type             string `xml:"xsi:type,attr,omitempty"`
 	Id               int64  `xml:"id,omitempty"`
 	ContentLabelType string `xml:"contentLabelType"` // ContentLabelType: "ADULTISH", "AFE", "BELOW_THE_FOLD", "CONFLICT", "DP", "EMBEDDED_VIDEO", "GAMES", "JACKASS", "PROFANITY", "UGC_FORUMS", "UGC_IMAGES", "UGC_SOCIAL", "UGC_VIDEOS", "SIRENS", "TRAGEDY", "VIDEO", "UNKNOWN"
 }
 
 type GenderCriterion struct {
+	Type       string `xml:"xsi:type,attr,omitempty"`
 	Id         int64  `xml:"id,omitempty"`
 	GenderType string `xml:"genderType"` // GenderType:  "GENDER_MALE", "GENDER_FEMALE", "GENDER_UNDETERMINED"
 }
 
 type KeywordCriterion struct {
+	Type      string `xml:"xsi:type,attr,omitempty"`
 	Id        int64  `xml:"id,omitempty"`
 	Text      string `xml:"text,omitempty"`      // Text: up to 80 characters and ten words
 	MatchType string `xml:"matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
 }
 
 type LanguageCriterion struct {
+	Type string `xml:"xsi:type,attr,omitempty"`
 	Id   int64  `xml:"id,omitempty"`
 	Code string `xml:"code,omitempty"`
 	Name string `xml:"name,omitempty"`
@@ -69,6 +76,7 @@ type Location struct {
 //   https://developers.google.com/adwords/api/docs/appendix/mobileappcategories
 // DisplayName:
 type MobileAppCategoryCriterion struct {
+	Type                string `xml:"xsi:type,attr,omitempty"`
 	Id                  int64  `xml:"id,omitempty"`
 	MobileAppCategoryId int64  `xml:"mobileAppCategoryId"`
 	DisplayName         string `xml:"displayName,omitempty"`
@@ -77,6 +85,7 @@ type MobileAppCategoryCriterion struct {
 // AppId: "{platform}-{platform_native_id}"
 // DisplayName:
 type MobileApplicationCriterion struct {
+	Type        string `xml:"xsi:type,attr,omitempty"`
 	Id          int64  `xml:"id,omitempty"`
 	AppId       string `xml:"appId"`
 	DisplayName string `xml:"displayName,omitempty"`
@@ -87,6 +96,7 @@ type MobileApplicationCriterion struct {
 // DeviceType:  DEVICE_TYPE_MOBILE, DEVICE_TYPE_TABLET
 // OperatingSystemName:
 type MobileDeviceCriterion struct {
+	Type                string `xml:"xsi:type,attr,omitempty"`
 	Id                  int64  `xml:"id,omitempty"`
 	DeviceName          string `xml:"deviceName,omitempty"`
 	ManufacturerName    string `xml:"manufacturerName,omitempty"`
@@ -99,6 +109,7 @@ type MobileDeviceCriterion struct {
 // OsMinorVersion:
 // OperatorType: GREATER_THAN_EQUAL_TO, EQUAL_TO, UNKNOWN
 type OperatingSystemVersionCriterion struct {
+	Type           string `xml:"xsi:type,attr,omitempty"`
 	Id             int64  `xml:"id,omitempty"`
 	Name           string `xml:"name,omitempty"`
 	OsMajorVersion int64  `xml:"osMajorVersion,omitempty"`
@@ -108,8 +119,9 @@ type OperatingSystemVersionCriterion struct {
 
 // Url:
 type PlacementCriterion struct {
-	Id  int64  `xml:"id,omitempty"`
-	Url string `xml:"url"`
+	Type string `xml:"xsi:type,attr,omitempty"`
+	Id   int64  `xml:"id,omitempty"`
+	Url  string `xml:"url"`
 }
 
 // PlatformId:
@@ -117,6 +129,7 @@ type PlacementCriterion struct {
 //  HighEndMobile	30001
 //  Tablet	30002
 type PlatformCriterion struct {
+	Type         string `xml:"xsi:type,attr,omitempty"`
 	Id           int64  `xml:"id,omitempty"`
 	PlatformName string `xml:"platformName,omitempty"`
 }
@@ -129,6 +142,7 @@ type ProductCondition struct {
 }
 
 type ProductCriterion struct {
+	Type       string             `xml:"xsi:type,attr,omitempty"`
 	Id         int64              `xml:"id,omitempty"`
 	Conditions []ProductCondition `xml:"conditions"`
 	Text       string             `xml:"text,omitempty"`
@@ -152,6 +166,7 @@ type Address struct {
 // RadiusDistanceUnits: KILOMETERS, MILES
 // RadiusUnits:
 type ProximityCriterion struct {
+	Type                string   `xml:"xsi:type,attr,omitempty"`
 	Id                  int64    `xml:"id,omitempty"`
 	GeoPoint            GeoPoint `xml:"geoPoint"`
 	RadiusDistanceUnits string   `xml:"radiusDistanceUnits"`
@@ -160,11 +175,13 @@ type ProximityCriterion struct {
 }
 
 type UserInterestCriterion struct {
+	Type string `xml:"xsi:type,attr,omitempty"`
 	Id   int64  `xml:"userInterestId,omitempty"`
 	Name string `xml:"userInterestName"`
 }
 
 type UserListCriterion struct {
+	Type                     string `xml:"xsi:type,attr,omitempty"`
 	Id                       int64  `xml:"id,omitempty"`
 	UserListId               int64  `xml:"userListId"`
 	UserListName             string `xml:"userListName"`
@@ -172,6 +189,7 @@ type UserListCriterion struct {
 }
 
 type VerticalCriterion struct {
+	Type     string   `xml:"xsi:type,attr,omitempty"`
 	Id       int64    `xml:"verticalId,omitempty"`
 	ParentId int64    `xml:"verticalParentId"`
 	Path     []string `xml:"path"`
@@ -188,6 +206,7 @@ type WebpageParameter struct {
 }
 
 type WebpageCriterion struct {
+	Type             string           `xml:"xsi:type,attr,omitempty"`
 	Id               int64            `xml:"id,omitempty"`
 	Parameter        WebpageParameter `xml:"parameter"`
 	CriteriaCoverage float64          `xml:"criteriaCoverage"`
@@ -204,82 +223,97 @@ func criterionUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (Criterion,
 	switch criterionType {
 	case "AdSchedule":
 		c := AdScheduleCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "AgeRange":
 		c := AgeRangeCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Carrier":
 		c := CarrierCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "ContentLabel":
 		c := ContentLabelCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Gender":
 		c := GenderCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Keyword":
 		c := KeywordCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Language":
 		c := LanguageCriterion{}
-		err := dec.DecodeElement(&c, &start)
-		return c, err
-	case "Location":
-		c := Location{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "MobileAppCategory":
 		c := MobileAppCategoryCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "MobileApplication":
 		c := MobileApplicationCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "MobileDevice":
 		c := MobileDeviceCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "OperatingSystemVersion":
 		c := OperatingSystemVersionCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Placement":
 		c := PlacementCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Platform":
 		c := PlatformCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Product":
 		c := ProductCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Proximity":
 		c := ProximityCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "CriterionUserInterest":
 		c := UserInterestCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "CriterionUserList":
 		c := UserListCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Vertical":
 		c := VerticalCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	case "Webpage":
 		c := WebpageCriterion{}
+		c.Type = criterionType
 		err := dec.DecodeElement(&c, &start)
 		return c, err
 	default:

@@ -1,5 +1,5 @@
 package gads
 
-type FinalUrls struct {
-	Urls []string `json:urls,omitempty`
+type FinalURLs struct {
+	URLs []string `xml:"urls,omitempty" json:urls,omitempty`
 }
