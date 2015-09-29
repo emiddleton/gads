@@ -2,7 +2,7 @@ package gads
 
 import "encoding/xml"
 
-// Ad type as defined
+// CommonAd define the parent type Ad type as defined
 // https://developers.google.com/adwords/api/docs/reference/v201506/AdGroupAdService.Ad
 type CommonAd struct {
 	Type                string            `xml:"xsi:type,attr,omitempty"`
@@ -17,6 +17,8 @@ type CommonAd struct {
 	DevicePreference    int64             `xml:"devicePreference,omitempty"`
 }
 
+// Ad is the common interface for accessing properties shared by all
+// child types of ads
 type Ad interface {
 	GetID() int64
 	GetURL() string
@@ -41,6 +43,7 @@ func (c CommonAd) GetTrackingURLTemplate() *string {
 	return c.TrackingURLTemplate
 }
 
+// GetFinalURLs returns the list of Final urls (can be empty array)
 func (c CommonAd) GetFinalURLs() []string {
 	return c.FinalURLs
 }
@@ -94,6 +97,8 @@ func (c DynamicSearchAd) CloneForTemplate(finalURLs []string, trackingURLTemplat
 	return c
 }
 
+// TextAd represents the TextAd object as documented here
+// https://developers.google.com/adwords/api/docs/reference/v201506/AdGroupAdService.TextAd
 type TextAd struct {
 	CommonAd
 	Headline     string `xml:"headline"`
@@ -101,12 +106,16 @@ type TextAd struct {
 	Description2 string `xml:"description2"`
 }
 
+// DynamicSearchAd represents the equivalent object documented here
+// https://developers.google.com/adwords/api/docs/reference/v201502/AdGroupAdService.DynamicSearchAd
 type DynamicSearchAd struct {
 	CommonAd
 	Description1 string `xml:"description1"`
 	Description2 string `xml:"description2"`
 }
 
+// ImageAd represents the equivalent object documented here
+// https://developers.google.com/adwords/api/docs/reference/v201502/AdGroupAdService.ImageAd
 type ImageAd struct {
 	CommonAd
 	Image             int64  `xml:"imageId"` //TODO should actually be Image object, not just an int
@@ -114,6 +123,8 @@ type ImageAd struct {
 	AdToCopyImageFrom int64  `xml:"adToCopyImageFrom"`
 }
 
+// MobileAd represents the equivalent object documented here
+// https://developers.google.com/adwords/api/docs/reference/v201502/AdGroupAdService.MobileAd
 type MobileAd struct {
 	CommonAd
 	Headline        string   `xml:"headline"`
@@ -125,21 +136,27 @@ type MobileAd struct {
 	PhoneNumber     string   `xml:"phoneNumber"`
 }
 
+// TemplateAd represents the equivalent object documented here
+// https://developers.google.com/adwords/api/docs/reference/v201502/AdGroupAdService.TemplateAd
 type TemplateAd struct {
 	CommonAd
-	TemplateId       int64             `xml:"templateId"`
-	AdUnionId        int64             `xml:"adUnionId"`
+	TemplateID       int64             `xml:"templateId"`
+	AdUnionID        int64             `xml:"adUnionId"`
 	TemplateElements []TemplateElement `xml:"templateElements"`
 	Dimensions       []Dimensions      `xml:"dimensions"`
 	Name             string            `xml:"name"`
 	Duration         int64             `xml:"duration"`
-	originAdId       *int64            `xml:"originAdId"`
+	originAdID       *int64            `xml:"originAdId"`
 }
 
-func (i ImageAd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+// MarshalXML returns unimplemented error as the structure does not
+// match yet 100% of the field required by google api
+func (c ImageAd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return ERROR_NOT_YET_IMPLEMENTED
 }
 
-func (t TemplateAd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+// MarshalXML returns unimplemented error as the structure does not
+// match yet 100% of the field required by google api
+func (c TemplateAd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return ERROR_NOT_YET_IMPLEMENTED
 }
