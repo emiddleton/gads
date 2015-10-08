@@ -25,14 +25,14 @@ type AdSetting struct {
 
 type AdGroup struct {
 	Id                           int64                          `xml:"id,omitempty"`
-	CampaignId                   int64                          `xml:"campaignId"`
+	CampaignId                   int64                          `xml:"campaignId,omitempty"`
 	CampaignName                 string                         `xml:"campaignName,omitempty"`
-	Name                         string                         `xml:"name"`
-	Status                       string                         `xml:"status"`
+	Name                         string                         `xml:"name,omitempty"`
+	Status                       string                         `xml:"status,omitempty"`
 	Settings                     []AdSetting                    `xml:"settings,omitempty"`
-	TrackingUrlTemplate          *string                        `xml:"trackingUrlTemplate"`
-	BiddingStrategyConfiguration []BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration"`
-	ContentBidCriterionTypeGroup *string                        `xml:"contentBidCriterionTypeGroup"`
+	TrackingUrlTemplate          *string                        `xml:"trackingUrlTemplate,omitempty"`
+	BiddingStrategyConfiguration []BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration,omitempty"`
+	ContentBidCriterionTypeGroup *string                        `xml:"contentBidCriterionTypeGroup,omitempty"`
 }
 
 type AdGroupOperations map[string][]AdGroup

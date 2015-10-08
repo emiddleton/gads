@@ -15,7 +15,7 @@ type BiddableAdGroupCriterion struct {
 	SystemServingStatus string   `xml:"systemServingStatus,omitempty"`
 	ApprovalStatus      string   `xml:"approvalStatus,omitempty"`
 	DisapprovalReasons  []string `xml:"disapprovalReasons,omitempty"`
-	DestinationUrl      string   `xml:"destinationUrl"`
+	DestinationUrl      string   `xml:"destinationUrl,omitempty"`
 
 	FirstPageCpc *Cpc `xml:"firstPageCpc>amount,omitempty"`
 	TopOfPageCpc *Cpc `xml:"topOfPageCpc>amount,omitempty"`
@@ -24,11 +24,11 @@ type BiddableAdGroupCriterion struct {
 
 	BiddingStrategyConfiguration *BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration,omitempty"`
 	BidModifier                  int64                         `xml:"bidModifier,omitempty"`
-	FinalUrls                    FinalURLs                     `xml:"finalUrls,omitempty"`
+	FinalUrls                    *FinalURLs                    `xml:"finalUrls,omitempty"`
 	FinalMobileUrls              []string                      `xml:"finalMobileUrls,omitempty"`
 	FinalAppUrls                 []string                      `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate          string                        `xml:"trackingUrlTemplate,omitempty"`
-	UrlCustomParameters          CustomParameters              `xml:"urlCustomParameters,omitempty"`
+	UrlCustomParameters          *CustomParameters             `xml:"urlCustomParameters,omitempty"`
 }
 
 func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {

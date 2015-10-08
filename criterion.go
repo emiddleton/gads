@@ -204,7 +204,7 @@ func (c ProductCriterion) GetID() int64 {
 type ProductCriterion struct {
 	Type       string             `xml:"xsi:type,attr,omitempty"`
 	Id         int64              `xml:"id,omitempty"`
-	Conditions []ProductCondition `xml:"conditions"`
+	Conditions []ProductCondition `xml:"conditions,omitempty"`
 	Text       string             `xml:"text,omitempty"`
 }
 
