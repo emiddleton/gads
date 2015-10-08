@@ -50,7 +50,8 @@ func (c CommonAd) GetFinalURLs() []string {
 
 // CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template (as Ad are immutable)
 func (c CommonAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
-	c.ID = 0 // value used by go for omitempty
+	c.ID = 0   // value used by go for omitempty
+	c.URL = "" // template needs an empty destination url (as it deprecates this field)
 	c.FinalURLs = finalURLs
 	c.TrackingURLTemplate = trackingURLTemplate
 	return c
@@ -58,7 +59,8 @@ func (c CommonAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *stri
 
 // CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c TextAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
-	c.ID = 0 // value used by go for omitempty
+	c.ID = 0   // value used by go for omitempty
+	c.URL = "" // template needs an empty destination url (as it deprecates this field)
 	c.FinalURLs = finalURLs
 	c.TrackingURLTemplate = trackingURLTemplate
 
@@ -67,7 +69,8 @@ func (c TextAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string
 
 // CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c ImageAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
-	c.ID = 0 // value used by go for omitempty
+	c.ID = 0   // value used by go for omitempty
+	c.URL = "" // template needs an empty destination url (as it deprecates this field)
 	c.FinalURLs = finalURLs
 	c.TrackingURLTemplate = trackingURLTemplate
 	return c
@@ -75,7 +78,8 @@ func (c ImageAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *strin
 
 // CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c TemplateAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
-	c.ID = 0 // value used by go for omitempty
+	c.ID = 0   // value used by go for omitempty
+	c.URL = "" // template needs an empty destination url (as it deprecates this field)
 	c.FinalURLs = finalURLs
 	c.TrackingURLTemplate = trackingURLTemplate
 	return c
@@ -83,7 +87,8 @@ func (c TemplateAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *st
 
 // CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c MobileAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
-	c.ID = 0 // value used by go for omitempty
+	c.ID = 0   // value used by go for omitempty
+	c.URL = "" // template needs an empty destination url (as it deprecates this field)
 	c.FinalURLs = finalURLs
 	c.TrackingURLTemplate = trackingURLTemplate
 	return c
@@ -91,7 +96,8 @@ func (c MobileAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *stri
 
 // CloneForTemplate create a clone of an Ad, to recreate it for changing the tracking Url Template
 func (c DynamicSearchAd) CloneForTemplate(finalURLs []string, trackingURLTemplate *string) Ad {
-	c.ID = 0 // value used by go for omitempty
+	c.ID = 0   // value used by go for omitempty
+	c.URL = "" // template needs an empty destination url (as it deprecates this field)
 	c.FinalURLs = finalURLs
 	c.TrackingURLTemplate = trackingURLTemplate
 	return c
