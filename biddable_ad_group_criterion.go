@@ -27,7 +27,7 @@ type BiddableAdGroupCriterion struct {
 	FinalUrls                    *FinalURLs                    `xml:"finalUrls,omitempty"`
 	FinalMobileUrls              []string                      `xml:"finalMobileUrls,omitempty"`
 	FinalAppUrls                 []string                      `xml:"finalAppUrls,omitempty"`
-	TrackingUrlTemplate          string                        `xml:"trackingUrlTemplate,omitempty"`
+	TrackingUrlTemplate          *string                       `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters          *CustomParameters             `xml:"urlCustomParameters,omitempty"`
 }
 
