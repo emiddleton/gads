@@ -7,7 +7,7 @@ import "encoding/xml"
 type CommonAd struct {
 	Type                string            `xml:"xsi:type,attr,omitempty"`
 	ID                  int64             `xml:"id,omitempty"`
-	URL                 *string            `xml:"url"`
+	URL                 string            `xml:"url,omitempty"`
 	DisplayURL          string            `xml:"displayUrl,omitempty"`
 	FinalURLs           []string          `xml:"finalUrls,omitempty"`
 	FinalMobileURLs     []string          `xml:"finalMobileUrls,omitempty"`
