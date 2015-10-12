@@ -78,6 +78,8 @@ type Auth struct {
 	CustomerId     string
 	DeveloperToken string
 	UserAgent      string
+	ValidateOnly   bool         `json:"-"`
+	PartialFailure bool         `json:"-"`
 	Testing        *testing.T   `json:"-"`
 	Client         *http.Client `json:"-"`
 }
@@ -133,6 +135,8 @@ func (a *Auth) request(
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
 		ClientCustomerId string `xml:"clientCustomerId"`
+		PartialFailure   bool   `xml:"partialFailure,omitempty"`
+		ValidateOnly     bool   `xml:"validateOnly,omitempty"`
 	}
 
 	type soapReqBody struct {
@@ -154,6 +158,8 @@ func (a *Auth) request(
 				UserAgent:        a.UserAgent,
 				DeveloperToken:   a.DeveloperToken,
 				ClientCustomerId: a.CustomerId,
+				PartialFailure:   a.PartialFailure,
+				ValidateOnly:     a.ValidateOnly,
 			},
 			XSINamespace: "http://www.w3.org/2001/XMLSchema-instance",
 			Body:         soapReqBody{body},
