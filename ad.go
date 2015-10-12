@@ -7,12 +7,12 @@ import "encoding/xml"
 type CommonAd struct {
 	Type                string            `xml:"xsi:type,attr,omitempty"`
 	ID                  int64             `xml:"id,omitempty"`
-	URL                 string            `xml:"url,omitempty"`
+	URL                 *string            `xml:"url"`
 	DisplayURL          string            `xml:"displayUrl,omitempty"`
 	FinalURLs           []string          `xml:"finalUrls,omitempty"`
 	FinalMobileURLs     []string          `xml:"finalMobileUrls,omitempty"`
 	FinalAppURLs        []AppUrl          `xml:"finalAppUrls,omitempty"`
-	TrackingURLTemplate *string           `xml:"trackingUrlTemplate,omitempty"`
+	TrackingURLTemplate *string           `xml:"trackingUrlTemplate"`
 	URLCustomParameters *CustomParameters `xml:"urlCustomParameters,omitempty"`
 	DevicePreference    int64             `xml:"devicePreference,omitempty"`
 }

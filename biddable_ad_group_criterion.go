@@ -15,7 +15,7 @@ type BiddableAdGroupCriterion struct {
 	SystemServingStatus string   `xml:"systemServingStatus,omitempty"`
 	ApprovalStatus      string   `xml:"approvalStatus,omitempty"`
 	DisapprovalReasons  []string `xml:"disapprovalReasons,omitempty"`
-	DestinationUrl      string   `xml:"destinationUrl,omitempty"`
+	DestinationUrl      *string  `xml:"destinationUrl"`
 
 	FirstPageCpc *Cpc `xml:"firstPageCpc>amount,omitempty"`
 	TopOfPageCpc *Cpc `xml:"topOfPageCpc>amount,omitempty"`
@@ -27,7 +27,7 @@ type BiddableAdGroupCriterion struct {
 	FinalUrls                    *FinalURLs                    `xml:"finalUrls,omitempty"`
 	FinalMobileUrls              []string                      `xml:"finalMobileUrls,omitempty"`
 	FinalAppUrls                 []string                      `xml:"finalAppUrls,omitempty"`
-	TrackingUrlTemplate          *string                       `xml:"trackingUrlTemplate,omitempty"`
+	TrackingUrlTemplate          *string                       `xml:"trackingUrlTemplate"`
 	UrlCustomParameters          *CustomParameters             `xml:"urlCustomParameters,omitempty"`
 }
 
