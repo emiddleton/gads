@@ -5,42 +5,17 @@ import (
 	"fmt"
 )
 
-type AdGroupAds []interface{}
+type AdGroupAds []AdGroupAd
 
-func (a1 AdGroupAds) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	a := a1[0]
-	e.EncodeToken(start)
-	switch a.(type) {
-	case TextAd:
-		ad := a.(TextAd)
-		e.EncodeElement(ad.AdGroupId, xml.StartElement{Name: xml.Name{"", "adGroupId"}})
-		e.EncodeElement(ad, xml.StartElement{
-			xml.Name{"", "ad"},
-			[]xml.Attr{
-				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "TextAd"},
-			},
-		})
-		e.EncodeElement(ad.Status, xml.StartElement{Name: xml.Name{"", "status"}})
-		e.EncodeElement(ad.Labels, xml.StartElement{Name: xml.Name{"", "labels"}})
-	case ImageAd:
-		return ERROR_NOT_YET_IMPLEMENTED
-	case TemplateAd:
-		return ERROR_NOT_YET_IMPLEMENTED
-	default:
-		return fmt.Errorf("unknown Ad type -> %#v", start)
-	}
-	e.EncodeToken(start.End())
-	return nil
-}
-
-func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+func (agas *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	typeName := xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"}
 	var adGroupId int64
 	var status, approvalStatus string
 	var disapprovalReasons []string
 	var trademarkDisapproved bool
 	var labels []Label
-	var ad interface{}
+	var a Ad
+
 	for token, err := dec.Token(); err == nil; token, err = dec.Token() {
 		if err != nil {
 			return err
@@ -61,28 +36,47 @@ func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) er
 				}
 				switch typeName {
 				case "TextAd":
-					a := TextAd{AdGroupId: adGroupId}
-					err := dec.DecodeElement(&a, &start)
+					atyped := TextAd{}
+					atyped.Type = typeName
+					err = dec.DecodeElement(&atyped, &start)
 					if err != nil {
 						return err
 					}
-					ad = a
+					a = atyped
 				case "ImageAd":
-					a := ImageAd{AdGroupId: adGroupId}
-					err := dec.DecodeElement(&a, &start)
+					atyped := ImageAd{}
+					atyped.Type = typeName
+					err = dec.DecodeElement(&atyped, &start)
 					if err != nil {
 						return err
 					}
-					ad = a
+					a = atyped
 				case "TemplateAd":
-					a := TemplateAd{AdGroupId: adGroupId}
-					err := dec.DecodeElement(&a, &start)
+					atyped := TemplateAd{}
+					atyped.Type = typeName
+					err = dec.DecodeElement(&atyped, &start)
 					if err != nil {
 						return err
 					}
-					ad = a
+					a = atyped
+				case "MobileAd":
+					atyped := MobileAd{}
+					atyped.Type = typeName
+					err = dec.DecodeElement(&atyped, &start)
+					if err != nil {
+						return err
+					}
+					a = atyped
+				case "DynamicSearchAd":
+					atyped := DynamicSearchAd{}
+					atyped.Type = typeName
+					err = dec.DecodeElement(&atyped, &start)
+					if err != nil {
+						return err
+					}
+					a = atyped
 				default:
-					return fmt.Errorf("unknown AdGroupCriterion -> %#v", start)
+					return fmt.Errorf("unknown Ad -> %#v", typeName)
 				}
 			case "status":
 				err := dec.DecodeElement(&status, &start)
@@ -115,25 +109,22 @@ func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) er
 
 		}
 	}
-	switch a := ad.(type) {
-	case TextAd:
-		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
-		*aga = append(*aga, a)
-	case ImageAd:
-		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
-		*aga = append(*aga, a)
-	case TemplateAd:
-		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
-		*aga = append(*aga, a)
+
+	aga := AdGroupAd{
+		AdGroupId:            adGroupId,
+		Ad:                   a,
+		Status:               status,
+		DisapprovalReasons:   disapprovalReasons,
+		TrademarkDisapproved: trademarkDisapproved,
+		Labels:               labels,
 	}
+	*agas = append(*agas, aga)
 	return nil
+}
+
+func (agads AdGroupAds) GetAds() (ads []Ad) {
+	for _, aga := range agads {
+		ads = append(ads, aga.Ad)
+	}
+	return ads
 }

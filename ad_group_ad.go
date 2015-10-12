@@ -1,8 +1,6 @@
 package gads
 
-import (
-	"encoding/xml"
-)
+import "encoding/xml"
 
 type AdGroupAdService struct {
 	Auth
@@ -13,71 +11,14 @@ type AppUrl struct {
 	OsType string `xml:"osType"` // "OS_TYPE_IOS", "OS_TYPE_ANDROID", "UNKNOWN"
 }
 
-type TextAd struct {
-	AdGroupId            int64             `xml:"-"`
-	Id                   int64             `xml:"id,omitempty"`
-	Url                  string            `xml:"url"`
-	DisplayUrl           string            `xml:"displayUrl"`
-	FinalUrls            []string          `xml:"finalUrls,omitempty"`
-	FinalMobileUrls      []string          `xml:"finalMobileUrls,omitempty"`
-	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
-	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
-	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
-	DevicePreference     int64             `xml:"devicePreference,omitempty"`
-	Headline             string            `xml:"headline"`
-	Description1         string            `xml:"description1"`
-	Description2         string            `xml:"description2"`
-	Status               string            `xml:"-"`
-	ApprovalStatus       string            `xml:"-"`
-	DisapprovalReasons   []string          `xml:"-"`
-	TrademarkDisapproved bool              `xml:"-"`
-	Labels               []Label           `xml:"-"`
-}
-
-type ImageAd struct {
-	AdGroupId            int64             `xml:"-"`
-	Id                   int64             `xml:"id,omitempty"`
-	Url                  string            `xml:"url"`
-	DisplayUrl           string            `xml:"displayUrl"`
-	FinalUrls            []string          `xml:"finalUrls,omitempty"`
-	FinalMobileUrls      []string          `xml:"finalMobileUrls,omitempty"`
-	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
-	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
-	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
-	DevicePreference     int64             `xml:"devicePreference,omitempty"`
-	Image                int64             `xml:"imageId"`
-	Name                 string            `xml:"name"`
-	AdToCopyImageFrom    int64             `xml:"adToCopyImageFrom"`
-	Status               string            `xml:"-"`
-	ApprovalStatus       string            `xml:"-"`
-	DisapprovalReasons   []string          `xml:"-"`
-	TrademarkDisapproved bool              `xml:"-"`
-	Labels               []Label           `xml:"-"`
-}
-
-type MobileAd struct {
-	AdGroupId            int64             `xml:"-"`
-	Id                   int64             `xml:"id,omitempty"`
-	Url                  string            `xml:"url"`
-	DisplayUrl           string            `xml:"displayUrl"`
-	FinalUrls            []string          `xml:"finalUrls,omitempty"`
-	FinalMobileUrls      []string          `xml:"finalMobileUrls,omitempty"`
-	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
-	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
-	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
-	DevicePreference     int64             `xml:"devicePreference,omitempty"`
-	Headline             string            `xml:"headline"`
-	Description          string            `xml:"description"`
-	MarkupLanguages      []string          `xml:"markupLanguages"`
-	MobileCarriers       []string          `xml:"mobileCarriers"`
-	BusinessName         string            `xml:"businessName"`
-	CountryCode          string            `xml:"countryCode"`
-	PhoneNumber          string            `xml:"phoneNumber"`
-	Status               string            `xml:"-"`
-	ApprovalStatus       string            `xml:"-"`
-	DisapprovalReasons   []string          `xml:"-"`
-	TrademarkDisapproved bool              `xml:"-"`
-	Labels               []Label           `xml:"-"`
+type AdGroupAd struct {
+	AdGroupId            int64    `xml:"adGroupId"`
+	Ad                   Ad       `xml:"ad"`
+	Status               string   `xml:"status,omitempty"`
+	ApprovalStatus       string   `xml:"approvalStatus,omitempty"`
+	DisapprovalReasons   []string `xml:"disapprovalReasons,omitempty"`
+	TrademarkDisapproved bool     `xml:"trademarkDisapproved,omitempty"`
+	Labels               []Label  `xml:"labels,omitempty"`
 }
 
 type TemplateElementField struct {
@@ -92,46 +33,33 @@ type TemplateElement struct {
 	Fields     []TemplateElementField `xml:"fields"`
 }
 
-type TemplateAd struct {
-	AdGroupId            int64             `xml:"-"`
-	Id                   int64             `xml:"id,omitempty"`
-	Url                  string            `xml:"url"`
-	DisplayUrl           string            `xml:"displayUrl"`
-	FinalUrls            []string          `xml:"finalUrls,omitempty"`
-	FinalMobileUrls      []string          `xml:"finalMobileUrls,omitempty"`
-	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
-	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
-	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
-	DevicePreference     int64             `xml:"devicePreference,omitempty"`
-	TemplateId           int64             `xml:"templateId"`
-	AdUnionId            int64             `xml:"adUnionId"`
-	TemplateElements     []TemplateElement `xml:"templateElements"`
-	Dimensions           []Dimensions      `xml:"dimensions"`
-	Name                 string            `xml:"name"`
-	Duration             int64             `xml:"duration"`
-	originAdId           *int64            `xml:"originAdId"`
-	Status               string            `xml:"-"`
-	ApprovalStatus       string            `xml:"-"`
-	DisapprovalReasons   []string          `xml:"-"`
-	TrademarkDisapproved bool              `xml:"-"`
-	Labels               []Label           `xml:"-"`
-}
-
 type AdGroupAdOperations map[string]AdGroupAds
 
 func NewAdGroupAdService(auth *Auth) *AdGroupAdService {
 	return &AdGroupAdService{Auth: *auth}
 }
 
-func NewTextAd(adGroupId int64, url, displayUrl, headline, description1, description2, status string) TextAd {
-	return TextAd{
-		AdGroupId:    adGroupId,
-		Url:          url,
-		DisplayUrl:   displayUrl,
-		Headline:     headline,
-		Description1: description1,
-		Description2: description2,
-		Status:       status,
+func NewAdGroupTextAd(
+	adGroupId int64,
+	URL string,
+	displayURL string,
+	headline string,
+	description1 string,
+	description2 string,
+	status string,
+) AdGroupAd {
+	return AdGroupAd{
+		AdGroupId: adGroupId,
+		Ad: TextAd{
+			CommonAd: CommonAd{
+				URL:        URL,
+				DisplayURL: displayURL,
+			},
+			Headline:     headline,
+			Description1: description1,
+			Description2: description2,
+		},
+		Status: status,
 	}
 }
 
@@ -142,11 +70,11 @@ type AdGroupAdLabel struct {
 
 type AdGroupAdLabelOperations map[string][]AdGroupAdLabel
 
-type AdUrlUpgrade struct {
+type AdURLUpgrade struct {
 	AdId                int64  `xml:"adId"`
-	FinalUrl            string `xml:"finalUrl"`
-	FinalMobileUrl      string `xml:"finalMobileUrl"`
-	TrackingUrlTemplate string `xml:"trackingUrlTemplate"`
+	FinalURL            string `xml:"finalUrl,omitempty"`
+	FinalMobileUrl      string `xml:"finalMobileUrl,omitempty"`
+	TrackingURLTemplate string `xml:"trackingUrlTemplate"`
 }
 
 // Get returns an array of ad's and the total number of ad's matching
@@ -235,7 +163,7 @@ func (s AdGroupAdService) Get(selector Selector) (adGroupAds AdGroupAds, totalCo
 //  ads, err := adGroupAdService.Mutate(
 //    gads.AdGroupAdOperations{
 //      "ADD": {
-//        gads.NewTextAd(
+//        gads.NewAdGroupTextAd(
 //          adGroup.Id,
 //          "https://classdo.com/en",
 //          "classdo.com",
@@ -260,8 +188,8 @@ func (s AdGroupAdService) Get(selector Selector) (adGroupAds AdGroupAds, totalCo
 //
 func (s *AdGroupAdService) Mutate(adGroupAdOperations AdGroupAdOperations) (adGroupAds AdGroupAds, err error) {
 	type adGroupAdOperation struct {
-		Action    string     `xml:"operator"`
-		AdGroupAd AdGroupAds `xml:"operand"`
+		Action    string    `xml:"operator"`
+		AdGroupAd AdGroupAd `xml:"operand"`
 	}
 	operations := []adGroupAdOperation{}
 	for action, adGroupAds := range adGroupAdOperations {
@@ -269,7 +197,7 @@ func (s *AdGroupAdService) Mutate(adGroupAdOperations AdGroupAdOperations) (adGr
 			operations = append(operations,
 				adGroupAdOperation{
 					Action:    action,
-					AdGroupAd: []interface{}{adGroupAd},
+					AdGroupAd: adGroupAd,
 				},
 			)
 		}
@@ -367,12 +295,34 @@ func (s *AdGroupAdService) Query(query string) (adGroupAds AdGroupAds, totalCoun
 	return adGroupAds, totalCount, ERROR_NOT_YET_IMPLEMENTED
 }
 
-// Query is not yet implemented
 //
 // Relevant documentation
 //
 //     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupAdService#upgradeUrl
 //
-func (s *AdGroupAdService) UpgradeUrl(adUrlUpgrades []AdUrlUpgrade) (adGroupAds AdGroupAds, err error) {
-	return adGroupAds, ERROR_NOT_YET_IMPLEMENTED
+func (s *AdGroupAdService) UpgradeUrl(adURLUpgrades []AdURLUpgrade) (ads []Ad, err error) {
+	upgrade := struct {
+		XMLName xml.Name
+		Ops     []AdURLUpgrade `xml:"operations"`
+	}{
+		XMLName: xml.Name{
+			Space: baseUrl,
+			Local: "upgradeUrl",
+		},
+		Ops: adURLUpgrades,
+	}
+
+	respBody, err := s.Auth.request(adGroupAdServiceUrl, "upgradeUrl", upgrade)
+
+	if err != nil {
+		return ads, err
+	}
+	upgradeResp := struct {
+		Ads []Ad `xml:"rval>value"`
+	}{}
+	err = xml.Unmarshal([]byte(respBody), &upgradeResp)
+	if err != nil {
+		return ads, err
+	}
+	return upgradeResp.Ads, nil
 }

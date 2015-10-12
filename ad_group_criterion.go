@@ -55,7 +55,9 @@ func (agcs *AdGroupCriterions) UnmarshalXML(dec *xml.Decoder, start xml.StartEle
 		}
 		*agcs = append(*agcs, nagc)
 	default:
-		return fmt.Errorf("unknown AdGroupCriterion -> %#v", adGroupCriterionType)
+		if StrictMode {
+			return fmt.Errorf("unknown AdGroupCriterion -> %#v", adGroupCriterionType)
+		}
 	}
 	return nil
 }
@@ -161,7 +163,6 @@ func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGro
 		Size              int64             `xml:"rval>totalNumEntries"`
 		AdGroupCriterions AdGroupCriterions `xml:"rval>entries"`
 	}{}
-	fmt.Printf("%s\n", respBody)
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
 		return adGroupCriterions, totalCount, err
