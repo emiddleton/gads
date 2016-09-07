@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
+	baseUrl = "https://adwords.google.com/api/adwords/mcm/v201607"
 )
 
 type ServiceUrl struct {
@@ -122,10 +122,9 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		XMLName xml.Name
 	}
 	type soapReqHeader struct {
-		XMLName          xml.Name
-		UserAgent        string `xml:"userAgent"`
-		DeveloperToken   string `xml:"developerToken"`
-		ClientCustomerId string `xml:"clientCustomerId"`
+		XMLName        xml.Name
+		UserAgent      string `xml:"userAgent"`
+		DeveloperToken string `xml:"developerToken"`
 	}
 
 	type soapReqBody struct {
@@ -142,10 +141,9 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		soapReqEnvelope{
 			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
 			Header: soapReqHeader{
-				XMLName:          xml.Name{serviceUrl.Url, "RequestHeader"},
-				UserAgent:        a.UserAgent,
-				DeveloperToken:   a.DeveloperToken,
-				ClientCustomerId: a.CustomerId,
+				XMLName:        xml.Name{serviceUrl.Url, "RequestHeader"},
+				UserAgent:      a.UserAgent,
+				DeveloperToken: a.DeveloperToken,
 			},
 			Body: soapReqBody{body},
 		},
