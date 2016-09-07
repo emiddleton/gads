@@ -7,7 +7,7 @@ type CustomerService struct {
 }
 
 type Customer struct {
-	ID                  string `xml:"customer_id,omitempty"`
+	ID                  string `xml:"customerId,omitempty"`
 	CurrencyCode        string `xml:"currencyCode,omitempty"`
 	DateTimeZone        string `xml:"dateTimeZone,omitempty"`
 	DescriptiveName     string `xml:"descriptiveName,omitempty"`
@@ -22,7 +22,7 @@ func NewCustomerService(auth *Auth) *CustomerService {
 	return &CustomerService{Auth: *auth}
 }
 
-func (s *CustomerService) GetCustomers() (customers []Customer, totalCount int64, err error) {
+func (s *CustomerService) GetCustomers() (customers []Customer, err error) {
 	respBody, err := s.Auth.request(
 		customerServiceUrl,
 		"getCustomers",
@@ -37,15 +37,15 @@ func (s *CustomerService) GetCustomers() (customers []Customer, totalCount int64
 		},
 	)
 	if err != nil {
-		return customers, totalCount, err
+		return customers, err
 	}
+
 	getResp := struct {
-		Size      int64      `xml:"rval>totalNumEntries"`
-		Customers []Customer `xml:"rval>entries"`
+		Customers []Customer `xml:"rval"`
 	}{}
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
-		return customers, totalCount, err
+		return customers, err
 	}
-	return getResp.Customers, getResp.Size, err
+	return getResp.Customers, err
 }
