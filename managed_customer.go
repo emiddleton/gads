@@ -8,9 +8,9 @@ type ManagedCustomerService struct {
 }
 
 type ManagedCustomer struct {
+	ID               string `xml:"customerId"`
 	Name             string `xml:"name"`
 	CompanyName      string `xml:"companyName"`
-	CustomerID       string `xml:"customerId"`
 	CanManageClients bool   `xml:"canManageClients"`
 	CurrencyCode     string `xml:"currencyCode"`
 	DateTimeZone     string `xml:"dateTimeZone"`
@@ -21,7 +21,7 @@ func NewManagedCustomerService(auth *Auth, customerID string) *ManagedCustomerSe
 	return &ManagedCustomerService{Auth: *auth, CustomerID: customerID}
 }
 
-func (s *ManagedCustomerService) GetCustomers(selector Selector) (customers []ManagedCustomer, totalCount int64, err error) {
+func (s *ManagedCustomerService) Get(selector Selector) (customers []ManagedCustomer, totalCount int64, err error) {
 	selector.XMLName = xml.Name{Space: "", Local: "serviceSelector"}
 	respBody, err := s.Auth.request(
 		managedCustomerServiceUrl,
