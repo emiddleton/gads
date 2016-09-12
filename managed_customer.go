@@ -4,6 +4,7 @@ import "encoding/xml"
 
 type ManagedCustomerService struct {
 	Auth
+	CustomerID string
 }
 
 type ManagedCustomer struct {
@@ -20,7 +21,7 @@ func NewManagedCustomerService(auth *Auth) *ManagedCustomerService {
 	return &ManagedCustomerService{Auth: *auth}
 }
 
-func (s *ManagedCustomerService) GetCustomers(selector Selector, customerID string) (customers []ManagedCustomer, totalCount int64, err error) {
+func (s *ManagedCustomerService) GetCustomers(selector Selector) (customers []ManagedCustomer, totalCount int64, err error) {
 	selector.XMLName = xml.Name{Space: "", Local: "serviceSelector"}
 	respBody, err := s.Auth.request(
 		managedCustomerServiceUrl,
@@ -35,7 +36,7 @@ func (s *ManagedCustomerService) GetCustomers(selector Selector, customerID stri
 			},
 			Sel: selector,
 		},
-		&Options{CustomerID: customerID},
+		&Options{CustomerID: s.CustomerID},
 	)
 	if err != nil {
 		return customers, totalCount, err
