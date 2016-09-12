@@ -20,7 +20,7 @@ func NewManagedCustomerService(auth *Auth) *ManagedCustomerService {
 	return &ManagedCustomerService{Auth: *auth}
 }
 
-func (s *ManagedCustomerService) GetCustomers(selector Selector) (customers []ManagedCustomer, totalCount int64, err error) {
+func (s *ManagedCustomerService) GetCustomers(selector Selector, customerID string) (customers []ManagedCustomer, totalCount int64, err error) {
 	selector.XMLName = xml.Name{Space: "", Local: "serviceSelector"}
 	respBody, err := s.Auth.request(
 		managedCustomerServiceUrl,
@@ -35,7 +35,7 @@ func (s *ManagedCustomerService) GetCustomers(selector Selector) (customers []Ma
 			},
 			Sel: selector,
 		},
-		nil,
+		&Options{CustomerID: customerID},
 	)
 	if err != nil {
 		return customers, totalCount, err
