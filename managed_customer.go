@@ -17,8 +17,8 @@ type ManagedCustomer struct {
 	IsTestAccount    bool   `xml:"testAccount"`
 }
 
-func NewManagedCustomerService(auth *Auth) *ManagedCustomerService {
-	return &ManagedCustomerService{Auth: *auth}
+func NewManagedCustomerService(auth *Auth, customerID string) *ManagedCustomerService {
+	return &ManagedCustomerService{Auth: *auth, CustomerID: customerID}
 }
 
 func (s *ManagedCustomerService) GetCustomers(selector Selector) (customers []ManagedCustomer, totalCount int64, err error) {
