@@ -149,7 +149,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, o
 		DeveloperToken: a.DeveloperToken,
 	}
 
-	if opts.CustomerID != "" {
+	if opts != nil && opts.CustomerID != "" {
 		header.ClientCustomerId = opts.CustomerID
 	} else if a.CustomerId != "" {
 		header.ClientCustomerId = a.CustomerId
