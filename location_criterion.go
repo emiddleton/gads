@@ -37,6 +37,7 @@ func (s *LocationCriterionService) Get(selector Selector) (locationCriterions Lo
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return locationCriterions, err

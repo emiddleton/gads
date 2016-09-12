@@ -212,6 +212,7 @@ func (s AdGroupAdService) Get(selector Selector) (adGroupAds AdGroupAds, totalCo
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return adGroupAds, totalCount, err
@@ -284,7 +285,7 @@ func (s *AdGroupAdService) Mutate(adGroupAdOperations AdGroupAdOperations) (adGr
 		},
 		Ops: operations,
 	}
-	respBody, err := s.Auth.request(adGroupAdServiceUrl, "mutate", mutation)
+	respBody, err := s.Auth.request(adGroupAdServiceUrl, "mutate", mutation, nil)
 	if err != nil {
 		return adGroupAds, err
 	}
@@ -342,7 +343,7 @@ func (s *AdGroupAdService) MutateLabel(adGroupAdLabelOperations AdGroupAdLabelOp
 			Local: "mutateLabel",
 		},
 		Ops: operations}
-	respBody, err := s.Auth.request(adGroupAdServiceUrl, "mutateLabel", mutation)
+	respBody, err := s.Auth.request(adGroupAdServiceUrl, "mutateLabel", mutation, nil)
 	if err != nil {
 		return adGroupAdLabels, err
 	}

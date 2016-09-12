@@ -113,19 +113,24 @@ type Selector struct {
 	Paging     *Paging     `xml:"paging,omitempty"`
 }
 
+type Options struct {
+	CustomerID string
+}
+
 // error parsers
 func selectorError() (err error) {
 	return err
 }
 
-func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
+func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, opts *Options) (respBody []byte, err error) {
 	type devToken struct {
 		XMLName xml.Name
 	}
 	type soapReqHeader struct {
-		XMLName        xml.Name
-		UserAgent      string `xml:"userAgent"`
-		DeveloperToken string `xml:"developerToken"`
+		XMLName          xml.Name
+		UserAgent        string `xml:"userAgent"`
+		DeveloperToken   string `xml:"developerToken"`
+		ClientCustomerId string `xml:"clientCustomerId"`
 	}
 
 	type soapReqBody struct {
@@ -138,15 +143,23 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		Body    soapReqBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
 	}
 
+	header := soapReqHeader{
+		XMLName:        xml.Name{serviceUrl.Url, "RequestHeader"},
+		UserAgent:      a.UserAgent,
+		DeveloperToken: a.DeveloperToken,
+	}
+
+	if opts.CustomerID != "" {
+		header.ClientCustomerId = opts.CustomerID
+	} else if a.CustomerId != "" {
+		header.ClientCustomerId = a.CustomerId
+	}
+
 	reqBody, err := xml.MarshalIndent(
 		soapReqEnvelope{
 			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
-			Header: soapReqHeader{
-				XMLName:        xml.Name{serviceUrl.Url, "RequestHeader"},
-				UserAgent:      a.UserAgent,
-				DeveloperToken: a.DeveloperToken,
-			},
-			Body: soapReqBody{body},
+			Header:  header,
+			Body:    soapReqBody{body},
 		},
 		"  ", "  ")
 	if err != nil {

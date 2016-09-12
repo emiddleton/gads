@@ -88,6 +88,7 @@ func (s *MediaService) Get(selector Selector) (medias []Media, totalCount int64,
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return medias, totalCount, err
@@ -118,7 +119,7 @@ func (s *MediaService) Upload(medias []Media) (uploadedMedias []Media, err error
 		},
 		Medias: medias,
 	}
-	respBody, err := s.Auth.request(mediaServiceUrl, "upload", upload)
+	respBody, err := s.Auth.request(mediaServiceUrl, "upload", upload, nil)
 	if err != nil {
 		return uploadedMedias, err
 	}

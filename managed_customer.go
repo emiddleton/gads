@@ -35,6 +35,7 @@ func (s *ManagedCustomerService) GetCustomers(selector Selector) (customers []Ma
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return customers, totalCount, err

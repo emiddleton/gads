@@ -35,6 +35,7 @@ func (s *CustomerService) GetCustomers() (customers []Customer, err error) {
 				Local: "getCustomers",
 			},
 		},
+		nil,
 	)
 	if err != nil {
 		return customers, err

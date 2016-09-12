@@ -201,6 +201,7 @@ func (s *CampaignService) Get(selector Selector) (campaigns []Campaign, totalCou
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return campaigns, totalCount, err
@@ -276,7 +277,7 @@ func (s *CampaignService) Mutate(campaignOperations CampaignOperations) (campaig
 			Local: "mutate",
 		},
 		Ops: operations}
-	respBody, err := s.Auth.request(campaignServiceUrl, "mutate", mutation)
+	respBody, err := s.Auth.request(campaignServiceUrl, "mutate", mutation, nil)
 	if err != nil {
 		return campaigns, err
 	}
@@ -335,7 +336,7 @@ func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOpera
 			Local: "mutateLabel",
 		},
 		Ops: operations}
-	respBody, err := s.Auth.request(campaignServiceUrl, "mutateLabel", mutation)
+	respBody, err := s.Auth.request(campaignServiceUrl, "mutateLabel", mutation, nil)
 	if err != nil {
 		return campaignLabels, err
 	}
