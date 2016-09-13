@@ -130,7 +130,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, o
 		XMLName          xml.Name
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
-		ClientCustomerId string `xml:"clientCustomerId"`
+		ClientCustomerId string `xml:"clientCustomerId,omitempty"`
 	}
 
 	type soapReqBody struct {
