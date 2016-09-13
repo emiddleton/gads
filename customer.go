@@ -31,7 +31,7 @@ func (s *CustomerService) GetCustomers() (customers []Customer, err error) {
 			Sel     Selector
 		}{
 			XMLName: xml.Name{
-				Space: baseUrl,
+				Space: mcmUrl,
 				Local: "getCustomers",
 			},
 		},
