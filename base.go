@@ -59,7 +59,7 @@ var (
 	geoLocationServiceUrl           = ServiceUrl{baseUrl, "GeoLocationService"}
 	labelServiceUrl                 = ServiceUrl{baseUrl, "LabelService"}
 	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
-	managedCustomerServiceUrl       = ServiceUrl{baseUrl, "ManagedCustomerService"}
+	managedCustomerServiceUrl       = ServiceUrl{mcmUrl, "ManagedCustomerService"}
 	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
