@@ -31,7 +31,7 @@ func (s *ManagedCustomerService) Get(selector Selector) (customers []ManagedCust
 			Sel     Selector
 		}{
 			XMLName: xml.Name{
-				Space: baseUrl,
+				Space: mcmUrl,
 				Local: "get",
 			},
 			Sel: selector,
