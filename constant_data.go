@@ -19,6 +19,7 @@ func (s *ConstantDataService) GetAgeRangeCriterion() (ageRanges []AgeRangeCriter
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getAgeRangeCriterion"`
 		}{},
+		nil,
 	)
 	if err != nil {
 		return ageRanges, err
@@ -40,6 +41,7 @@ func (s *ConstantDataService) GetCarrierCriterion() (carriers []CarrierCriterion
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getCarrierCriterion"`
 		}{},
+		nil,
 	)
 	if err != nil {
 		return carriers, err
@@ -61,6 +63,7 @@ func (s *ConstantDataService) GetGenderCriterion() (genders []GenderCriterion, e
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getGenderCriterion"`
 		}{},
+		nil,
 	)
 	if err != nil {
 		return genders, err
@@ -82,6 +85,7 @@ func (s *ConstantDataService) GetLanguageCriterion() (languages []LanguageCriter
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getLanguageCriterion"`
 		}{},
+		nil,
 	)
 	if err != nil {
 		return languages, err
@@ -103,6 +107,7 @@ func (s *ConstantDataService) GetMobileDeviceCriterion() (mobileDevices []Mobile
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getMobileDeviceCriterion"`
 		}{},
+		nil,
 	)
 	if err != nil {
 		return mobileDevices, err
@@ -124,6 +129,7 @@ func (s *ConstantDataService) GetOperatingSystemVersionCriterion() (operatingSys
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getOperatingSystemVersionCriterion"`
 		}{},
+		nil,
 	)
 	if err != nil {
 		return operatingSystemVersions, err
@@ -145,6 +151,7 @@ func (s *ConstantDataService) GetUserInterestCriterion() (userInterests []UserIn
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getUserInterestCriterion"`
 		}{},
+		nil,
 	)
 	if err != nil {
 		return userInterests, err
@@ -166,6 +173,7 @@ func (s *ConstantDataService) GetVerticalCriterion() (verticals []VerticalCriter
 		struct {
 			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getVerticalCriterion"`
 		}{},
+		nil,
 	)
 	if err != nil {
 		return verticals, err

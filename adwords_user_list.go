@@ -210,6 +210,7 @@ func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, er
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return userLists, err

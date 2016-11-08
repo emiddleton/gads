@@ -11,7 +11,9 @@ import (
 )
 
 const (
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
+	baseUrl      = "https://adwords.google.com/api/adwords/cm/v201607"
+	mcmUrl       = "https://adwords.google.com/api/adwords/mcm/v201607"
+	mcm201605Url = "https://adwords.google.com/api/adwords/mcm/v201605"
 )
 
 type ServiceUrl struct {
@@ -46,7 +48,8 @@ var (
 	constantDataServiceUrl          = ServiceUrl{baseUrl, "ConstantDataService"}
 	conversionTrackerServiceUrl     = ServiceUrl{baseUrl, "ConversionTrackerService"}
 	customerFeedServiceUrl          = ServiceUrl{baseUrl, "CustomerFeedService"}
-	customerServiceUrl              = ServiceUrl{baseUrl, "CustomerService"}
+	customerServiceUrl              = ServiceUrl{mcmUrl, "CustomerService"}
+	customerService201605Url        = ServiceUrl{mcm201605Url, "CustomerService"}
 	customerSyncServiceUrl          = ServiceUrl{baseUrl, "CustomerSyncService"}
 	dataServiceUrl                  = ServiceUrl{baseUrl, "DataService"}
 	experimentServiceUrl            = ServiceUrl{baseUrl, "ExperimentService"}
@@ -56,7 +59,7 @@ var (
 	geoLocationServiceUrl           = ServiceUrl{baseUrl, "GeoLocationService"}
 	labelServiceUrl                 = ServiceUrl{baseUrl, "LabelService"}
 	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
-	managedCustomerServiceUrl       = ServiceUrl{baseUrl, "ManagedCustomerService"}
+	managedCustomerServiceUrl       = ServiceUrl{mcmUrl, "ManagedCustomerService"}
 	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
@@ -112,12 +115,16 @@ type Selector struct {
 	Paging     *Paging     `xml:"paging,omitempty"`
 }
 
+type Options struct {
+	CustomerID string
+}
+
 // error parsers
 func selectorError() (err error) {
 	return err
 }
 
-func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
+func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, opts *Options) (respBody []byte, err error) {
 	type devToken struct {
 		XMLName xml.Name
 	}
@@ -125,7 +132,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		XMLName          xml.Name
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
-		ClientCustomerId string `xml:"clientCustomerId"`
+		ClientCustomerId string `xml:"clientCustomerId,omitempty"`
 	}
 
 	type soapReqBody struct {
@@ -138,16 +145,23 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		Body    soapReqBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
 	}
 
+	header := soapReqHeader{
+		XMLName:        xml.Name{serviceUrl.Url, "RequestHeader"},
+		UserAgent:      a.UserAgent,
+		DeveloperToken: a.DeveloperToken,
+	}
+
+	if opts != nil && opts.CustomerID != "" {
+		header.ClientCustomerId = opts.CustomerID
+	} else if a.CustomerId != "" {
+		header.ClientCustomerId = a.CustomerId
+	}
+
 	reqBody, err := xml.MarshalIndent(
 		soapReqEnvelope{
 			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
-			Header: soapReqHeader{
-				XMLName:          xml.Name{serviceUrl.Url, "RequestHeader"},
-				UserAgent:        a.UserAgent,
-				DeveloperToken:   a.DeveloperToken,
-				ClientCustomerId: a.CustomerId,
-			},
-			Body: soapReqBody{body},
+			Header:  header,
+			Body:    soapReqBody{body},
 		},
 		"  ", "  ")
 	if err != nil {

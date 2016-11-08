@@ -70,6 +70,7 @@ func (s LabelService) Get(selector Selector) (labels []Label, totalCount int64, 
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return labels, totalCount, err
@@ -135,7 +136,7 @@ func (s *LabelService) Mutate(labelOperations LabelOperations) (labels []Label, 
 		},
 		Ops: operations,
 	}
-	respBody, err := s.Auth.request(labelServiceUrl, "mutate", mutation)
+	respBody, err := s.Auth.request(labelServiceUrl, "mutate", mutation, nil)
 	if err != nil {
 		return labels, err
 	}

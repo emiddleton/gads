@@ -153,6 +153,7 @@ func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGro
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return adGroupCriterions, totalCount, err
@@ -226,7 +227,7 @@ func (s *AdGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCrite
 		},
 		Ops: operations,
 	}
-	respBody, err := s.Auth.request(adGroupCriterionServiceUrl, "mutate", mutation)
+	respBody, err := s.Auth.request(adGroupCriterionServiceUrl, "mutate", mutation, nil)
 	if err != nil {
 		return adGroupCriterions, err
 	}
@@ -286,7 +287,7 @@ func (s *AdGroupCriterionService) MutateLabel(adGroupCriterionLabelOperations Ad
 			Local: "mutateLabel",
 		},
 		Ops: operations}
-	respBody, err := s.Auth.request(adGroupCriterionServiceUrl, "mutateLabel", mutation)
+	respBody, err := s.Auth.request(adGroupCriterionServiceUrl, "mutateLabel", mutation, nil)
 	if err != nil {
 		return adGroupCriterionLabels, err
 	}

@@ -34,6 +34,14 @@ func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
 	return NewCredentialsFromFile(*configJson, ctx)
 }
 
+func NewCredentialsRaw(ctx context.Context, token *oauth2.Token, config *oauth2.Config) (ac AuthConfig) {
+	ac.OAuth2Token = token
+	ac.OAuth2Config = config
+	ac.tokenSource = ac.OAuth2Config.TokenSource(ctx, ac.OAuth2Token)
+	ac.Auth.Client = ac.OAuth2Config.Client(ctx, ac.OAuth2Token)
+	return ac
+}
+
 // Save writes the contents of AuthConfig back to the JSON file it was
 // loaded from.
 func (c AuthConfig) Save() error {

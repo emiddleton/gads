@@ -147,6 +147,7 @@ func (s *CampaignCriterionService) Get(selector Selector) (campaignCriterions Ca
 			},
 			Sel: selector,
 		},
+		nil,
 	)
 	if err != nil {
 		return campaignCriterions, totalCount, err
@@ -189,7 +190,7 @@ func (s *CampaignCriterionService) Mutate(campaignCriterionOperations CampaignCr
 		},
 		Ops: operations,
 	}
-	respBody, err := s.Auth.request(campaignCriterionServiceUrl, "mutate", mutation)
+	respBody, err := s.Auth.request(campaignCriterionServiceUrl, "mutate", mutation, nil)
 	if err != nil {
 		/*
 			    switch t := err.(type) {

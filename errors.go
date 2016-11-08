@@ -41,6 +41,13 @@ type AdGroupServiceError struct {
 	Reason      string `xml:"reason"`
 }
 
+type AuthenticationError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
 type NotEmptyError struct {
 	FieldPath   string `xml:"fieldPath"`
 	Trigger     string `xml:"trigger"`
@@ -112,6 +119,10 @@ func (aes *ApiExceptionFault) UnmarshalXML(dec *xml.Decoder, start xml.StartElem
 					aes.Errors = append(aes.Errors, e)
 				case "RateExceededError":
 					e := RateExceededError{}
+					dec.DecodeElement(&e, &start)
+					aes.Errors = append(aes.Errors, e)
+				case "ns2:AuthenticationError":
+					e := AuthenticationError{}
 					dec.DecodeElement(&e, &start)
 					aes.Errors = append(aes.Errors, e)
 				default:
