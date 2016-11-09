@@ -117,31 +117,6 @@ type TemplateAd struct {
 	Labels               []Label           `xml:"-"`
 }
 
-type ProductAd struct {
-	AdGroupId            int64             `xml:"-"`
-	Id                   int64             `xml:"id,omitempty"`
-	Url                  string            `xml:"url"`
-	DisplayUrl           string            `xml:"displayUrl"`
-	FinalUrls            []string          `xml:"finalUrls,omitempty"`
-	FinalMobileUrls      []string          `xml:"finalMobileUrls,omitempty"`
-	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
-	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
-	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
-	DevicePreference     int64             `xml:"devicePreference,omitempty"`
-	TemplateId           int64             `xml:"templateId"`
-	AdUnionId            int64             `xml:"adUnionId"`
-	TemplateElements     []TemplateElement `xml:"templateElements"`
-	Dimensions           []Dimensions      `xml:"dimensions"`
-	Name                 string            `xml:"name"`
-	Duration             int64             `xml:"duration"`
-	originAdId           *int64            `xml:"originAdId"`
-	Status               string            `xml:"-"`
-	ApprovalStatus       string            `xml:"-"`
-	DisapprovalReasons   []string          `xml:"-"`
-	TrademarkDisapproved bool              `xml:"-"`
-	Labels               []Label           `xml:"-"`
-}
-
 type AdGroupAdOperations map[string]AdGroupAds
 
 func NewAdGroupAdService(auth *Auth) *AdGroupAdService {
