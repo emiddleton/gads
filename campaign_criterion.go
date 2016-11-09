@@ -1,10 +1,7 @@
 package gads
 
 import (
-	//  "strings"
-	//  "strconv"
 	"encoding/xml"
-	"fmt"
 )
 
 type CampaignCriterionService struct {
@@ -156,7 +153,6 @@ func (s *CampaignCriterionService) Get(selector Selector) (campaignCriterions Ca
 		Size               int64              `xml:"rval>totalNumEntries"`
 		CampaignCriterions CampaignCriterions `xml:"rval>entries"`
 	}{}
-	fmt.Printf("%s\n", respBody)
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
 		return campaignCriterions, totalCount, err

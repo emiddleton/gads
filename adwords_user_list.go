@@ -2,7 +2,6 @@ package gads
 
 import (
 	"encoding/xml"
-	"fmt"
 )
 
 type AdwordsUserListService struct {
@@ -219,7 +218,6 @@ func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, er
 		Size      int64      `xml:"rval>totalNumEntries"`
 		UserLists []UserList `xml:"rval>entries"`
 	}{}
-	fmt.Printf("%s\n", respBody)
 	err = xml.Unmarshal([]byte(respBody), &getResp)
 	if err != nil {
 		return userLists, err
