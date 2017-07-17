@@ -2,9 +2,10 @@ package main
 
 import (
 	"crypto/rand"
-	"github.com/emiddleton/gads"
-	"golang.org/x/oauth2"
 	"log"
+
+	"github.com/segmentio/gads"
+	"golang.org/x/oauth2"
 )
 
 func rand_str(str_size int) string {

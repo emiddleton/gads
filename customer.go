@@ -7,21 +7,30 @@ type CustomerService struct {
 }
 
 type Customer struct {
-	ID                  string `xml:"customerId,omitempty"`
-	CurrencyCode        string `xml:"currencyCode,omitempty"`
-	DateTimeZone        string `xml:"dateTimeZone,omitempty"`
-	DescriptiveName     string `xml:"descriptiveName,omitempty"`
-	CompanyName         string `xml:"companyName,omitempty"`
-	CanManageClients    bool   `xml:"canManageClients,omitempty"`
-	IsTestAccount       bool   `xml:"testAccount,omitempty"`
-	AutoTaggingEnabled  bool   `xml:"autoTaggingEnabled,omitempty"`
-	TrackingURLTemplate string `xml:"trackingUrlTemplate,omitempty"`
+	ID                         int64                      `xml:"customerId,omitempty"`
+	CurrencyCode               string                     `xml:"currencyCode,omitempty"`
+	DateTimeZone               string                     `xml:"dateTimeZone,omitempty"`
+	DescriptiveName            string                     `xml:"descriptiveName,omitempty"`
+	CompanyName                string                     `xml:"companyName,omitempty"`
+	CanManageClients           bool                       `xml:"canManageClients,omitempty"`
+	IsTestAccount              bool                       `xml:"testAccount,omitempty"`
+	AutoTaggingEnabled         bool                       `xml:"autoTaggingEnabled,omitempty"`
+	TrackingURLTemplate        string                     `xml:"trackingUrlTemplate,omitempty"`
+	ConversionTrackingSettings ConversionTrackingSettings `xml:"conversionTrackingSettings"`
+	RemarketingSettings        RemarketingSettings        `xml:"remarketingSettings"`
+}
+
+type RemarketingSettings struct {
+	Snippet string `xml:"snippet"`
 }
 
 func NewCustomerService(auth *Auth) *CustomerService {
 	return &CustomerService{Auth: *auth}
 }
 
+// GetCustomers Important Notes:
+// Starting with v201607, if clientCustomerId is specified in the request header, only details of that customer will be returned.
+// To do this for prior versions, use the get() method instead.
 func (s *CustomerService) GetCustomers() (customers []Customer, err error) {
 	respBody, err := s.Auth.request(
 		customerServiceUrl,
@@ -31,7 +40,7 @@ func (s *CustomerService) GetCustomers() (customers []Customer, err error) {
 			Sel     Selector
 		}{
 			XMLName: xml.Name{
-				Space: mcmUrl,
+				Space: baseMcmUrl,
 				Local: "getCustomers",
 			},
 		},
@@ -48,5 +57,5 @@ func (s *CustomerService) GetCustomers() (customers []Customer, err error) {
 	if err != nil {
 		return customers, err
 	}
-	return getResp.Customers, err
+	return getResp.Customers, nil
 }

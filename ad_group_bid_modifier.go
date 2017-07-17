@@ -1,10 +1,5 @@
 package gads
 
-import (
-//	"encoding/xml"
-//	"fmt"
-)
-
 type AdGroupBidModifierService struct {
 	Auth
 }

@@ -5,12 +5,13 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/emiddleton/gads"
+	"io/ioutil"
+	"log"
+
+	"github.com/segmentio/gads"
 	"github.com/toqueteos/webbrowser"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"io/ioutil"
-	"log"
 )
 
 var (

@@ -11,9 +11,17 @@ import (
 )
 
 const (
-	baseUrl      = "https://adwords.google.com/api/adwords/cm/v201607"
-	mcmUrl       = "https://adwords.google.com/api/adwords/mcm/v201607"
-	mcm201605Url = "https://adwords.google.com/api/adwords/mcm/v201605"
+	version               = "v201609"
+	rootUrl               = "https://adwords.google.com/api/adwords/cm/"
+	baseUrl               = "https://adwords.google.com/api/adwords/cm/" + version
+	rootMcmUrl            = "https://adwords.google.com/api/adwords/mcm/"
+	baseMcmUrl            = "https://adwords.google.com/api/adwords/mcm/" + version
+	rootRemarketingUrl    = "https://adwords.google.com/api/adwords/rm/"
+	baseRemarketingUrl    = "https://adwords.google.com/api/adwords/rm/" + version
+	rootReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/"
+	baseReportDownloadUrl = "https://adwords.google.com/api/adwords/reportdownload/" + version
+	rootTrafficUrl        = "https://adwords.google.com/api/adwords/o/"
+	baseTrafficUrl        = "https://adwords.google.com/api/adwords/o/" + version
 )
 
 type ServiceUrl struct {
@@ -30,54 +38,60 @@ var (
 	configJson = flag.String("config_json", "./config.json", "API credentials")
 
 	// service urls
-	adGroupAdServiceUrl             = ServiceUrl{baseUrl, "AdGroupAdService"}
-	adGroupBidModifierServiceUrl    = ServiceUrl{baseUrl, "AdGroupBidModifierService"}
-	adGroupCriterionServiceUrl      = ServiceUrl{baseUrl, "AdGroupCriterionService"}
-	adGroupFeedServiceUrl           = ServiceUrl{baseUrl, "AdGroupFeedService"}
-	adGroupServiceUrl               = ServiceUrl{baseUrl, "AdGroupService"}
-	adParamServiceUrl               = ServiceUrl{baseUrl, "AdParamService"}
-	adwordsUserListServiceUrl       = ServiceUrl{baseUrl, "AdwordsUserListService"}
-	biddingStrategyServiceUrl       = ServiceUrl{baseUrl, "BiddingStrategyService"}
-	budgetOrderServiceUrl           = ServiceUrl{baseUrl, "BudgetOrderService"}
-	budgetServiceUrl                = ServiceUrl{baseUrl, "BudgetService"}
-	campaignAdExtensionServiceUrl   = ServiceUrl{baseUrl, "CampaignAdExtensionService"}
-	campaignCriterionServiceUrl     = ServiceUrl{baseUrl, "CampaignCriterionService"}
-	campaignFeedServiceUrl          = ServiceUrl{baseUrl, "CampaignFeedService"}
-	campaignServiceUrl              = ServiceUrl{baseUrl, "CampaignService"}
-	campaignSharedSetServiceUrl     = ServiceUrl{baseUrl, "CampaignSharedSetService"}
-	constantDataServiceUrl          = ServiceUrl{baseUrl, "ConstantDataService"}
-	conversionTrackerServiceUrl     = ServiceUrl{baseUrl, "ConversionTrackerService"}
-	customerFeedServiceUrl          = ServiceUrl{baseUrl, "CustomerFeedService"}
-	customerServiceUrl              = ServiceUrl{mcmUrl, "CustomerService"}
-	customerService201605Url        = ServiceUrl{mcm201605Url, "CustomerService"}
-	customerSyncServiceUrl          = ServiceUrl{baseUrl, "CustomerSyncService"}
-	dataServiceUrl                  = ServiceUrl{baseUrl, "DataService"}
-	experimentServiceUrl            = ServiceUrl{baseUrl, "ExperimentService"}
-	feedItemServiceUrl              = ServiceUrl{baseUrl, "FeedItemService"}
-	feedMappingServiceUrl           = ServiceUrl{baseUrl, "FeedMappingService"}
-	feedServiceUrl                  = ServiceUrl{baseUrl, "FeedService"}
-	geoLocationServiceUrl           = ServiceUrl{baseUrl, "GeoLocationService"}
-	labelServiceUrl                 = ServiceUrl{baseUrl, "LabelService"}
-	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
-	managedCustomerServiceUrl       = ServiceUrl{mcmUrl, "ManagedCustomerService"}
-	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
-	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
-	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
-	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
-	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
-	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
-	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
-	trafficEstimatorServiceUrl      = ServiceUrl{baseUrl, "TrafficEstimatorService"}
+	adGroupAdServiceUrl               = ServiceUrl{baseUrl, "AdGroupAdService"}
+	adGroupBidModifierServiceUrl      = ServiceUrl{baseUrl, "AdGroupBidModifierService"}
+	adGroupCriterionServiceUrl        = ServiceUrl{baseUrl, "AdGroupCriterionService"}
+	adGroupExtensionSettingServiceUrl = ServiceUrl{baseUrl, "AdGroupExtensionSettingService"}
+	adGroupFeedServiceUrl             = ServiceUrl{baseUrl, "AdGroupFeedService"}
+	adGroupServiceUrl                 = ServiceUrl{baseUrl, "AdGroupService"}
+	adParamServiceUrl                 = ServiceUrl{baseUrl, "AdParamService"}
+	adwordsUserListServiceUrl         = ServiceUrl{baseRemarketingUrl, "AdwordsUserListService"}
+	batchJobServiceUrl                = ServiceUrl{baseUrl, "BatchJobService"}
+	biddingStrategyServiceUrl         = ServiceUrl{baseUrl, "BiddingStrategyService"}
+	budgetOrderServiceUrl             = ServiceUrl{baseUrl, "BudgetOrderService"}
+	budgetServiceUrl                  = ServiceUrl{baseUrl, "BudgetService"}
+	campaignExtensionSettingUrl       = ServiceUrl{baseUrl, "CampaignExtensionSettingService"}
+	campaignCriterionServiceUrl       = ServiceUrl{baseUrl, "CampaignCriterionService"}
+	campaignFeedServiceUrl            = ServiceUrl{baseUrl, "CampaignFeedService"}
+	campaignServiceUrl                = ServiceUrl{baseUrl, "CampaignService"}
+	campaignSharedSetServiceUrl       = ServiceUrl{baseUrl, "CampaignSharedSetService"}
+	constantDataServiceUrl            = ServiceUrl{baseUrl, "ConstantDataService"}
+	conversionTrackerServiceUrl       = ServiceUrl{baseUrl, "ConversionTrackerService"}
+	customerFeedServiceUrl            = ServiceUrl{baseUrl, "CustomerFeedService"}
+	customerServiceUrl                = ServiceUrl{baseMcmUrl, "CustomerService"}
+	customerSyncServiceUrl            = ServiceUrl{baseUrl, "CustomerSyncService"}
+	dataServiceUrl                    = ServiceUrl{baseUrl, "DataService"}
+	experimentServiceUrl              = ServiceUrl{baseUrl, "ExperimentService"}
+	feedItemServiceUrl                = ServiceUrl{baseUrl, "FeedItemService"}
+	feedMappingServiceUrl             = ServiceUrl{baseUrl, "FeedMappingService"}
+	feedServiceUrl                    = ServiceUrl{baseUrl, "FeedService"}
+	geoLocationServiceUrl             = ServiceUrl{baseUrl, "GeoLocationService"}
+	labelServiceUrl                   = ServiceUrl{baseUrl, "LabelService"}
+	locationCriterionServiceUrl       = ServiceUrl{baseUrl, "LocationCriterionService"}
+	managedCustomerServiceUrl         = ServiceUrl{baseMcmUrl, "ManagedCustomerService"}
+	mediaServiceUrl                   = ServiceUrl{baseUrl, "MediaService"}
+	mutateJobServiceUrl               = ServiceUrl{baseUrl, "MutateJobService"}
+	offlineConversionFeedServiceUrl   = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
+	reportDefinitionServiceUrl        = ServiceUrl{baseUrl, "ReportDefinitionService"}
+	reportDownloadServiceUrl          = ServiceUrl{baseReportDownloadUrl, ""}
+	sharedCriterionServiceUrl         = ServiceUrl{baseUrl, "SharedCriterionService"}
+	sharedSetServiceUrl               = ServiceUrl{baseUrl, "SharedSetService"}
+	targetingIdeaServiceUrl           = ServiceUrl{baseTrafficUrl, "TargetingIdeaService"}
+	trafficEstimatorServiceUrl        = ServiceUrl{baseTrafficUrl, "TrafficEstimatorService"}
 )
 
 func (s ServiceUrl) String() string {
-	return s.Url + "/" + s.Name
+	if s.Name != "" {
+		return s.Url + "/" + s.Name
+	}
+	return s.Url
 }
 
 type Auth struct {
 	CustomerId     string
 	DeveloperToken string
 	UserAgent      string
+	PartialFailure bool
 	Testing        *testing.T   `json:"-"`
 	Client         *http.Client `json:"-"`
 }
@@ -102,8 +116,8 @@ type OrderBy struct {
 }
 
 type Paging struct {
-	Offset int64 `xml:"startIndex"`
-	Limit  int64 `xml:"numberResults"`
+	Offset int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 startIndex"`
+	Limit  int64 `xml:"https://adwords.google.com/api/adwords/cm/v201609 numberResults"`
 }
 
 type Selector struct {
@@ -115,8 +129,41 @@ type Selector struct {
 	Paging     *Paging     `xml:"paging,omitempty"`
 }
 
+type AWQLQuery struct {
+	XMLName xml.Name
+	Query   string `xml:"query"`
+}
+
 type Options struct {
 	CustomerID string
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.DayOfWeek
+// Days of the week.
+// MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+type DayOfWeek string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.MinuteOfHour
+// Minutes in an hour. Currently only 0, 15, 30, and 45 are supported
+// ZERO, FIFTEEN, THIRTY, FORTY_FIVE
+type MinuteOfHour string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.GeoRestriction
+// A restriction used to determine if the request context's geo should be matched.
+// UNKNOWN, LOCATION_OF_PRESENCE
+type GeoRestriction string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.PolicyData
+// Approval and policy information attached to an entity.
+type PolicyData struct {
+	DisapprovalReasons []DisapprovalReason `xml:"https://adwords.google.com/api/adwords/cm/v201609 disapprovalReasons,omitempty"`
+	PolicyDataType     string              `xml:"https://adwords.google.com/api/adwords/cm/v201609 PolicyData.Type,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.DisapprovalReason
+// Container for information about why an AdWords entity was disapproved.
+type DisapprovalReason struct {
+	ShortName string `xml:"https://adwords.google.com/api/adwords/cm/v201609 shortName,omitempty"`
 }
 
 // error parsers
@@ -133,6 +180,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, o
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
 		ClientCustomerId string `xml:"clientCustomerId,omitempty"`
+		PartialFailure   bool   `xml:"partialFailure,omitempty"`
 	}
 
 	type soapReqBody struct {
@@ -182,6 +230,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, o
 	if err != nil {
 		return []byte{}, err
 	}
+	defer resp.Body.Close()
 
 	respBody, err = ioutil.ReadAll(resp.Body)
 	if a.Testing != nil {

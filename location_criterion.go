@@ -23,7 +23,7 @@ type LocationCriterion struct {
 type LocationCriterions []LocationCriterion
 
 func (s *LocationCriterionService) Get(selector Selector) (locationCriterions LocationCriterions, err error) {
-	selector.XMLName = xml.Name{"", "selector"}
+	selector.XMLName = xml.Name{baseUrl, "selector"}
 	respBody, err := s.Auth.request(
 		locationCriterionServiceUrl,
 		"get",

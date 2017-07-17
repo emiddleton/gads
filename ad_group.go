@@ -27,13 +27,14 @@ type AdSetting struct {
 
 type AdGroup struct {
 	Id                           int64                          `xml:"id,omitempty"`
-	CampaignId                   int64                          `xml:"campaignId"`
+	CampaignId                   int64                          `xml:"campaignId,omitempty"`
 	CampaignName                 string                         `xml:"campaignName,omitempty"`
-	Name                         string                         `xml:"name"`
-	Status                       string                         `xml:"status"`
+	Name                         string                         `xml:"name,omitempty"`
+	Status                       string                         `xml:"status,omitempty"`
 	Settings                     []AdSetting                    `xml:"settings,omitempty"`
 	BiddingStrategyConfiguration []BiddingStrategyConfiguration `xml:"biddingStrategyConfiguration"`
 	ContentBidCriterionTypeGroup *string                        `xml:"contentBidCriterionTypeGroup"`
+	UrlCustomParameters          *CustomParameters              `xml:"urlCustomParameters"`
 }
 
 type AdGroupOperations map[string][]AdGroup
@@ -80,10 +81,10 @@ type AdGroupLabelOperations map[string][]AdGroupLabel
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupService#get
 //
 func (s *AdGroupService) Get(selector Selector) (adGroups []AdGroup, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adGroupServiceUrl,
 		"get",
@@ -149,7 +150,7 @@ func (s *AdGroupService) Get(selector Selector) (adGroups []AdGroup, totalCount 
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupService#mutate
 //
 func (s *AdGroupService) Mutate(adGroupOperations AdGroupOperations) (adGroups []AdGroup, err error) {
 	type adGroupOperation struct {
@@ -209,7 +210,7 @@ func (s *AdGroupService) Mutate(adGroupOperations AdGroupOperations) (adGroups [
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupService#mutateLabel
+//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupService#mutateLabel
 //
 func (s *AdGroupService) MutateLabel(adGroupLabelOperations AdGroupLabelOperations) (adGroupLabels []AdGroupLabel, err error) {
 	type adGroupLabelOperation struct {
@@ -251,12 +252,38 @@ func (s *AdGroupService) MutateLabel(adGroupLabelOperations AdGroupLabelOperatio
 	return mutateResp.AdGroupLabels, err
 }
 
-// Query is not yet implemented
+// Query documentation
 //
-// Relevant documentation
+//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupService#query
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupService#query
-//
-func (s *AdGroupService) Query(query string) (adGroups []AdGroup, err error) {
-	return adGroups, ERROR_NOT_YET_IMPLEMENTED
+func (s *AdGroupService) Query(query string) (adGroups []AdGroup, totalCount int64, err error) {
+
+	respBody, err := s.Auth.request(
+		adGroupServiceUrl,
+		"query",
+		AWQLQuery{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "query",
+			},
+			Query: query,
+		},
+		nil,
+	)
+
+	if err != nil {
+		return adGroups, totalCount, err
+	}
+
+	getResp := struct {
+		Size     int64     `xml:"rval>totalNumEntries"`
+		AdGroups []AdGroup `xml:"rval>entries"`
+	}{}
+
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return adGroups, totalCount, err
+	}
+	return getResp.AdGroups, getResp.Size, err
+
 }

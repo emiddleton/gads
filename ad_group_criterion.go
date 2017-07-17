@@ -17,11 +17,15 @@ type QualityInfo struct {
 	IsKeywordAdRelevanceAcceptable bool  `xml:"isKeywordAdRelevanceAcceptable,omitempty"`
 	IsLandingPageQualityAcceptable bool  `xml:"isLandingPageQualityAcceptable,omitempty"`
 	IsLandingPageLatencyAcceptable bool  `xml:"isLandingPageLatencyAcceptable,omitempty"`
-	QualityScore                   int64 `xml:"QualityScore,omitempty"`
+	QualityScore                   int64 `xml:"qualityScore,omitempty"`
+}
+
+type CpcAmount struct {
+	MicroAmount int64 `xml:"microAmount,omitempty"`
 }
 
 type Cpc struct {
-	Amount int64 `xml:"amount"`
+	Amount *CpcAmount `xml:"amount,omitempty"`
 }
 
 type AdGroupCriterions []interface{}
@@ -136,10 +140,10 @@ type AdGroupCriterionOperations map[string]AdGroupCriterions
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupCriterionService#get
 //
 func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGroupCriterions, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adGroupCriterionServiceUrl,
 		"get",
@@ -198,7 +202,7 @@ func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGro
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupCriterionService#mutate
 //
 func (s *AdGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCriterionOperations) (adGroupCriterions AdGroupCriterions, err error) {
 	type adGroupCriterionOperation struct {
@@ -259,7 +263,7 @@ func (s *AdGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCrite
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#mutateLabel
+//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupCriterionService#mutateLabel
 //
 func (s *AdGroupCriterionService) MutateLabel(adGroupCriterionLabelOperations AdGroupCriterionLabelOperations) (adGroupCriterionLabels []AdGroupCriterionLabel, err error) {
 	type adGroupCriterionLabelOperation struct {
@@ -301,12 +305,38 @@ func (s *AdGroupCriterionService) MutateLabel(adGroupCriterionLabelOperations Ad
 	return mutateResp.AdGroupCriterionLabels, err
 }
 
-// Query is not yet implemented
+// Query documentation
 //
-// Relevant documentation
+//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupCriterionService#query
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupCriterionService#query
-//
-func (s *AdGroupCriterionService) Query(query string) (adGroupCriterions AdGroupCriterions, err error) {
-	return adGroupCriterions, ERROR_NOT_YET_IMPLEMENTED
+func (s *AdGroupCriterionService) Query(query string) (adGroupCriterions AdGroupCriterions, totalCount int64, err error) {
+
+	respBody, err := s.Auth.request(
+		adGroupCriterionServiceUrl,
+		"query",
+		AWQLQuery{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "query",
+			},
+			Query: query,
+		},
+		nil,
+	)
+
+	if err != nil {
+		return adGroupCriterions, totalCount, err
+	}
+
+	getResp := struct {
+		Size              int64             `xml:"rval>totalNumEntries"`
+		AdGroupCriterions AdGroupCriterions `xml:"rval>entries"`
+	}{}
+
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return adGroupCriterions, totalCount, err
+	}
+	return getResp.AdGroupCriterions, getResp.Size, err
+
 }

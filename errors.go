@@ -13,18 +13,19 @@ type OperationError struct {
 	Message   string `xml:"OperationError>Message"`
 }
 
+type EntityError struct {
+	Path   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	String string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
 type BudgetError struct {
-	Path    string `xml:"fieldPath"`
-	String  string `xml:"errorString"`
-	Trigger string `xml:"trigger"`
-	Reason  string `xml:"reason"`
+	EntityError
 }
 
 type CriterionError struct {
-	FieldPath   string `xml:"fieldPath"`
-	Trigger     string `xml:"trigger"`
-	ErrorString string `xml:"errorString"`
-	Reason      string `xml:"reason"`
+	EntityError
 }
 
 type TargetError struct {
@@ -62,6 +63,17 @@ type AdError struct {
 	Reason      string `xml:"reason"`
 }
 
+type LabelError struct {
+	FieldPath   string `xml:"fieldPath"`
+	Trigger     string `xml:"trigger"`
+	ErrorString string `xml:"errorString"`
+	Reason      string `xml:"reason"`
+}
+
+type UrlError struct {
+	EntityError
+}
+
 // if you exceed the quota given by google
 type RateExceededError struct {
 	RateName          string `xml:"rateName"`  // For example OperationsByMinute
@@ -93,28 +105,10 @@ func (aes *ApiExceptionFault) UnmarshalXML(dec *xml.Decoder, start xml.StartElem
 			case "errors":
 				errorType, _ := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
 				switch errorType {
-				case "CriterionError":
-					e := CriterionError{}
-					dec.DecodeElement(&e, &start)
-					aes.Errors = append(aes.Errors, e)
-				case "TargetError":
-					e := TargetError{}
-					dec.DecodeElement(&e, &start)
-					aes.Errors = append(aes.Errors, e)
-				case "BudgetError":
-					e := BudgetError{}
-					dec.DecodeElement(&e, &start)
-					aes.Errors = append(aes.Errors, e)
-				case "AdGroupServiceError":
-					e := AdGroupServiceError{}
-					dec.DecodeElement(&e, &start)
-					aes.Errors = append(aes.Errors, e)
-				case "NotEmptyError":
-					e := NotEmptyError{}
-					dec.DecodeElement(&e, &start)
-					aes.Errors = append(aes.Errors, e)
-				case "AdError":
-					e := AdError{}
+				case "CriterionError", "TargetError", "BudgetError",
+					"AdGroupServiceError", "NotEmptyError", "LabelError",
+					"UrlError", "AdError", "ns2:UserListError":
+					e := EntityError{}
 					dec.DecodeElement(&e, &start)
 					aes.Errors = append(aes.Errors, e)
 				case "RateExceededError":

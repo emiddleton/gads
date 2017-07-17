@@ -39,7 +39,7 @@ func budgetError() (err error) {
 
 // Get returns budgets matching a given selector and the total count of matching budgets.
 func (s *BudgetService) Get(selector Selector) (budgets []Budget, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "selector"}
+	selector.XMLName = xml.Name{baseUrl, "selector"}
 	respBody, err := s.Auth.request(
 		budgetServiceUrl,
 		"get",

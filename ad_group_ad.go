@@ -23,6 +23,7 @@ type TextAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type                 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	Headline             string            `xml:"headline"`
 	Description1         string            `xml:"description1"`
@@ -32,6 +33,61 @@ type TextAd struct {
 	DisapprovalReasons   []string          `xml:"-"`
 	TrademarkDisapproved bool              `xml:"-"`
 	Labels               []Label           `xml:"-"`
+}
+
+type ExpandedTextAd struct {
+	AdGroupId            int64                  `xml:"-"`
+	Id                   int64                  `xml:"id,omitempty"`
+	FinalUrls            []string               `xml:"finalUrls,omitempty"`
+	FinalMobileUrls      []string               `xml:"finalMobileUrls,omitempty"`
+	TrackingUrlTemplate  string                 `xml:"trackingUrlTemplate,omitempty"`
+	UrlCustomParameters  *CustomParameters      `xml:"urlCustomParameters,omitempty"`
+	Type                 string                 `xml:"type,omitempty"`
+	HeadlinePart1        string                 `xml:"headlinePart1"`
+	HeadlinePart2        string                 `xml:"headlinePart2"`
+	Description          string                 `xml:"description"`
+	Path1                string                 `xml:"path1"`
+	Path2                string                 `xml:"path2"`
+	ExperimentData       *AdGroupExperimentData `xml:"-"`
+	Status               string                 `xml:"-"`
+	ApprovalStatus       string                 `xml:"-"`
+	Trademarks           []string               `xml:"-"`
+	DisapprovalReasons   []string               `xml:"-"`
+	TrademarkDisapproved bool                   `xml:"-"`
+	Labels               []Label                `xml:"-"`
+	BaseCampaignId       *int64                 `xml:"-"`
+	BaseAdGroupId        *int64                 `xml:"-"`
+}
+
+type ResponsiveDisplayAd struct {
+	AdGroupId            int64                 `xml:"-"`
+	Id                   int64                 `xml:"id,omitempty"`
+	FinalUrls            []string              `xml:"finalUrls,omitempty"`
+	FinalMobileUrls      []string              `xml:"finalMobileUrls,omitempty"`
+	TrackingUrlTemplate  string                `xml:"trackingUrlTemplate,omitempty"`
+	UrlCustomParameters  *CustomParameters     `xml:"urlCustomParameters,omitempty"`
+	Type                 string                `xml:"type,omitempty"`
+	MarketingImage       Media                 `xml:"marketingImage"`
+	LogoImage            Media                 `xml:"logoImage"`
+	ShortHeadline        string                `xml:"shortHeadline"`
+	LongHeadline         string                `xml:"longHeadline"`
+	Description          string                `xml:"description"`
+	BusinessName         string                `xml:"businessName"`
+	ExperimentData       AdGroupExperimentData `xml:"-"`
+	Status               string                `xml:"-"`
+	ApprovalStatus       string                `xml:"-"`
+	Trademarks           []string              `xml:"-"`
+	DisapprovalReasons   []string              `xml:"-"`
+	TrademarkDisapproved bool                  `xml:"-"`
+	Labels               []Label               `xml:"-"`
+	BaseCampaignId       int64                 `xml:"-"`
+	BaseAdGroupId        int64                 `xml:"-"`
+}
+
+type AdGroupExperimentData struct {
+	ExperimentId          int64  `xml:"experimentId"`
+	ExperimentDeltaStatus string `xml:"experimentDeltaStatus"`
+	ExperimentDataStatus  string `xml:"experimentDataStatus"`
 }
 
 type ImageAd struct {
@@ -44,6 +100,7 @@ type ImageAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type                 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	Image                int64             `xml:"imageId"`
 	Name                 string            `xml:"name"`
@@ -65,6 +122,7 @@ type MobileAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type                 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	Headline             string            `xml:"headline"`
 	Description          string            `xml:"description"`
@@ -102,9 +160,10 @@ type TemplateAd struct {
 	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
 	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
 	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type                 string            `xml:"type,omitempty"`
 	DevicePreference     int64             `xml:"devicePreference,omitempty"`
 	TemplateId           int64             `xml:"templateId"`
-	AdUnionId            int64             `xml:"adUnionId"`
+	AdUnionId            int64             `xml:"adUnionId>id"`
 	TemplateElements     []TemplateElement `xml:"templateElements"`
 	Dimensions           []Dimensions      `xml:"dimensions"`
 	Name                 string            `xml:"name"`
@@ -115,6 +174,34 @@ type TemplateAd struct {
 	DisapprovalReasons   []string          `xml:"-"`
 	TrademarkDisapproved bool              `xml:"-"`
 	Labels               []Label           `xml:"-"`
+}
+
+type DynamicSearchAd struct {
+	AdGroupId            int64             `xml:"-"`
+	Id                   int64             `xml:"id,omitempty"`
+	Url                  string            `xml:"url"`
+	DisplayUrl           string            `xml:"displayUrl"`
+	FinalUrls            []string          `xml:"finalUrls,omitempty"`
+	FinalMobileUrls      []string          `xml:"finalMobileUrls,omitempty"`
+	FinalAppUrls         []AppUrl          `xml:"finalAppUrls,omitempty"`
+	TrackingUrlTemplate  string            `xml:"trackingUrlTemplate,omitempty"`
+	UrlCustomParameters  *CustomParameters `xml:"urlCustomParameters,omitempty"`
+	Type                 string            `xml:"type,omitempty"`
+	DevicePreference     int64             `xml:"devicePreference,omitempty"`
+	Status               string            `xml:"-"`
+	ApprovalStatus       string            `xml:"-"`
+	DisapprovalReasons   []string          `xml:"-"`
+	TrademarkDisapproved bool              `xml:"-"`
+}
+
+type ProductAd struct {
+	AdGroupId            int64    `xml:"-"`
+	Id                   int64    `xml:"id,omitempty"`
+	Type                 string   `xml:"type,omitempty"`
+	Status               string   `xml:"-"`
+	ApprovalStatus       string   `xml:"-"`
+	DisapprovalReasons   []string `xml:"-"`
+	TrademarkDisapproved bool     `xml:"-"`
 }
 
 type AdGroupAdOperations map[string]AdGroupAds
@@ -198,7 +285,7 @@ type AdUrlUpgrade struct {
 //     https://developers.google.com/adwords/api/docs/reference/v201409/AdGroupAdService#get
 //
 func (s AdGroupAdService) Get(selector Selector) (adGroupAds AdGroupAds, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adGroupAdServiceUrl,
 		"get",

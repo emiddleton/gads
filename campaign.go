@@ -83,10 +83,10 @@ func NewTrackingSetting(trackingUrl string) CampaignSetting {
 }
 
 type NetworkSetting struct {
-	TargetGoogleSearch         bool `xml:"targetGoogleSearch"`
-	TargetSearchNetwork        bool `xml:"targetSearchNetwork"`
-	TargetContentNetwork       bool `xml:"targetContentNetwork"`
-	TargetPartnerSearchNetwork bool `xml:"targetPartnerSearchNetwork"`
+	TargetGoogleSearch         bool `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetGoogleSearch"`
+	TargetSearchNetwork        bool `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetSearchNetwork"`
+	TargetContentNetwork       bool `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetContentNetwork"`
+	TargetPartnerSearchNetwork bool `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetPartnerSearchNetwork"`
 }
 
 type BiddingScheme struct {
@@ -140,7 +140,7 @@ type Campaign struct {
 	BiddingStrategyConfiguration   *BiddingStrategyConfiguration   `xml:"biddingStrategyConfiguration"`
 	ForwardCompatibilityMap        *map[string]string              `xml:"forwardCompatibilityMap,omitempty"`
 	TrackingUrlTemplate            *string                         `xml:"trackingUrlTemplate"`
-	UrlCustomParameters            *CustomParameters               `xml:"urlCustomParametes"`
+	UrlCustomParameters            *CustomParameters               `xml:"urlCustomParameters"`
 	Errors                         []error                         `xml:"-"`
 }
 
@@ -187,7 +187,10 @@ type CampaignLabelOperations map[string][]CampaignLabel
 //     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#get
 //
 func (s *CampaignService) Get(selector Selector) (campaigns []Campaign, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	// The default namespace, "", will break in 1.5 with the addition of
+	// custom namespace support.  Hence, we have to ensure that the baseUrl is
+	// set again as the proper namespace for the service/serviceSelector element
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		campaignServiceUrl,
 		"get",
@@ -351,12 +354,37 @@ func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOpera
 	return mutateResp.CampaignLabels, err
 }
 
-// Query is not yet implemented
+// Query documentation
 //
-// Relevant documentation
-//
-//     https://developers.google.com/adwords/api/docs/reference/v201409/CampaignService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201609/CampaignService#query
 //
 func (s *CampaignService) Query(query string) (campaigns []Campaign, totalCount int64, err error) {
-	return campaigns, totalCount, ERROR_NOT_YET_IMPLEMENTED
+
+	respBody, err := s.Auth.request(
+		campaignServiceUrl,
+		"query",
+		AWQLQuery{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "query",
+			},
+			Query: query,
+		},
+		nil,
+	)
+
+	if err != nil {
+		return campaigns, totalCount, err
+	}
+
+	getResp := struct {
+		Size      int64      `xml:"rval>totalNumEntries"`
+		Campaigns []Campaign `xml:"rval>entries"`
+	}{}
+
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return campaigns, totalCount, err
+	}
+	return getResp.Campaigns, getResp.Size, err
 }

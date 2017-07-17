@@ -2,7 +2,6 @@ package gads
 
 import (
 	"testing"
-	//	"encoding/xml"
 )
 
 func testAdGroupCriterionService(t *testing.T) (service *AdGroupCriterionService) {

@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emiddleton/gads"
-	"golang.org/x/oauth2"
 	"log"
+
+	"github.com/segmentio/gads"
+	"golang.org/x/oauth2"
 )
 
 func main() {
@@ -16,7 +17,7 @@ func main() {
 	bs := gads.NewBudgetService(config.Auth)
 
 	var pageSize int64 = 500
-	var offset int64 = 0
+	var offset int64
 	paging := gads.Paging{
 		Offset: offset,
 		Limit:  pageSize,

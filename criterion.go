@@ -42,27 +42,57 @@ type GenderCriterion struct {
 }
 
 type KeywordCriterion struct {
-	Id        int64  `xml:"id,omitempty"`
-	Text      string `xml:"text,omitempty"`      // Text: up to 80 characters and ten words
-	MatchType string `xml:"matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
+	Id        int64  `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
+	Text      string `xml:"https://adwords.google.com/api/adwords/cm/v201609 text,omitempty"`      // Text: up to 80 characters and ten words
+	MatchType string `xml:"https://adwords.google.com/api/adwords/cm/v201609 matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
 }
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.Keyword
+// Represents a keyword.
+type Keyword struct {
+	Id            int64         `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
+	Type          CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 type,omitempty"`
+	CriterionType CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 Criterion.Type,omitempty"`
+
+	Text      string           `xml:"https://adwords.google.com/api/adwords/cm/v201609 text,omitempty"`
+	MatchType KeywordMatchType `xml:"https://adwords.google.com/api/adwords/cm/v201609 matchType,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.KeywordMatchType
+// Match type of a keyword. i.e. the way we match a keyword string with search queries.
+// EXACT, PHRASE, BROAD
+type KeywordMatchType string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.Criterion.Type
+// The types of criteria
+type CriterionType string
+
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.LocationTargetingStatus
+// Enum that represents the different Targeting Status values for a Location criterion.
+// ACTIVE, OBSOLETE, PHASING_OUT
+type LocationTargetingStatus string
 
 type LanguageCriterion struct {
-	Id   int64  `xml:"id,omitempty"`
-	Code string `xml:"code,omitempty"`
-	Name string `xml:"name,omitempty"`
+	Id   int64  `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
+	Code string `xml:"https://adwords.google.com/api/adwords/cm/v201609 code,omitempty"`
+	Name string `xml:"https://adwords.google.com/api/adwords/cm/v201609 name,omitempty"`
 }
 
+// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.Location
+// Represents Location criterion.  A criterion of this type can only be created using an ID.
 // LocationName:
 // DisplayType:
 // TargetingStatus: ACTIVE, OBSOLETE, PHASING_OUT
 // ParentLocations:
 type Location struct {
-	Id              int64      `xml:"id,omitempty"`
-	LocationName    string     `xml:"locationName,omitempty"`
-	DisplayType     string     `xml:"displayType,omitempty"`
-	TargetingStatus string     `xml:"targetingStatus,omitempty"`
-	ParentLocations []Location `xml:"parentLocations,omitempty"`
+	Id            int64         `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
+	Type          CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 type,omitempty"`
+	CriterionType CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 Criterion.Type,omitempty"`
+
+	LocationName    string                  `xml:"https://adwords.google.com/api/adwords/cm/v201609 locationName,omitempty"`
+	DisplayType     string                  `xml:"https://adwords.google.com/api/adwords/cm/v201609 displayType,omitempty"`
+	TargetingStatus LocationTargetingStatus `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetingStatus,omitempty"`
+	ParentLocations []Location              `xml:"https://adwords.google.com/api/adwords/cm/v201609 parentLocations,omitempty"`
 }
 
 // MobileAppCategoryId:
@@ -134,6 +164,22 @@ type ProductCriterion struct {
 	Text       string             `xml:"text,omitempty"`
 }
 
+// Represents a google_product_category level
+type ProductBiddingCategory ProductDimension
+
+type ProductBiddingCategoryData struct {
+	DimensionValue       ProductBiddingCategory `xml:"dimensionValue"`
+	ParentDimensionValue ProductBiddingCategory `xml:"parentDimensionValue"`
+	Country              string                 `xml:"country"`
+	Status               string                 `xml:"status"`
+	DisplayValue         []StringMapEntry       `xml:"displayValue"`
+}
+
+type StringMapEntry struct {
+	Key   string `xml:"key"`
+	Value string `xml:"value"`
+}
+
 type GeoPoint struct {
 	Latitude  int64 `xml:"latitudeInMicroDegrees"`
 	Longitude int64 `xml:"longitudeInMicroDegrees"`
@@ -147,6 +193,27 @@ type Address struct {
 	ProvinceName   string `xml:"provinceName"`
 	PostalCode     string `xml:"postalCode"`
 	CountryCode    string `xml:"countryCode"`
+}
+
+type ProductDimension struct {
+	Type          string `xml:"ProductDimension.Type"`
+	DimensionType string `xml:"type"`
+	Value         string `xml:"value"`
+}
+
+type ProductPartition struct {
+	Id                int64            `xml:"id,omitempty"`
+	CriteriaType      string           `xml:"type"`
+	PartitionType     string           `xml:"partitionType,omitempty"`
+	ParentCriterionId int64            `xml:"parentCriterionId,omitempty"`
+	Dimension         ProductDimension `xml:"caseValue"`
+	Cpc               *Cpc             // This value is inherited from BiddableAdgroupCriterion
+}
+
+type ProductScope struct {
+	Id           int64              `xml:"id,omitempty"`
+	CriteriaType string             `xml:"type"`
+	Dimensions   []ProductDimension `xml:"dimensions"`
 }
 
 // RadiusDistanceUnits: KILOMETERS, MILES
@@ -262,6 +329,14 @@ func criterionUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (Criterion,
 		c := ProductCriterion{}
 		err := dec.DecodeElement(&c, &start)
 		return c, err
+	case "ProductPartition":
+		c := ProductPartition{}
+		err := dec.DecodeElement(&c, &start)
+		return c, err
+	case "ProductScope":
+		c := ProductScope{}
+		err := dec.DecodeElement(&c, &start)
+		return c, err
 	case "Proximity":
 		c := ProximityCriterion{}
 		err := dec.DecodeElement(&c, &start)
@@ -334,7 +409,7 @@ func criterionMarshalXML(c Criterion, e *xml.Encoder) error {
 		return fmt.Errorf("unknown criterion type %#v\n", t)
 	}
 	e.EncodeElement(&c, xml.StartElement{
-		xml.Name{"", "criterion"},
+		xml.Name{baseUrl, "criterion"},
 		[]xml.Attr{
 			xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, criterionType},
 		},

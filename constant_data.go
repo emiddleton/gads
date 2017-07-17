@@ -17,7 +17,7 @@ func (s *ConstantDataService) GetAgeRangeCriterion() (ageRanges []AgeRangeCriter
 		constantDataServiceUrl,
 		"getAgeRangeCriterion",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getAgeRangeCriterion"`
+			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201609 getAgeRangeCriterion"`
 		}{},
 		nil,
 	)
@@ -39,7 +39,7 @@ func (s *ConstantDataService) GetCarrierCriterion() (carriers []CarrierCriterion
 		constantDataServiceUrl,
 		"getCarrierCriterion",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getCarrierCriterion"`
+			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201609 getCarrierCriterion"`
 		}{},
 		nil,
 	)
@@ -61,7 +61,7 @@ func (s *ConstantDataService) GetGenderCriterion() (genders []GenderCriterion, e
 		constantDataServiceUrl,
 		"getGenderCriterion",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getGenderCriterion"`
+			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201609 getGenderCriterion"`
 		}{},
 		nil,
 	)
@@ -83,7 +83,7 @@ func (s *ConstantDataService) GetLanguageCriterion() (languages []LanguageCriter
 		constantDataServiceUrl,
 		"getLanguageCriterion",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getLanguageCriterion"`
+			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201609 getLanguageCriterion"`
 		}{},
 		nil,
 	)
@@ -105,7 +105,7 @@ func (s *ConstantDataService) GetMobileDeviceCriterion() (mobileDevices []Mobile
 		constantDataServiceUrl,
 		"getMobileDeviceCriterion",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getMobileDeviceCriterion"`
+			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201609 getMobileDeviceCriterion"`
 		}{},
 		nil,
 	)
@@ -127,7 +127,7 @@ func (s *ConstantDataService) GetOperatingSystemVersionCriterion() (operatingSys
 		constantDataServiceUrl,
 		"getOperatingSystemVersionCriterion",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getOperatingSystemVersionCriterion"`
+			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201609 getOperatingSystemVersionCriterion"`
 		}{},
 		nil,
 	)
@@ -144,12 +144,41 @@ func (s *ConstantDataService) GetOperatingSystemVersionCriterion() (operatingSys
 	return getResp.OperatingSystemVersionCriterions, err
 }
 
+func (s *ConstantDataService) GetProductBiddingCategoryCriterion(selector Selector) (categoryData []ProductBiddingCategoryData, err error) {
+	respBody, err := s.Auth.request(
+		constantDataServiceUrl,
+		"getProductBiddingCategoryData",
+		struct {
+			XMLName xml.Name
+			Sel     Selector
+		}{
+			XMLName: xml.Name{
+				Space: "https://adwords.google.com/api/adwords/cm/v201609",
+				Local: "getProductBiddingCategoryData",
+			},
+			Sel: selector,
+		},
+		nil,
+	)
+	if err != nil {
+		return categoryData, err
+	}
+	getResp := struct {
+		ProductBiddingCategoryDatas []ProductBiddingCategoryData `xml:"rval"`
+	}{}
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return categoryData, err
+	}
+	return getResp.ProductBiddingCategoryDatas, err
+}
+
 func (s *ConstantDataService) GetUserInterestCriterion() (userInterests []UserInterestCriterion, err error) {
 	respBody, err := s.Auth.request(
 		constantDataServiceUrl,
 		"getUserInterestCriterion",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getUserInterestCriterion"`
+			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201609 getUserInterestCriterion"`
 		}{},
 		nil,
 	)
@@ -171,7 +200,7 @@ func (s *ConstantDataService) GetVerticalCriterion() (verticals []VerticalCriter
 		constantDataServiceUrl,
 		"getVerticalCriterion",
 		struct {
-			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201309 getVerticalCriterion"`
+			XMLName xml.Name `xml:"https://adwords.google.com/api/adwords/cm/v201609 getVerticalCriterion"`
 		}{},
 		nil,
 	)

@@ -6,8 +6,9 @@ import (
 )
 
 type NegativeAdGroupCriterion struct {
-	AdGroupId int64     `xml:"adGroupId"`
-	Criterion Criterion `xml:"criterion"`
+	AdGroupId    int64     `xml:"adGroupId"`
+	CriterionUse string    `xml:"criterionUse"`
+	Criterion    Criterion `xml:"criterion"`
 }
 
 func (nagc NegativeAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -36,6 +37,10 @@ func (nagc *NegativeAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 			switch tag {
 			case "adGroupId":
 				if err := dec.DecodeElement(&nagc.AdGroupId, &start); err != nil {
+					return err
+				}
+			case "criterionUse":
+				if err := dec.DecodeElement(&nagc.CriterionUse, &start); err != nil {
 					return err
 				}
 			case "criterion":

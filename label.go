@@ -16,7 +16,7 @@ func NewLabelService(auth *Auth) *LabelService {
 type Label struct {
 	Type   string `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
 	Id     int64  `xml:"id,omitempty"`
-	Name   string `xml:"name"`
+	Name   string `xml:"name,omitempty"`
 	Status string `xml:"status,omitempty"`
 }
 
@@ -56,7 +56,7 @@ type LabelOperations map[string][]Label
 //     https://developers.google.com/adwords/api/docs/reference/v201409/LabelService#get
 //
 func (s LabelService) Get(selector Selector) (labels []Label, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		labelServiceUrl,
 		"get",
@@ -150,12 +150,38 @@ func (s *LabelService) Mutate(labelOperations LabelOperations) (labels []Label, 
 	return mutateResp.Labels, err
 }
 
-// Query is not yet implemented
+// Query documentation
 //
-// Relevant documentation
-//
-//     https://developers.google.com/adwords/api/docs/reference/v201409/LabelService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201506/LabelService#query
 //
 func (s *LabelService) Query(query string) (labels []Label, totalCount int64, err error) {
-	return labels, totalCount, ERROR_NOT_YET_IMPLEMENTED
+
+	respBody, err := s.Auth.request(
+		labelServiceUrl,
+		"query",
+		AWQLQuery{
+			XMLName: xml.Name{
+				Space: baseUrl,
+				Local: "query",
+			},
+			Query: query,
+		},
+		nil,
+	)
+
+	if err != nil {
+		return labels, totalCount, err
+	}
+
+	getResp := struct {
+		Size   int64   `xml:"rval>totalNumEntries"`
+		Labels []Label `xml:"rval>entries"`
+	}{}
+
+	err = xml.Unmarshal([]byte(respBody), &getResp)
+	if err != nil {
+		return labels, totalCount, err
+	}
+	return getResp.Labels, getResp.Size, err
+
 }

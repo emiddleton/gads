@@ -74,7 +74,7 @@ func NewVideo(mediaType string) (image Media) {
 }
 
 func (s *MediaService) Get(selector Selector) (medias []Media, totalCount int64, err error) {
-	selector.XMLName = xml.Name{"", "serviceSelector"}
+	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		mediaServiceUrl,
 		"get",
