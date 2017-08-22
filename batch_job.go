@@ -20,7 +20,7 @@ type BatchJobOperations struct {
 }
 
 type Operation struct {
-	Operator string      `xml:"https://adwords.google.com/api/adwords/cm/v201609 operator"`
+	Operator string      `xml:"https://adwords.google.com/api/adwords/cm/v201708 operator"`
 	Operand  interface{} `xml:"operand"`
 	Xsi_type string      `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
 }
@@ -93,7 +93,7 @@ func NewBatchJobService(auth *Auth) *BatchJobService {
 //		},
 //	)
 //
-// 	https://developers.google.com/adwords/api/docs/reference/v201609/BatchJobService#get
+// 	https://developers.google.com/adwords/api/docs/reference/v201708/BatchJobService#get
 func (s *BatchJobService) Get(selector Selector) (batchJobPage BatchJobPage, err error) {
 
 	selector.XMLName = xml.Name{baseUrl, "selector"}
@@ -136,7 +136,7 @@ func (s *BatchJobService) Get(selector Selector) (batchJobPage BatchJobPage, err
 //		},
 //	)
 //
-// 	https://developers.google.com/adwords/api/docs/reference/v201609/BatchJobService#mutate
+// 	https://developers.google.com/adwords/api/docs/reference/v201708/BatchJobService#mutate
 func (s *BatchJobService) Mutate(batchJobOperations BatchJobOperations) (batchJobs []BatchJob, err error) {
 
 	mutation := struct {

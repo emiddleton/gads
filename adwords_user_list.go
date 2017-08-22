@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"strings"
 )
 
 type AdwordsUserListService struct {
@@ -63,11 +64,27 @@ type MutateMembersOperations struct {
 	Operations []Operation `xml:"operations"`
 }
 
+// Member holds user list member identifiers.
+// https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService.Member
+type Member struct {
+	Email       string       `xml:"hashedEmail"`
+	MobileID    string       `xml:"mobileId"`
+	AddressInfo *AddressInfo `xml:"addressInfo,omitempty"`
+}
+
+// AddressInfo is an address identifier of a user list member.
+// Accessible for whitelisted customers only.
+type AddressInfo struct {
+	FirstName   string `xml:"hashedFirstName"`
+	LastName    string `xml:"hashedLastName"`
+	CountryCode string `xml:"countryCode"`
+	ZipCode     string `xml:"zipCode"`
+}
+
 type MutateMembersOperand struct {
 	UserListId int64    `xml:"userListId"`
-	DataType   string   `xml:"dataType"`
 	RemoveAll  *bool    `xml:"removeAll"`
-	Members    []string `xml:"members"`
+	Members    []Member `xml:"membersList"`
 }
 
 type UserList struct {
@@ -188,7 +205,7 @@ func NewCrmBasedUserList(name, description string, membershipLifeSpan int64, opt
 }
 
 func NewMutateMembersOperand() *MutateMembersOperand {
-	return &MutateMembersOperand{DataType: "EMAIL_SHA256"}
+	return new(MutateMembersOperand)
 }
 
 // Get returns an array of adwords user lists and the total number of adwords user lists matching
@@ -234,10 +251,10 @@ func NewMutateMembersOperand() *MutateMembersOperand {
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201609/AdwordsUserListService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService#get
 //
 func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, err error) {
-	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
+	selector.XMLName = xml.Name{Space: baseUrl, Local: "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adwordsUserListServiceUrl,
 		"get",
@@ -287,7 +304,7 @@ func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, er
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201609/AdwordsUserListService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService#mutate
 //
 func (s *AdwordsUserListService) Mutate(userListOperations UserListOperations) (adwordsUserLists []UserList, err error) {
 
@@ -337,7 +354,7 @@ func (s *AdwordsUserListService) Mutate(userListOperations UserListOperations) (
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201609/AdwordsUserListService#mutateMembers
+//     https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService#mutateMembers
 //
 func (s *AdwordsUserListService) MutateMembers(mutateMembersOperations MutateMembersOperations) (adwordsUserLists []UserList, err error) {
 	mutateMembersOperations.XMLName = xml.Name{
@@ -360,23 +377,41 @@ func (s *AdwordsUserListService) MutateMembers(mutateMembersOperations MutateMem
 	return mutateResp.AdwordsUserLists, err
 }
 
+// MarshalXML is custom XML marshalling logc for the MutateMembersOperand object
 func (mmo MutateMembersOperand) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-
-	mmo.encodeEmails()
-
+	mmo.encodeAndNormalize()
 	e.EncodeToken(start)
-	e.EncodeElement(&mmo.UserListId, xml.StartElement{Name: xml.Name{baseRemarketingUrl, "userListId"}})
-	e.EncodeElement(&mmo.DataType, xml.StartElement{Name: xml.Name{baseRemarketingUrl, "dataType"}})
-	e.EncodeElement(&mmo.Members, xml.StartElement{Name: xml.Name{baseRemarketingUrl, "members"}})
+	e.EncodeElement(&mmo.UserListId, xml.StartElement{Name: xml.Name{Space: baseRemarketingUrl, Local: "userListId"}})
+	e.EncodeElement(&mmo.Members, xml.StartElement{Name: xml.Name{Space: baseRemarketingUrl, Local: "members"}})
 	e.EncodeToken(start.End())
 	return nil
 }
 
-func (mmo *MutateMembersOperand) encodeEmails() {
-
-	for key, value := range mmo.Members {
+func (mmo *MutateMembersOperand) encodeAndNormalize() {
+	for _, member := range mmo.Members {
 		h256 := sha256.New()
-		io.WriteString(h256, value)
-		mmo.Members[key] = fmt.Sprintf("%x", h256.Sum(nil))
+		io.WriteString(h256, strings.ToLower(strings.TrimSpace(member.Email)))
+		member.Email = fmt.Sprintf("%x", h256.Sum(nil))
+
+		// https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService.AddressInfo
+		if member.AddressInfo != nil {
+			addr := member.AddressInfo
+
+			// First Name
+			h256 = sha256.New()
+			io.WriteString(h256, normalize(addr.FirstName))
+			addr.FirstName = fmt.Sprintf("%x", h256.Sum(nil))
+
+			// Last Name
+			h256 = sha256.New()
+			io.WriteString(h256, normalize(addr.LastName))
+			addr.LastName = fmt.Sprintf("%x", h256.Sum(nil))
+		}
 	}
+}
+
+func normalize(in string) string {
+	in = strings.TrimSpace(in)
+	in = strings.Replace(in, " ", "", -1)
+	return strings.ToLower(in)
 }

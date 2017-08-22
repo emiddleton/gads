@@ -17,7 +17,7 @@ func NewTargetingIdeaService(auth *Auth) *TargetingIdeaService {
 }
 
 // TargetingIdeaSelector A descriptor for finding TargetingIdeas that match the specified criteria.
-// https://developers.google.com/adwords/api/docs/reference/v201609/TargetingIdeaService.TargetingIdeaSelector
+// https://developers.google.com/adwords/api/docs/reference/v201708/TargetingIdeaService.TargetingIdeaSelector
 type TargetingIdeaSelector struct {
 	SearchParameters        []SearchParameter `xml:"searchParameters"`
 	IdeaType                string            `xml:"ideaType"`
@@ -279,7 +279,7 @@ func searchParameterMarshalXML(sp SearchParameter, e *xml.Encoder) error {
 }
 
 // Get Returns a page of ideas that match the query described by the specified TargetingIdeaSelector.
-// https://developers.google.com/adwords/api/docs/reference/v201609/TargetingIdeaService
+// https://developers.google.com/adwords/api/docs/reference/v201708/TargetingIdeaService
 func (s *TargetingIdeaService) Get(selector TargetingIdeaSelector) (targetingIdeas []TargetingIdeas, totalCount int64, err error) {
 
 	respBody, err := s.Auth.request(

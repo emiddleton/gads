@@ -73,7 +73,7 @@ func (s *ManagedCustomerService) Get(selector Selector) (managedCustomerPage Man
 
 func (s *ManagedCustomerService) Mutate(managedCustomerOperations ManagedCustomerOperations) (managedCustomers []ManagedCustomer, err error) {
 	type managedCustomerOperation struct {
-		Action          string          `xml:"https://adwords.google.com/api/adwords/cm/v201609 operator"`
+		Action          string          `xml:"https://adwords.google.com/api/adwords/cm/v201708 operator"`
 		ManagedCustomer ManagedCustomer `xml:"operand"`
 	}
 

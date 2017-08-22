@@ -140,7 +140,7 @@ type AdGroupCriterionOperations map[string]AdGroupCriterions
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupCriterionService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupCriterionService#get
 //
 func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGroupCriterions, totalCount int64, err error) {
 	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
@@ -202,7 +202,7 @@ func (s AdGroupCriterionService) Get(selector Selector) (adGroupCriterions AdGro
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupCriterionService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupCriterionService#mutate
 //
 func (s *AdGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCriterionOperations) (adGroupCriterions AdGroupCriterions, err error) {
 	type adGroupCriterionOperation struct {
@@ -263,7 +263,7 @@ func (s *AdGroupCriterionService) Mutate(adGroupCriterionOperations AdGroupCrite
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupCriterionService#mutateLabel
+//     https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupCriterionService#mutateLabel
 //
 func (s *AdGroupCriterionService) MutateLabel(adGroupCriterionLabelOperations AdGroupCriterionLabelOperations) (adGroupCriterionLabels []AdGroupCriterionLabel, err error) {
 	type adGroupCriterionLabelOperation struct {
@@ -307,7 +307,7 @@ func (s *AdGroupCriterionService) MutateLabel(adGroupCriterionLabelOperations Ad
 
 // Query documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupCriterionService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupCriterionService#query
 //
 func (s *AdGroupCriterionService) Query(query string) (adGroupCriterions AdGroupCriterions, totalCount int64, err error) {
 

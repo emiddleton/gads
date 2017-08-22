@@ -42,57 +42,57 @@ type GenderCriterion struct {
 }
 
 type KeywordCriterion struct {
-	Id        int64  `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
-	Text      string `xml:"https://adwords.google.com/api/adwords/cm/v201609 text,omitempty"`      // Text: up to 80 characters and ten words
-	MatchType string `xml:"https://adwords.google.com/api/adwords/cm/v201609 matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
+	Id        int64  `xml:"https://adwords.google.com/api/adwords/cm/v201708 id,omitempty"`
+	Text      string `xml:"https://adwords.google.com/api/adwords/cm/v201708 text,omitempty"`      // Text: up to 80 characters and ten words
+	MatchType string `xml:"https://adwords.google.com/api/adwords/cm/v201708 matchType,omitempty"` // MatchType:  "EXACT", "PHRASE", "BROAD"
 }
 
-// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.Keyword
+// https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupExtensionSettingService.Keyword
 // Represents a keyword.
 type Keyword struct {
-	Id            int64         `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
-	Type          CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 type,omitempty"`
-	CriterionType CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 Criterion.Type,omitempty"`
+	Id            int64         `xml:"https://adwords.google.com/api/adwords/cm/v201708 id,omitempty"`
+	Type          CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201708 type,omitempty"`
+	CriterionType CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201708 Criterion.Type,omitempty"`
 
-	Text      string           `xml:"https://adwords.google.com/api/adwords/cm/v201609 text,omitempty"`
-	MatchType KeywordMatchType `xml:"https://adwords.google.com/api/adwords/cm/v201609 matchType,omitempty"`
+	Text      string           `xml:"https://adwords.google.com/api/adwords/cm/v201708 text,omitempty"`
+	MatchType KeywordMatchType `xml:"https://adwords.google.com/api/adwords/cm/v201708 matchType,omitempty"`
 }
 
-// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.KeywordMatchType
+// https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupExtensionSettingService.KeywordMatchType
 // Match type of a keyword. i.e. the way we match a keyword string with search queries.
 // EXACT, PHRASE, BROAD
 type KeywordMatchType string
 
-// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.Criterion.Type
+// https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupExtensionSettingService.Criterion.Type
 // The types of criteria
 type CriterionType string
 
-// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.LocationTargetingStatus
+// https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupExtensionSettingService.LocationTargetingStatus
 // Enum that represents the different Targeting Status values for a Location criterion.
 // ACTIVE, OBSOLETE, PHASING_OUT
 type LocationTargetingStatus string
 
 type LanguageCriterion struct {
-	Id   int64  `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
-	Code string `xml:"https://adwords.google.com/api/adwords/cm/v201609 code,omitempty"`
-	Name string `xml:"https://adwords.google.com/api/adwords/cm/v201609 name,omitempty"`
+	Id   int64  `xml:"https://adwords.google.com/api/adwords/cm/v201708 id,omitempty"`
+	Code string `xml:"https://adwords.google.com/api/adwords/cm/v201708 code,omitempty"`
+	Name string `xml:"https://adwords.google.com/api/adwords/cm/v201708 name,omitempty"`
 }
 
-// https://developers.google.com/adwords/api/docs/reference/v201609/AdGroupExtensionSettingService.Location
+// https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupExtensionSettingService.Location
 // Represents Location criterion.  A criterion of this type can only be created using an ID.
 // LocationName:
 // DisplayType:
 // TargetingStatus: ACTIVE, OBSOLETE, PHASING_OUT
 // ParentLocations:
 type Location struct {
-	Id            int64         `xml:"https://adwords.google.com/api/adwords/cm/v201609 id,omitempty"`
-	Type          CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 type,omitempty"`
-	CriterionType CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201609 Criterion.Type,omitempty"`
+	Id            int64         `xml:"https://adwords.google.com/api/adwords/cm/v201708 id,omitempty"`
+	Type          CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201708 type,omitempty"`
+	CriterionType CriterionType `xml:"https://adwords.google.com/api/adwords/cm/v201708 Criterion.Type,omitempty"`
 
-	LocationName    string                  `xml:"https://adwords.google.com/api/adwords/cm/v201609 locationName,omitempty"`
-	DisplayType     string                  `xml:"https://adwords.google.com/api/adwords/cm/v201609 displayType,omitempty"`
-	TargetingStatus LocationTargetingStatus `xml:"https://adwords.google.com/api/adwords/cm/v201609 targetingStatus,omitempty"`
-	ParentLocations []Location              `xml:"https://adwords.google.com/api/adwords/cm/v201609 parentLocations,omitempty"`
+	LocationName    string                  `xml:"https://adwords.google.com/api/adwords/cm/v201708 locationName,omitempty"`
+	DisplayType     string                  `xml:"https://adwords.google.com/api/adwords/cm/v201708 displayType,omitempty"`
+	TargetingStatus LocationTargetingStatus `xml:"https://adwords.google.com/api/adwords/cm/v201708 targetingStatus,omitempty"`
+	ParentLocations []Location              `xml:"https://adwords.google.com/api/adwords/cm/v201708 parentLocations,omitempty"`
 }
 
 // MobileAppCategoryId:

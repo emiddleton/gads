@@ -12,17 +12,17 @@ func NewCampaignExtensionService(auth *Auth) *CampaignExtensionSettingService {
 	return &CampaignExtensionSettingService{Auth: *auth}
 }
 
-// https://developers.google.com/adwords/api/docs/reference/v201609/CampaignExtensionSettingService.CampaignExtensionSetting
+// https://developers.google.com/adwords/api/docs/reference/v201708/CampaignExtensionSettingService.CampaignExtensionSetting
 // A CampaignExtensionSetting is used to add or modify extensions being served for the specified campaign.
 type CampaignExtensionSetting struct {
-	CampaignId       int64            `xml:"https://adwords.google.com/api/adwords/cm/v201609 campaignId,omitempty"`
-	ExtensionType    FeedType         `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionType,omitempty"`
-	ExtensionSetting ExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201609 extensionSetting,omitempty"`
+	CampaignId       int64            `xml:"https://adwords.google.com/api/adwords/cm/v201708 campaignId,omitempty"`
+	ExtensionType    FeedType         `xml:"https://adwords.google.com/api/adwords/cm/v201708 extensionType,omitempty"`
+	ExtensionSetting ExtensionSetting `xml:"https://adwords.google.com/api/adwords/cm/v201708 extensionSetting,omitempty"`
 }
 
 type CampaignExtensionSettingOperations map[string][]CampaignExtensionSetting
 
-// https://developers.google.com/adwords/api/docs/reference/v201609/CampaignExtensionSettingService#query
+// https://developers.google.com/adwords/api/docs/reference/v201708/CampaignExtensionSettingService#query
 func (s *CampaignExtensionSettingService) Query(query string) (settings []CampaignExtensionSetting, totalCount int64, err error) {
 	respBody, err := s.Auth.request(
 		campaignExtensionSettingUrl,
@@ -52,7 +52,7 @@ func (s *CampaignExtensionSettingService) Query(query string) (settings []Campai
 	return getResp.Settings, getResp.Size, err
 }
 
-// https://developers.google.com/adwords/api/docs/reference/v201609/CampaignExtensionSettingService#mutate
+// https://developers.google.com/adwords/api/docs/reference/v201708/CampaignExtensionSettingService#mutate
 func (s *CampaignExtensionSettingService) Mutate(settingsOperations CampaignExtensionSettingOperations) (settings []CampaignExtensionSetting, err error) {
 	type settingOperations struct {
 		Action  string                   `xml:"operator"`

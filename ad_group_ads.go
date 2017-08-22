@@ -47,12 +47,10 @@ func (a1 AdGroupAds) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	typeName := xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"}
 	var adGroupId int64
-	var status, approvalStatus string
-	var disapprovalReasons []string
-	var trademarkDisapproved bool
+	var status string
 	var labels []Label
 	var experimentData *AdGroupExperimentData
-	var trademarks []string
+	var policySummary *AdGroupAdPolicySummary
 	var baseCampaignId *int64
 	var baseAdGroupId *int64
 	var ad interface{}
@@ -109,6 +107,12 @@ func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) er
 					if err != nil {
 						return err
 					}
+				case "ExpandedDynamicSearchAd":
+					a := ExpandedDynamicSearchAd{AdGroupId: adGroupId}
+					err := dec.DecodeElement(&a, &start)
+					if err != nil {
+						return err
+					}
 				case "ProductAd":
 					a := ProductAd{AdGroupId: adGroupId}
 					err := dec.DecodeElement(&a, &start)
@@ -123,28 +127,13 @@ func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) er
 				if err != nil {
 					return err
 				}
+			case "policySummary", "PolicySummary":
+				err := dec.DecodeElement(&policySummary, &start)
+				if err != nil {
+					return err
+				}
 			case "status":
 				err := dec.DecodeElement(&status, &start)
-				if err != nil {
-					return err
-				}
-			case "approvalStatus":
-				err := dec.DecodeElement(&approvalStatus, &start)
-				if err != nil {
-					return err
-				}
-			case "trademarks":
-				err := dec.DecodeElement(&trademarks, &start)
-				if err != nil {
-					return err
-				}
-			case "disapprovalReasons":
-				err := dec.DecodeElement(&disapprovalReasons, &start)
-				if err != nil {
-					return err
-				}
-			case "trademarkDisapproved":
-				err := dec.DecodeElement(&trademarkDisapproved, &start)
 				if err != nil {
 					return err
 				}
@@ -172,44 +161,34 @@ func (aga *AdGroupAds) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) er
 	switch a := ad.(type) {
 	case TextAd:
 		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
+		a.PolicySummary = policySummary
 		*aga = append(*aga, a)
 	case ExpandedTextAd:
 		a.ExperimentData = experimentData
 		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.Trademarks = trademarks
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
+		a.PolicySummary = policySummary
 		a.Labels = labels
 		a.BaseCampaignId = baseCampaignId
 		a.BaseAdGroupId = baseAdGroupId
 		*aga = append(*aga, a)
 	case ImageAd:
 		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
+		a.PolicySummary = policySummary
 		*aga = append(*aga, a)
 	case TemplateAd:
 		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
+		a.PolicySummary = policySummary
 		*aga = append(*aga, a)
 	case DynamicSearchAd:
 		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
+		a.PolicySummary = policySummary
+		*aga = append(*aga, a)
+	case ExpandedDynamicSearchAd:
+		a.Status = status
 		*aga = append(*aga, a)
 	case ProductAd:
 		a.Status = status
-		a.ApprovalStatus = approvalStatus
-		a.DisapprovalReasons = disapprovalReasons
-		a.TrademarkDisapproved = trademarkDisapproved
+		a.PolicySummary = policySummary
 		*aga = append(*aga, a)
 	}
 	return nil

@@ -11,7 +11,6 @@ type Customer struct {
 	CurrencyCode               string                     `xml:"currencyCode,omitempty"`
 	DateTimeZone               string                     `xml:"dateTimeZone,omitempty"`
 	DescriptiveName            string                     `xml:"descriptiveName,omitempty"`
-	CompanyName                string                     `xml:"companyName,omitempty"`
 	CanManageClients           bool                       `xml:"canManageClients,omitempty"`
 	IsTestAccount              bool                       `xml:"testAccount,omitempty"`
 	AutoTaggingEnabled         bool                       `xml:"autoTaggingEnabled,omitempty"`

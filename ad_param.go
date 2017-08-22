@@ -20,7 +20,7 @@ func NewAdParamService(auth *Auth) *AdParamService {
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/AdParamService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201708/AdParamService#get
 //
 func (s AdParamService) Get(selector Selector) (adParams []AdParam, err error) {
 	return adParams, ERROR_NOT_YET_IMPLEMENTED

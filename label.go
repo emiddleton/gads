@@ -53,7 +53,7 @@ type LabelOperations map[string][]Label
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/LabelService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201708/LabelService#get
 //
 func (s LabelService) Get(selector Selector) (labels []Label, totalCount int64, err error) {
 	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
@@ -108,7 +108,7 @@ func (s LabelService) Get(selector Selector) (labels []Label, totalCount int64, 
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201409/LabelService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201708/LabelService#mutate
 //
 func (s *LabelService) Mutate(labelOperations LabelOperations) (labels []Label, err error) {
 	type labelOperation struct {
