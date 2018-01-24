@@ -67,8 +67,8 @@ type MutateMembersOperations struct {
 // Member holds user list member identifiers.
 // https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService.Member
 type Member struct {
-	Email       string       `xml:"hashedEmail"`
-	MobileID    string       `xml:"mobileId"`
+	Emails      []string     `xml:"hashedEmail,omitempty"`
+	MobileIDs   []string     `xml:"mobileId,omitempty"`
 	AddressInfo *AddressInfo `xml:"addressInfo,omitempty"`
 }
 
@@ -254,7 +254,7 @@ func NewMutateMembersOperand() *MutateMembersOperand {
 //     https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService#get
 //
 func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, err error) {
-	selector.XMLName = xml.Name{Space: baseUrl, Local: "serviceSelector"}
+	selector.XMLName = xml.Name{Space: baseRemarketingUrl, Local: "serviceSelector"}
 	respBody, err := s.Auth.request(
 		adwordsUserListServiceUrl,
 		"get",
@@ -263,7 +263,7 @@ func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, er
 			Sel     Selector
 		}{
 			XMLName: xml.Name{
-				Space: baseUrl,
+				Space: baseRemarketingUrl,
 				Local: "get",
 			},
 			Sel: selector,
@@ -382,23 +382,25 @@ func (mmo MutateMembersOperand) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	mmo.encodeAndNormalize()
 	e.EncodeToken(start)
 	e.EncodeElement(&mmo.UserListId, xml.StartElement{Name: xml.Name{Space: baseRemarketingUrl, Local: "userListId"}})
-	e.EncodeElement(&mmo.Members, xml.StartElement{Name: xml.Name{Space: baseRemarketingUrl, Local: "members"}})
+	e.EncodeElement(&mmo.Members, xml.StartElement{Name: xml.Name{Space: baseRemarketingUrl, Local: "membersList"}})
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (mmo *MutateMembersOperand) encodeAndNormalize() {
-	for _, member := range mmo.Members {
-		h256 := sha256.New()
-		io.WriteString(h256, strings.ToLower(strings.TrimSpace(member.Email)))
-		member.Email = fmt.Sprintf("%x", h256.Sum(nil))
+	for i, member := range mmo.Members {
+		for j, email := range member.Emails {
+			h256 := sha256.New()
+			io.WriteString(h256, strings.ToLower(strings.TrimSpace(email)))
+			mmo.Members[i].Emails[j] = fmt.Sprintf("%x", h256.Sum(nil))
+		}
 
 		// https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService.AddressInfo
 		if member.AddressInfo != nil {
 			addr := member.AddressInfo
 
 			// First Name
-			h256 = sha256.New()
+			h256 := sha256.New()
 			io.WriteString(h256, normalize(addr.FirstName))
 			addr.FirstName = fmt.Sprintf("%x", h256.Sum(nil))
 
