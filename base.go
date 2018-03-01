@@ -1,10 +1,10 @@
 package gads
 
 import (
-	"bytes"
 	"encoding/xml"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -205,27 +205,21 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, o
 		header.ClientCustomerId = a.CustomerId
 	}
 
-	reqBody, err := xml.MarshalIndent(
-		soapReqEnvelope{
+	r, w := io.Pipe()
+
+	go func() {
+		w.CloseWithError(xml.NewEncoder(w).Encode(soapReqEnvelope{
 			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
 			Header:  header,
 			Body:    soapReqBody{body},
-		},
-		"  ", "  ")
-	if err != nil {
-		return []byte{}, err
-	}
+		}))
+	}()
 
-	req, err := http.NewRequest("POST", serviceUrl.String(), bytes.NewReader(reqBody))
+	req, err := http.NewRequest("POST", serviceUrl.String(), r)
 	req.Header.Add("Accept", "text/xml")
 	req.Header.Add("Accept", "multipart/*")
 	req.Header.Add("Content-Type", "text/xml;charset=UTF-8")
-	contentLength := fmt.Sprintf("%d", len(reqBody))
-	req.Header.Add("Content-length", contentLength)
 	req.Header.Add("SOAPAction", action)
-	if a.Testing != nil {
-		a.Testing.Logf("request ->\n%s\n%#v\n%s\n", req.URL.String(), req.Header, string(reqBody))
-	}
 	resp, err := a.Client.Do(req)
 	if err != nil {
 		return []byte{}, err
