@@ -24,8 +24,8 @@ type PolicyTopicEntry struct {
 }
 
 type PolicyTopicEvidence struct {
-	Type string `xml:"policyTopicEvidenceType,omitempty"`
-	Text string `xml:"evidenceText,omitempty"`
+	Type string   `xml:"policyTopicEvidenceType,omitempty"`
+	Text []string `xml:"evidenceTextList,omitempty"`
 }
 
 type PolicyTopicConstraint struct {
@@ -203,7 +203,7 @@ type DynamicSearchAd struct {
 	PolicySummary       *AdGroupAdPolicySummary `xml:"-"`
 }
 
-// https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupAdService.ExpandedDynamicSearchAd
+// https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupAdService.ExpandedDynamicSearchAd
 type ExpandedDynamicSearchAd struct {
 	AdGroupId           int64                   `xml:"-"`
 	Id                  int64                   `xml:"id,omitempty"`
@@ -307,7 +307,7 @@ type AdUrlUpgrade struct {
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupAdService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupAdService#get
 //
 func (s AdGroupAdService) Get(selector Selector) (adGroupAds AdGroupAds, totalCount int64, err error) {
 	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
@@ -369,7 +369,7 @@ func (s AdGroupAdService) Get(selector Selector) (adGroupAds AdGroupAds, totalCo
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupAdService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupAdService#mutate
 //
 func (s *AdGroupAdService) Mutate(adGroupAdOperations AdGroupAdOperations) (adGroupAds AdGroupAds, err error) {
 	type adGroupAdOperation struct {
@@ -428,7 +428,7 @@ func (s *AdGroupAdService) Mutate(adGroupAdOperations AdGroupAdOperations) (adGr
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupAdService#mutateLabel
+//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupAdService#mutateLabel
 //
 func (s *AdGroupAdService) MutateLabel(adGroupAdLabelOperations AdGroupAdLabelOperations) (adGroupAdLabels []AdGroupAdLabel, err error) {
 	type adGroupAdLabelOperation struct {
@@ -474,7 +474,7 @@ func (s *AdGroupAdService) MutateLabel(adGroupAdLabelOperations AdGroupAdLabelOp
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/AdGroupAdService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupAdService#query
 //
 func (s *AdGroupAdService) Query(query string) (adGroupAds AdGroupAds, totalCount int64, err error) {
 	return adGroupAds, totalCount, ERROR_NOT_YET_IMPLEMENTED

@@ -2,8 +2,9 @@ package gads
 
 import (
 	"fmt"
-	"golang.org/x/net/context"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 func ExampleCampaignService_Get() {
@@ -178,7 +179,7 @@ func ExampleAdGroupService_Get() {
 			fmt.Printf("Error occured finding ad group")
 		}
 		for _, ag := range adGroups {
-			fmt.Printf("Ad group name is '%s' and ID is %d", ag.Id, ag.Name)
+			fmt.Printf("Ad group name is '%d' and ID is %s", ag.Id, ag.Name)
 		}
 		// Increment values to request the next page.
 		offset += pageSize
@@ -187,7 +188,7 @@ func ExampleAdGroupService_Get() {
 			break
 		}
 	}
-	fmt.Printf("\tCampaign ID %d has %d ad group(s).", campaignId, totalCount)
+	fmt.Printf("\tCampaign ID %s has %d ad group(s).", campaignId, totalCount)
 }
 
 func ExampleAdGroupService_Mutate() {
@@ -331,7 +332,7 @@ func ExampleAdGroupCriterionService_Get() {
 		offset += pageSize
 		paging.Offset = offset
 		if totalCount < offset {
-			fmt.Printf("\tAd group ID %d has %d keyword(s).", totalCount)
+			fmt.Printf("\tAd group ID %s has %d keyword(s).", adGroupId, totalCount)
 			break
 		}
 	}
@@ -474,7 +475,7 @@ func ExampleAdGroupAdService_Get() {
 			break
 		}
 	}
-	fmt.Printf("\tAd group ID %d has %d ad(s).", totalCount)
+	fmt.Printf("\tAd group ID %s has %d ad(s).", adGroupId, totalCount)
 }
 
 func ExampleAdGroupAdService_Mutate() {

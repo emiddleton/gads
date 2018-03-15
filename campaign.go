@@ -83,10 +83,10 @@ func NewTrackingSetting(trackingUrl string) CampaignSetting {
 }
 
 type NetworkSetting struct {
-	TargetGoogleSearch         bool `xml:"https://adwords.google.com/api/adwords/cm/v201708 targetGoogleSearch"`
-	TargetSearchNetwork        bool `xml:"https://adwords.google.com/api/adwords/cm/v201708 targetSearchNetwork"`
-	TargetContentNetwork       bool `xml:"https://adwords.google.com/api/adwords/cm/v201708 targetContentNetwork"`
-	TargetPartnerSearchNetwork bool `xml:"https://adwords.google.com/api/adwords/cm/v201708 targetPartnerSearchNetwork"`
+	TargetGoogleSearch         bool `xml:"https://adwords.google.com/api/adwords/cm/v201802 targetGoogleSearch"`
+	TargetSearchNetwork        bool `xml:"https://adwords.google.com/api/adwords/cm/v201802 targetSearchNetwork"`
+	TargetContentNetwork       bool `xml:"https://adwords.google.com/api/adwords/cm/v201802 targetContentNetwork"`
+	TargetPartnerSearchNetwork bool `xml:"https://adwords.google.com/api/adwords/cm/v201802 targetPartnerSearchNetwork"`
 }
 
 type BiddingScheme struct {
@@ -130,7 +130,7 @@ type Campaign struct {
 	EndDate                        *string                         `xml:"endDate,omitempty"`
 	BudgetId                       int64                           `xml:"budget>budgetId"`
 	ConversionOptimizerEligibility *conversionOptimizerEligibility `xml:"conversionOptimizerEligibility"`
-	AdServingOptimizationStatus    string                          `xml:"adServingOptimizationStatus"`
+	AdServingOptimizationStatus    string                          `xml:"adServingOptimizationStatus,omitempty"`
 	FrequencyCap                   *FrequencyCap                   `xml:"frequencyCap"`
 	Settings                       []CampaignSetting               `xml:"settings"`
 	AdvertisingChannelType         string                          `xml:"advertisingChannelType,omitempty"`    // "UNKNOWN", "SEARCH", "DISPLAY", "SHOPPING"
@@ -184,7 +184,7 @@ type CampaignLabelOperations map[string][]CampaignLabel
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/CampaignService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201802/CampaignService#get
 //
 func (s *CampaignService) Get(selector Selector) (campaigns []Campaign, totalCount int64, err error) {
 	// The default namespace, "", will break in 1.5 with the addition of
@@ -253,7 +253,7 @@ func (s *CampaignService) Get(selector Selector) (campaigns []Campaign, totalCou
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/CampaignService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201802/CampaignService#mutate
 //
 func (s *CampaignService) Mutate(campaignOperations CampaignOperations) (campaigns []Campaign, err error) {
 	type campaignOperation struct {
@@ -312,7 +312,7 @@ func (s *CampaignService) Mutate(campaignOperations CampaignOperations) (campaig
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/CampaignService#mutateLabel
+//     https://developers.google.com/adwords/api/docs/reference/v201802/CampaignService#mutateLabel
 //
 func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOperations) (campaignLabels []CampaignLabel, err error) {
 	type campaignLabelOperation struct {
@@ -356,7 +356,7 @@ func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOpera
 
 // Query documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/CampaignService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201802/CampaignService#query
 //
 func (s *CampaignService) Query(query string) (campaigns []Campaign, totalCount int64, err error) {
 

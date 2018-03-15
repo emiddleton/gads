@@ -65,7 +65,7 @@ type MutateMembersOperations struct {
 }
 
 // Member holds user list member identifiers.
-// https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService.Member
+// https://developers.google.com/adwords/api/docs/reference/v201802/AdwordsUserListService.Member
 type Member struct {
 	Emails      []string     `xml:"hashedEmail,omitempty"`
 	MobileIDs   []string     `xml:"mobileId,omitempty"`
@@ -122,7 +122,9 @@ type UserList struct {
 	SeedListSize            *int64  `xml:"seedListSize,omitempty"`
 
 	// CrmBasedUserList
-	OptOutLink *string `xml:"optOutLink,omitempty"`
+	OptOutLink    *string `xml:"optOutLink,omitempty"`
+	AppID         string  `xml:"appId,omitempty"`
+	UploadKeyType string  `xml:"uploadKeyType,omitempty"`
 
 	// Keep track of xsi:type for mutate and mutateMembers
 	Xsi_type string `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
@@ -194,8 +196,10 @@ func NewSimilarUserList(name, description, status, integrationCode string, membe
 	}
 }
 
-func NewCrmBasedUserList(name, description string, membershipLifeSpan int64, optOutLink string) (adwordsUserList UserList) {
+func NewCrmBasedUserList(appID, uploadKeyType, name, description string, membershipLifeSpan int64, optOutLink string) (adwordsUserList UserList) {
 	return UserList{
+		AppID:              appID, // required field for CRM based list
+		UploadKeyType:      uploadKeyType,
 		Name:               name,
 		Description:        description,
 		MembershipLifeSpan: membershipLifeSpan,
@@ -251,7 +255,7 @@ func NewMutateMembersOperand() *MutateMembersOperand {
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201802/AdwordsUserListService#get
 //
 func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, err error) {
 	selector.XMLName = xml.Name{Space: baseRemarketingUrl, Local: "serviceSelector"}
@@ -304,7 +308,7 @@ func (s AdwordsUserListService) Get(selector Selector) (userLists []UserList, er
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201802/AdwordsUserListService#mutate
 //
 func (s *AdwordsUserListService) Mutate(userListOperations UserListOperations) (adwordsUserLists []UserList, err error) {
 
@@ -354,7 +358,7 @@ func (s *AdwordsUserListService) Mutate(userListOperations UserListOperations) (
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService#mutateMembers
+//     https://developers.google.com/adwords/api/docs/reference/v201802/AdwordsUserListService#mutateMembers
 //
 func (s *AdwordsUserListService) MutateMembers(mutateMembersOperations MutateMembersOperations) (adwordsUserLists []UserList, err error) {
 	mutateMembersOperations.XMLName = xml.Name{
@@ -395,7 +399,7 @@ func (mmo *MutateMembersOperand) encodeAndNormalize() {
 			mmo.Members[i].Emails[j] = fmt.Sprintf("%x", h256.Sum(nil))
 		}
 
-		// https://developers.google.com/adwords/api/docs/reference/v201708/AdwordsUserListService.AddressInfo
+		// https://developers.google.com/adwords/api/docs/reference/v201802/AdwordsUserListService.AddressInfo
 		if member.AddressInfo != nil {
 			addr := member.AddressInfo
 
