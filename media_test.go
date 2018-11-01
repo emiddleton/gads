@@ -47,7 +47,7 @@ func TestMedia(t *testing.T) {
 					"MediaId",
 					"Height",
 					"Width",
-					"MimeType",
+					"LegacyMimeType",
 					"Urls",
 				},
 				Predicates: []Predicate{
@@ -62,7 +62,7 @@ func TestMedia(t *testing.T) {
 		for _, m := range medias {
 			for _, d := range m.Dimensions {
 				if d.Name == "FULL" {
-					fmt.Printf("Entry ID %d with dimensions %dx%d and MIME type is '%s'\n", m.Id, d.Height, d.Width, m.MimeType)
+					fmt.Printf("Entry ID %d with dimensions %dx%d and MIME type is '%s'\n", m.Id, d.Height, d.Width, m.LegacyMimeType)
 				}
 			}
 		}

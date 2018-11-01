@@ -16,7 +16,7 @@ type KeywordEstimateRequest struct {
 
 type AdGroupEstimateRequest struct {
 	KeywordEstimateRequests []KeywordEstimateRequest `xml:"keywordEstimateRequests"`
-	MaxCpc                  int64                    `xml:"https://adwords.google.com/api/adwords/cm/v201802 maxCpc>microAmount"`
+	MaxCpc                  int64                    `xml:"https://adwords.google.com/api/adwords/cm/v201809 maxCpc>microAmount"`
 }
 
 type CampaignEstimateRequest struct {
@@ -107,7 +107,7 @@ type CampaignEstimate struct {
 //
 // Relevant documentation
 //
-// 		https://developers.google.com/adwords/api/docs/reference/v201802/TrafficEstimatorService#get
+// 		https://developers.google.com/adwords/api/docs/reference/v201809/TrafficEstimatorService#get
 //
 func (s *TrafficEstimatorService) Get(selector TrafficEstimatorSelector) (res []CampaignEstimate, err error) {
 

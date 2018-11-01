@@ -11,8 +11,8 @@ func NewShallowCampaignService(auth *Auth) *ShallowCampaignService {
 }
 
 type ShallowCampaign struct {
-	Id                             int64                           `xml:"id"`
-	Name                           string                          `xml:"name"`
+	Id   int64  `xml:"id"`
+	Name string `xml:"name"`
 }
 
 func (s *ShallowCampaignService) Get(selector Selector) (campaigns []ShallowCampaign, totalCount int64, err error) {
@@ -20,7 +20,7 @@ func (s *ShallowCampaignService) Get(selector Selector) (campaigns []ShallowCamp
 	respBody, err := s.Auth.request(
 		campaignServiceUrl,
 		"get",
-			struct {
+		struct {
 			XMLName xml.Name
 			Sel     Selector
 		}{
@@ -36,7 +36,7 @@ func (s *ShallowCampaignService) Get(selector Selector) (campaigns []ShallowCamp
 		return campaigns, totalCount, err
 	}
 	getResp := struct {
-		Size      int64      `xml:"rval>totalNumEntries"`
+		Size      int64             `xml:"rval>totalNumEntries"`
 		Campaigns []ShallowCampaign `xml:"rval>entries"`
 	}{}
 	err = xml.Unmarshal([]byte(respBody), &getResp)

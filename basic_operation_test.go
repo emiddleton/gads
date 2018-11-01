@@ -355,7 +355,6 @@ func ExampleAdGroupCriterionService_Mutate() {
 						MatchType: "BROAD",
 					},
 					UserStatus:     "PAUSED",
-					DestinationUrl: "http://example.com/mars",
 				},
 				BiddableAdGroupCriterion{
 					AdGroupId: adGroupId,

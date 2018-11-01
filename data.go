@@ -71,8 +71,8 @@ type CriterionBidLandscape struct {
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/DataService#getadgroupbidlandscape
-//	   https://developers.google.com/adwords/api/docs/appendix/selectorfields#v201802-DataService
+//     https://developers.google.com/adwords/api/docs/reference/v201809/DataService#getadgroupbidlandscape
+//	   https://developers.google.com/adwords/api/docs/appendix/selectorfields#v201809-DataService
 //
 func (s *DataService) GetAdGroupBidLandscape(selector Selector) (adGroupBidLandscapes []AdGroupBidLandscape, totalCount int64, err error) {
 	// The default namespace, "", will break in 1.5 with the addition of
@@ -141,8 +141,8 @@ func (s *DataService) GetAdGroupBidLandscape(selector Selector) (adGroupBidLands
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/DataService#getcriterionbidlandscape
-//	   https://developers.google.com/adwords/api/docs/appendix/selectorfields#v201802-DataService
+//     https://developers.google.com/adwords/api/docs/reference/v201809/DataService#getcriterionbidlandscape
+//	   https://developers.google.com/adwords/api/docs/appendix/selectorfields#v201809-DataService
 //
 func (s *DataService) GetCriterionBidLandscape(selector Selector) (criterionBidLandscapes []CriterionBidLandscape, totalCount int64, err error) {
 	// The default namespace, "", will break in 1.5 with the addition of
@@ -183,7 +183,7 @@ func (s *DataService) GetCriterionBidLandscape(selector Selector) (criterionBidL
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/DataService#queryadgroupbidlandscape
+//     https://developers.google.com/adwords/api/docs/reference/v201809/DataService#queryadgroupbidlandscape
 //
 func (s *DataService) QueryAdGroupBidLandscape(query string) (adGroupBidLandscapes []AdGroupBidLandscape, totalCount int64, err error) {
 
@@ -220,7 +220,7 @@ func (s *DataService) QueryAdGroupBidLandscape(query string) (adGroupBidLandscap
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/DataService#querycriterionbidlandscape
+//     https://developers.google.com/adwords/api/docs/reference/v201809/DataService#querycriterionbidlandscape
 //
 func (s *DataService) QueryCriterionBidLandscape(query string) (criterionBidLandscapes []CriterionBidLandscape, totalCount int64, err error) {
 

@@ -81,7 +81,7 @@ type AdGroupLabelOperations map[string][]AdGroupLabel
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201809/AdGroupService#get
 //
 func (s *AdGroupService) Get(selector Selector) (adGroups []AdGroup, totalCount int64, err error) {
 	selector.XMLName = xml.Name{baseUrl, "serviceSelector"}
@@ -150,7 +150,7 @@ func (s *AdGroupService) Get(selector Selector) (adGroups []AdGroup, totalCount 
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201809/AdGroupService#mutate
 //
 func (s *AdGroupService) Mutate(adGroupOperations AdGroupOperations) (adGroups []AdGroup, err error) {
 	type adGroupOperation struct {
@@ -210,7 +210,7 @@ func (s *AdGroupService) Mutate(adGroupOperations AdGroupOperations) (adGroups [
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupService#mutateLabel
+//     https://developers.google.com/adwords/api/docs/reference/v201809/AdGroupService#mutateLabel
 //
 func (s *AdGroupService) MutateLabel(adGroupLabelOperations AdGroupLabelOperations) (adGroupLabels []AdGroupLabel, err error) {
 	type adGroupLabelOperation struct {
@@ -254,7 +254,7 @@ func (s *AdGroupService) MutateLabel(adGroupLabelOperations AdGroupLabelOperatio
 
 // Query documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201809/AdGroupService#query
 //
 func (s *AdGroupService) Query(query string) (adGroups []AdGroup, totalCount int64, err error) {
 

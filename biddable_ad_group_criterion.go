@@ -15,7 +15,6 @@ type BiddableAdGroupCriterion struct {
 	SystemServingStatus string   `xml:"systemServingStatus,omitempty"`
 	ApprovalStatus      string   `xml:"approvalStatus,omitempty"`
 	DisapprovalReasons  []string `xml:"disapprovalReasons,omitempty"`
-	DestinationUrl      string   `xml:"destinationUrl,omitempty"`
 
 	// TODO add ExperimentData
 	FirstPageCpc *Cpc `xml:"firstPageCpc,omitempty"`
@@ -47,9 +46,6 @@ func (bagc BiddableAdGroupCriterion) MarshalXML(e *xml.Encoder, start xml.StartE
 	criterionMarshalXML(bagc.Criterion, e)
 	if bagc.UserStatus != "" {
 		e.EncodeElement(&bagc.UserStatus, xml.StartElement{Name: xml.Name{baseUrl, "userStatus"}})
-	}
-	if bagc.DestinationUrl != "" {
-		e.EncodeElement(&bagc.DestinationUrl, xml.StartElement{Name: xml.Name{baseUrl, "destinationUrl"}})
 	}
 	e.EncodeElement(&bagc.BiddingStrategyConfiguration, xml.StartElement{Name: xml.Name{baseUrl, "biddingStrategyConfiguration"}})
 	if bagc.BidModifier != 0 {
@@ -97,10 +93,6 @@ func (bagc *BiddableAdGroupCriterion) UnmarshalXML(dec *xml.Decoder, start xml.S
 				}
 			case "disapprovalReasons":
 				if err := dec.DecodeElement(&bagc.DisapprovalReasons, &start); err != nil {
-					return err
-				}
-			case "destinationUrl":
-				if err := dec.DecodeElement(&bagc.DestinationUrl, &start); err != nil {
 					return err
 				}
 			case "firstPageCpc":

@@ -14,10 +14,10 @@ type OperationError struct {
 }
 
 type EntityError struct {
-	Path   string `xml:"fieldPath"`
-	Trigger     string `xml:"trigger"`
-	String string `xml:"errorString"`
-	Reason      string `xml:"reason"`
+	Path    string `xml:"fieldPath"`
+	Trigger string `xml:"trigger"`
+	String  string `xml:"errorString"`
+	Reason  string `xml:"reason"`
 }
 
 type BudgetError struct {

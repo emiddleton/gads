@@ -21,7 +21,7 @@ type AdGroupFeed struct {
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupFeedService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201809/AdGroupFeedService#get
 //
 func (s AdGroupFeedService) Get(selector Selector) (adGroupFeeds []AdGroupFeed, err error) {
 	return adGroupFeeds, ERROR_NOT_YET_IMPLEMENTED
@@ -31,7 +31,7 @@ func (s AdGroupFeedService) Get(selector Selector) (adGroupFeeds []AdGroupFeed, 
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupFeedService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201809/AdGroupFeedService#mutate
 //
 func (s *AdGroupFeedService) Mutate(adGroupFeedOperations AdGroupFeedOperations) (adGroupFeeds []AdGroupFeed, err error) {
 	return adGroupFeeds, ERROR_NOT_YET_IMPLEMENTED
@@ -41,7 +41,7 @@ func (s *AdGroupFeedService) Mutate(adGroupFeedOperations AdGroupFeedOperations)
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/AdGroupFeedService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201809/AdGroupFeedService#query
 //
 func (s *AdGroupFeedService) Query(query string) (adGroupFeeds []AdGroupFeed, err error) {
 	return adGroupFeeds, ERROR_NOT_YET_IMPLEMENTED

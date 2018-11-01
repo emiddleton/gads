@@ -9,7 +9,7 @@ func testAdGroupCriterionService(t *testing.T) (service *AdGroupCriterionService
 }
 
 func TestAdGroupCriterion(t *testing.T) {
-	adGroup, cleanupAdGroup := testAdGroup(nil)
+	adGroup, cleanupAdGroup := testAdGroup(t)
 	defer cleanupAdGroup()
 
 	agcs := testAdGroupCriterionService(t)

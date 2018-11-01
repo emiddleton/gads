@@ -24,17 +24,17 @@ type ImageUrl struct {
 
 // Media represents an audio, image or video file.
 type Media struct {
-	Type         string       `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
-	Id           int64        `xml:"mediaId,omitempty"`
-	MediaType    string       `xml:"type"` // "AUDIO", "DYNAMIC_IMAGE", "ICON", "IMAGE", "STANDARD_ICON", "VIDEO"
-	ReferenceId  int64        `xml:"referenceId,omitempty"`
-	Dimensions   []Dimensions `xml:"dimensions"`
-	Urls         []ImageUrl   `xml:"urls"`
-	MimeType     string       `xml:"mimeType,omitempty"` // "IMAGE_JPEG", "IMAGE_GIF", "IMAGE_PNG", "FLASH", "TEXT_HTML", "PDF", "MSWORD", "MSEXCEL", "RTF", "AUDIO_WAV", "AUDIO_MP3"
-	SourceUrl    string       `xml:"sourceUrl,omitempty"`
-	Name         string       `xml:"name"`
-	FileSize     int64        `xml:"fileSize,omitempty"`   // File size in bytes
-	CreationTime string       `xml:"createTime,omitempty"` // format is YYYY-MM-DD HH:MM:SS+TZ
+	Type           string       `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
+	Id             int64        `xml:"mediaId,omitempty"`
+	MediaType      string       `xml:"type"` // "AUDIO", "DYNAMIC_IMAGE", "ICON", "IMAGE", "STANDARD_ICON", "VIDEO"
+	ReferenceId    int64        `xml:"referenceId,omitempty"`
+	Dimensions     []Dimensions `xml:"dimensions"`
+	Urls           []ImageUrl   `xml:"urls"`
+	LegacyMimeType string       `xml:"legacyMimeType,omitempty"` // "IMAGE_JPEG", "IMAGE_GIF", "IMAGE_PNG", "FLASH", "TEXT_HTML", "PDF", "MSWORD", "MSEXCEL", "RTF", "AUDIO_WAV", "AUDIO_MP3"
+	SourceUrl      string       `xml:"sourceUrl,omitempty"`
+	Name           string       `xml:"name"`
+	FileSize       int64        `xml:"fileSize,omitempty"`   // File size in bytes
+	CreationTime   string       `xml:"createTime,omitempty"` // format is YYYY-MM-DD HH:MM:SS+TZ
 
 	// Audio / Video
 	DurationMillis   int64  `xml:"durationMillis,omitempty"`
