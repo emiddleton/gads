@@ -11,8 +11,8 @@ func NewShallowAdGroupService(auth *Auth) *ShallowAdGroupService {
 }
 
 type ShallowAdGroup struct {
-	Id                             int64                           `xml:"id"`
-	Name                           string                          `xml:"name"`
+	Id   int64  `xml:"id"`
+	Name string `xml:"name"`
 }
 
 func (s *ShallowAdGroupService) Get(selector Selector) (adGroups []ShallowAdGroup, totalCount int64, err error) {
@@ -20,7 +20,7 @@ func (s *ShallowAdGroupService) Get(selector Selector) (adGroups []ShallowAdGrou
 	respBody, err := s.Auth.request(
 		adGroupServiceUrl,
 		"get",
-			struct {
+		struct {
 			XMLName xml.Name
 			Sel     Selector
 		}{
@@ -36,7 +36,7 @@ func (s *ShallowAdGroupService) Get(selector Selector) (adGroups []ShallowAdGrou
 		return adGroups, totalCount, err
 	}
 	getResp := struct {
-		Size     int64     `xml:"rval>totalNumEntries"`
+		Size     int64            `xml:"rval>totalNumEntries"`
 		AdGroups []ShallowAdGroup `xml:"rval>entries"`
 	}{}
 	err = xml.Unmarshal([]byte(respBody), &getResp)

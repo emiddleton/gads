@@ -62,7 +62,7 @@ func NewDynamicSearchAdsSetting(domainName, languageCode string) CampaignSetting
 
 func NewGeoTargetTypeSetting(positiveGeoTargetType, negativeGeoTargetType string) CampaignSetting {
 	return CampaignSetting{
-		Type: "GeoTargetTypeSetting",
+		Type:                  "GeoTargetTypeSetting",
 		PositiveGeoTargetType: &positiveGeoTargetType,
 		NegativeGeoTargetType: &negativeGeoTargetType,
 	}
@@ -83,10 +83,10 @@ func NewTrackingSetting(trackingUrl string) CampaignSetting {
 }
 
 type NetworkSetting struct {
-	TargetGoogleSearch         bool `xml:"https://adwords.google.com/api/adwords/cm/v201802 targetGoogleSearch"`
-	TargetSearchNetwork        bool `xml:"https://adwords.google.com/api/adwords/cm/v201802 targetSearchNetwork"`
-	TargetContentNetwork       bool `xml:"https://adwords.google.com/api/adwords/cm/v201802 targetContentNetwork"`
-	TargetPartnerSearchNetwork bool `xml:"https://adwords.google.com/api/adwords/cm/v201802 targetPartnerSearchNetwork"`
+	TargetGoogleSearch         bool `xml:"https://adwords.google.com/api/adwords/cm/v201809 targetGoogleSearch"`
+	TargetSearchNetwork        bool `xml:"https://adwords.google.com/api/adwords/cm/v201809 targetSearchNetwork"`
+	TargetContentNetwork       bool `xml:"https://adwords.google.com/api/adwords/cm/v201809 targetContentNetwork"`
+	TargetPartnerSearchNetwork bool `xml:"https://adwords.google.com/api/adwords/cm/v201809 targetPartnerSearchNetwork"`
 }
 
 type BiddingScheme struct {
@@ -184,7 +184,7 @@ type CampaignLabelOperations map[string][]CampaignLabel
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/CampaignService#get
+//     https://developers.google.com/adwords/api/docs/reference/v201809/CampaignService#get
 //
 func (s *CampaignService) Get(selector Selector) (campaigns []Campaign, totalCount int64, err error) {
 	// The default namespace, "", will break in 1.5 with the addition of
@@ -253,7 +253,7 @@ func (s *CampaignService) Get(selector Selector) (campaigns []Campaign, totalCou
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/CampaignService#mutate
+//     https://developers.google.com/adwords/api/docs/reference/v201809/CampaignService#mutate
 //
 func (s *CampaignService) Mutate(campaignOperations CampaignOperations) (campaigns []Campaign, err error) {
 	type campaignOperation struct {
@@ -312,7 +312,7 @@ func (s *CampaignService) Mutate(campaignOperations CampaignOperations) (campaig
 //
 // Relevant documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/CampaignService#mutateLabel
+//     https://developers.google.com/adwords/api/docs/reference/v201809/CampaignService#mutateLabel
 //
 func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOperations) (campaignLabels []CampaignLabel, err error) {
 	type campaignLabelOperation struct {
@@ -356,7 +356,7 @@ func (s *CampaignService) MutateLabel(campaignLabelOperations CampaignLabelOpera
 
 // Query documentation
 //
-//     https://developers.google.com/adwords/api/docs/reference/v201802/CampaignService#query
+//     https://developers.google.com/adwords/api/docs/reference/v201809/CampaignService#query
 //
 func (s *CampaignService) Query(query string) (campaigns []Campaign, totalCount int64, err error) {
 
