@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
+	baseUrl = "https://adwords.google.com/api/adwords/cm/v201809"
 )
 
 type ServiceUrl struct {
