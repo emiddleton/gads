@@ -6,6 +6,10 @@ type OfflineConversionService struct {
 	Auth
 }
 
+const (
+	uploadConversionAction = "ADD"
+)
+
 type OfflineConversionFeed struct {
 	GoogleClickId             string  `xml:"googleClickId"`
 	ConversionName            string  `xml:"conversionName"`
@@ -29,11 +33,11 @@ func (o *OfflineConversionService) Mutate(conversionOperations OfflineConversion
 	}
 	var ops []conversionOperation
 
-	for action, conversion := range conversionOperations {
+	for _, conversion := range conversionOperations {
 		for _, con := range conversion {
 			ops = append(ops,
 				conversionOperation{
-					Action:     action,
+					Action:     uploadConversionAction,
 					Conversion: con,
 				},
 			)
@@ -48,7 +52,7 @@ func (o *OfflineConversionService) Mutate(conversionOperations OfflineConversion
 			Local: "mutate",
 		},
 		Ops: ops}
-	respBody, err := o.Auth.request(campaignServiceUrl, "mutate", mutation)
+	respBody, err := o.Auth.request(offlineConversionFeedServiceUrl, "mutate", mutation)
 	if err != nil {
 		return conversion, err
 	}
