@@ -26,7 +26,7 @@ func rand_word(str_size int) string {
 	return string(bytes)
 }
 
-func testAuthSetup(t *testing.T) Auth {
+func testAuthSetup(t *testing.T) *Auth {
 	config, err := NewCredentials(context.TODO())
 	if err != nil {
 		t.Fatal(err)
