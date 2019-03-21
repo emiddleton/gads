@@ -12,6 +12,7 @@ import (
 
 const (
 	baseUrl = "https://adwords.google.com/api/adwords/cm/v201809"
+	mcmUrl  = "https://adwords.google.com/api/adwords/mcm/v201809"
 )
 
 type ServiceUrl struct {
@@ -56,7 +57,7 @@ var (
 	geoLocationServiceUrl           = ServiceUrl{baseUrl, "GeoLocationService"}
 	labelServiceUrl                 = ServiceUrl{baseUrl, "LabelService"}
 	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
-	managedCustomerServiceUrl       = ServiceUrl{baseUrl, "ManagedCustomerService"}
+	managedCustomerServiceUrl       = ServiceUrl{mcmUrl, "ManagedCustomerService"}
 	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
