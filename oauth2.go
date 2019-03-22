@@ -10,10 +10,10 @@ import (
 
 type AuthConfig struct {
 	file         string             `json:"-"`
-	OAuth2Config *oauth2.Config     `json:"oauth2.Config"`
-	OAuth2Token  *oauth2.Token      `json:"oauth2.Token"`
+	OAuth2Config *oauth2.Config     `json:"Config"`
+	OAuth2Token  *oauth2.Token      `json:"Token"`
 	tokenSource  oauth2.TokenSource `json:"-"`
-	Auth         *Auth              `json:"gads.Auth"`
+	Auth         *Auth              `json:"Auth"`
 }
 
 func NewCredentialsFromFile(pathToFile string, ctx context.Context) (ac AuthConfig, err error) {
