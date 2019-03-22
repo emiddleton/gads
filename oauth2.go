@@ -30,6 +30,11 @@ func NewCredentialsFromFile(pathToFile string, ctx context.Context) (ac AuthConf
 	return ac, err
 }
 
+func NewCredentialFromConfig(ctx context.Context, ac *AuthConfig) {
+	ac.tokenSource = ac.OAuth2Config.TokenSource(ctx, ac.OAuth2Token)
+	ac.Auth.Client = ac.OAuth2Config.Client(ctx, ac.OAuth2Token)
+}
+
 func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
 	return NewCredentialsFromFile(*configJson, ctx)
 }
@@ -37,6 +42,9 @@ func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
 // Save writes the contents of AuthConfig back to the JSON file it was
 // loaded from.
 func (c AuthConfig) Save() error {
+	if c.file == "" {
+		return nil
+	}
 	configData, err := json.MarshalIndent(&c, "", "    ")
 	if err != nil {
 		return err
