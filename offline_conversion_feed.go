@@ -16,8 +16,8 @@ type OfflineConversionFeed struct {
 	ConversionTime            string  `xml:"conversionTime"`
 	ConversionCurrencyCode    string  `xml:"conversionCurrencyCode"`
 	ExternalAttributionModel  string  `xml:"externalAttributionModel"`
-	ConversionValue           float32 `xml:"conversionValue"`
-	ExternalAttributionCredit float32 `xml:"externalAttributionCredit"`
+	ConversionValue           float64 `xml:"conversionValue"`
+	ExternalAttributionCredit float64 `xml:"externalAttributionCredit"`
 }
 
 type OfflineConversionOperations map[string][]OfflineConversionFeed
