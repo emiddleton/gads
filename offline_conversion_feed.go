@@ -13,11 +13,11 @@ const (
 type OfflineConversionFeed struct {
 	GoogleClickId             string  `xml:"googleClickId"`
 	ConversionName            string  `xml:"conversionName"`
-	ConversionTime            string  `xml:"conversionTime"`
-	ConversionCurrencyCode    string  `xml:"conversionCurrencyCode"`
-	ExternalAttributionModel  string  `xml:"externalAttributionModel"`
-	ConversionValue           float64 `xml:"conversionValue"`
-	ExternalAttributionCredit float64 `xml:"externalAttributionCredit"`
+	ConversionTime            string  `xml:"conversionTime,omitempty"`
+	ConversionCurrencyCode    string  `xml:"conversionCurrencyCode,omitempty"`
+	ExternalAttributionModel  string  `xml:"externalAttributionModel,omitempty"`
+	ConversionValue           float64 `xml:"conversionValue,omitempty"`
+	ExternalAttributionCredit float64 `xml:"externalAttributionCredit,omitempty"`
 }
 
 type OfflineConversionOperations map[string][]OfflineConversionFeed
