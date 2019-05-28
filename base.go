@@ -11,8 +11,9 @@ import (
 )
 
 const (
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201809"
-	mcmUrl  = "https://adwords.google.com/api/adwords/mcm/v201809"
+	baseUrl   = "https://adwords.google.com/api/adwords/cm/v201809"
+	mcmUrl    = "https://adwords.google.com/api/adwords/mcm/v201809"
+	reportUrl = "https://adwords.google.com/api/adwords/reportdownload/v201809"
 )
 
 type ServiceUrl struct {
@@ -62,6 +63,7 @@ var (
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
 	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
+	reportDownloadServiceUrl        = ServiceUrl{reportUrl, ""}
 	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
 	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
 	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
@@ -154,6 +156,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	if err != nil {
 		return []byte{}, err
 	}
+	fmt.Println(string(reqBody))
 
 	req, err := http.NewRequest("POST", serviceUrl.String(), bytes.NewReader(reqBody))
 	req.Header.Add("Accept", "text/xml")
@@ -161,7 +164,9 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	req.Header.Add("Content-Type", "text/xml;charset=UTF-8")
 	contentLength := fmt.Sprintf("%d", len(reqBody))
 	req.Header.Add("Content-length", contentLength)
-	req.Header.Add("SOAPAction", action)
+	if action != "" {
+		req.Header.Add("SOAPAction", action)
+	}
 	if a.Testing != nil {
 		a.Testing.Logf("request ->\n%s\n%#v\n%s\n", req.URL.String(), req.Header, string(reqBody))
 	}
