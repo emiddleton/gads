@@ -156,7 +156,6 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	if err != nil {
 		return []byte{}, err
 	}
-	fmt.Println(string(reqBody))
 
 	req, err := http.NewRequest("POST", serviceUrl.String(), bytes.NewReader(reqBody))
 	req.Header.Add("Accept", "text/xml")
