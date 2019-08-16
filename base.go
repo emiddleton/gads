@@ -115,20 +115,12 @@ type Selector struct {
 	Paging     *Paging     `xml:"paging,omitempty"`
 }
 
-// error parsers
-func selectorError() (err error) {
-	return err
-}
-
 func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
-	type devToken struct {
-		XMLName xml.Name
-	}
 	type soapReqHeader struct {
 		XMLName          xml.Name
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
-		ClientCustomerId string `xml:"clientCustomerId"`
+		ClientCustomerId string `xml:"clientCustomerId,omitempty"`
 	}
 
 	type soapReqBody struct {
