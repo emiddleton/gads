@@ -68,6 +68,7 @@ var (
 	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
 	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
 	trafficEstimatorServiceUrl      = ServiceUrl{baseUrl, "TrafficEstimatorService"}
+	assetServiceUrl                 = ServiceUrl{baseUrl, "AssetService"}
 )
 
 func (s ServiceUrl) String() string {
