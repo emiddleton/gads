@@ -9,11 +9,11 @@ import (
 )
 
 type AuthConfig struct {
-	file         string             `json:"-"`
-	OAuth2Config *oauth2.Config     `json:"oauth2.Config"`
-	OAuth2Token  *oauth2.Token      `json:"oauth2.Token"`
-	tokenSource  oauth2.TokenSource `json:"-"`
-	Auth         Auth               `json:"gads.Auth"`
+	file        string             `json:"-"`
+	Config      *oauth2.Config     `json:"Config"`
+	OAuth2Token *oauth2.Token      `json:"OAuth2Token"`
+	tokenSource oauth2.TokenSource `json:"-"`
+	Auth        *Auth              `json:"Auth"`
 }
 
 func NewCredentialsFromFile(pathToFile string, ctx context.Context) (ac AuthConfig, err error) {
@@ -25,9 +25,14 @@ func NewCredentialsFromFile(pathToFile string, ctx context.Context) (ac AuthConf
 		return ac, err
 	}
 	ac.file = pathToFile
-	ac.tokenSource = ac.OAuth2Config.TokenSource(ctx, ac.OAuth2Token)
-	ac.Auth.Client = ac.OAuth2Config.Client(ctx, ac.OAuth2Token)
+	ac.tokenSource = ac.Config.TokenSource(ctx, ac.OAuth2Token)
+	ac.Auth.Client = ac.Config.Client(ctx, ac.OAuth2Token)
 	return ac, err
+}
+
+func NewCredentialFromConfig(ctx context.Context, ac *AuthConfig) {
+	ac.tokenSource = ac.Config.TokenSource(ctx, ac.OAuth2Token)
+	ac.Auth.Client = ac.Config.Client(ctx, ac.OAuth2Token)
 }
 
 func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
@@ -37,6 +42,9 @@ func NewCredentials(ctx context.Context) (ac AuthConfig, err error) {
 // Save writes the contents of AuthConfig back to the JSON file it was
 // loaded from.
 func (c AuthConfig) Save() error {
+	if c.file == "" {
+		return nil
+	}
 	configData, err := json.MarshalIndent(&c, "", "    ")
 	if err != nil {
 		return err

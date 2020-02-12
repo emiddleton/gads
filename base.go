@@ -11,7 +11,9 @@ import (
 )
 
 const (
-	baseUrl = "https://adwords.google.com/api/adwords/cm/v201409"
+	baseUrl   = "https://adwords.google.com/api/adwords/cm/v201809"
+	mcmUrl    = "https://adwords.google.com/api/adwords/mcm/v201809"
+	reportUrl = "https://adwords.google.com/api/adwords/reportdownload/v201809"
 )
 
 type ServiceUrl struct {
@@ -56,15 +58,18 @@ var (
 	geoLocationServiceUrl           = ServiceUrl{baseUrl, "GeoLocationService"}
 	labelServiceUrl                 = ServiceUrl{baseUrl, "LabelService"}
 	locationCriterionServiceUrl     = ServiceUrl{baseUrl, "LocationCriterionService"}
-	managedCustomerServiceUrl       = ServiceUrl{baseUrl, "ManagedCustomerService"}
+	managedCustomerServiceUrl       = ServiceUrl{mcmUrl, "ManagedCustomerService"}
 	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
 	mutateJobServiceUrl             = ServiceUrl{baseUrl, "Mutate_JOB_Service"}
 	offlineConversionFeedServiceUrl = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
 	reportDefinitionServiceUrl      = ServiceUrl{baseUrl, "ReportDefinitionService"}
+	reportDownloadServiceUrl        = ServiceUrl{reportUrl, ""}
 	sharedCriterionServiceUrl       = ServiceUrl{baseUrl, "SharedCriterionService"}
 	sharedSetServiceUrl             = ServiceUrl{baseUrl, "SharedSetService"}
 	targetingIdeaServiceUrl         = ServiceUrl{baseUrl, "TargetingIdeaService"}
 	trafficEstimatorServiceUrl      = ServiceUrl{baseUrl, "TrafficEstimatorService"}
+	assetServiceUrl                 = ServiceUrl{baseUrl, "AssetService"}
+	adServiceUrl                    = ServiceUrl{baseUrl, "AdService"}
 )
 
 func (s ServiceUrl) String() string {
@@ -112,20 +117,12 @@ type Selector struct {
 	Paging     *Paging     `xml:"paging,omitempty"`
 }
 
-// error parsers
-func selectorError() (err error) {
-	return err
-}
-
 func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
-	type devToken struct {
-		XMLName xml.Name
-	}
 	type soapReqHeader struct {
 		XMLName          xml.Name
 		UserAgent        string `xml:"userAgent"`
 		DeveloperToken   string `xml:"developerToken"`
-		ClientCustomerId string `xml:"clientCustomerId"`
+		ClientCustomerId string `xml:"clientCustomerId,omitempty"`
 	}
 
 	type soapReqBody struct {
@@ -160,7 +157,9 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 	req.Header.Add("Content-Type", "text/xml;charset=UTF-8")
 	contentLength := fmt.Sprintf("%d", len(reqBody))
 	req.Header.Add("Content-length", contentLength)
-	req.Header.Add("SOAPAction", action)
+	if action != "" {
+		req.Header.Add("SOAPAction", action)
+	}
 	if a.Testing != nil {
 		a.Testing.Logf("request ->\n%s\n%#v\n%s\n", req.URL.String(), req.Header, string(reqBody))
 	}
@@ -197,13 +196,9 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (
 		return respBody, err
 	}
 	if resp.StatusCode == 400 || resp.StatusCode == 401 || resp.StatusCode == 403 || resp.StatusCode == 405 || resp.StatusCode == 500 {
-		fault := Fault{}
-		fmt.Printf("unknown error ->\n%s\n", string(soapResp.Body.Response))
-		err = xml.Unmarshal(soapResp.Body.Response, &fault)
-		if err != nil {
-			return respBody, err
-		}
-		return soapResp.Body.Response, &fault.Errors
+		fault := new(Fault)
+		_ = xml.Unmarshal(soapResp.Body.Response, fault)
+		return soapResp.Body.Response, fault
 	}
 	return soapResp.Body.Response, err
 }
