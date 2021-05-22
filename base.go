@@ -222,10 +222,10 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, o
 	req.Header.Add("Content-Type", "text/xml;charset=UTF-8")
 	req.Header.Add("SOAPAction", action)
 	resp, err := a.Client.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		return []byte{}, err
 	}
+	defer resp.Body.Close()
 
 	respBody, err = ioutil.ReadAll(resp.Body)
 	if a.Testing != nil {
