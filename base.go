@@ -206,6 +206,7 @@ func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}, o
 	}
 
 	r, w := io.Pipe()
+	defer r.Close()
 
 	go func() {
 		w.CloseWithError(xml.NewEncoder(w).Encode(soapReqEnvelope{
