@@ -130,7 +130,7 @@ func (s *BatchJobHelper) UploadBatchJobOperations(jobOperations []interface{}, u
 
 		// Set headers for incremental upload
 		req.Header.Set("Content-Type", "application/xml")
-		req.Header.Set("Content-Length", string(bodyLength))
+		req.Header.Set("Content-Length", fmt.Sprint(bodyLength))
 		req.Header.Set("Content-Range", fmt.Sprintf("bytes 0-%v/%v", bodyLength-1, bodyLength))
 
 		resp, err := client.Do(req)

@@ -70,6 +70,7 @@ type Member struct {
 	Emails      []string     `xml:"hashedEmail,omitempty"`
 	MobileIDs   []string     `xml:"mobileId,omitempty"`
 	AddressInfo *AddressInfo `xml:"addressInfo,omitempty"`
+	CRMIDs      []string     `xml:"userId,omitempty"`
 }
 
 // AddressInfo is an address identifier of a user list member.
